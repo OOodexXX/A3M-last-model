@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>إتمام الطلب — A3M Print</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Cairo:wght@400;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../css/style.css"/>
+  <style>
+    /* ── Checkout page specific ── */
+    .checkout-page { min-height: 100vh; background: var(--bg); }
+
+    .checkout-nav {
+      padding: 0 1.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px; background: var(--bg2);
+      border-bottom: 2px solid var(--accent);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .checkout-nav-logo {
+      font-family: 'Permanent Marker', cursive;
+      font-size: 1.7rem; color: var(--txt);
+      text-decoration: none; cursor: pointer;
+    }
+    .checkout-back {
+      background: none; border: 1.5px solid var(--border2);
+      border-radius: 8px; padding: 7px 14px;
+      font-size: 13px; font-weight: 700; color: var(--txt2);
+      cursor: pointer; transition: .2s;
+    }
+    .checkout-back:hover { border-color: var(--accent); color: var(--accent); }
+
+    .checkout-wrap {
+      max-width: 920px; margin: 2rem auto;
+      padding: 0 1.2rem;
+      display: grid; grid-template-columns: 1fr 400px; gap: 1.5rem;
+    }
+    @media(max-width: 780px) { .checkout-wrap { grid-template-columns: 1fr; } }
+
+    .checkout-card {
+      background: var(--bg2); border-radius: 16px;
+      border: 1px solid var(--border); padding: 1.5rem;
+      margin-bottom: 1.2rem;
+    }
+    .checkout-card h3 {
+      font-family: 'Permanent Marker', cursive; font-size: 1.15rem;
+      color: var(--txt); margin-bottom: 1rem;
+      display: flex; align-items: center; gap: .5rem;
+    }
+
+    /* Steps indicator */
+    .checkout-steps {
+      display: flex; align-items: center; gap: .5rem;
+      margin-bottom: 1.5rem; flex-wrap: wrap;
+    }
+    .step {
+      display: flex; align-items: center; gap: .4rem;
+      font-size: 12px; font-weight: 700;
+      color: var(--txt4);
+    }
+    .step.active { color: var(--accent); }
+    .step.done { color: var(--gold); }
+    .step-num {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: var(--bg3); border: 2px solid var(--border2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px;
+    }
+    .step.active .step-num { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .step.done  .step-num { background: var(--gold);   border-color: var(--gold);   color: #111; }
+    .step-line { flex: 1; height: 2px; background: var(--border); min-width: 20px; }
+    .step-line.done { background: var(--gold); }
+
+    /* Order summary */
+    .checkout-item {
+      display: flex; justify-content: space-between;
+      padding: .55rem 0; border-bottom: 1px solid var(--border);
+      font-size: 13px; color: var(--txt2);
+      align-items: center; gap: .5rem;
+    }
+    .checkout-item:last-child { border-bottom: none; }
+    .checkout-item-emoji { font-size: 1.4rem; flex-shrink: 0; }
+    .checkout-item-name { flex: 1; font-weight: 600; color: var(--txt); }
+    .checkout-item-qty { font-size: 11px; color: var(--txt3); }
+    .checkout-item-price { font-weight: 700; color: var(--accent); white-space: nowrap; }
+
+    .checkout-totals { margin-top: .75rem; padding-top: .75rem; border-top: 1px solid var(--border); }
+    .checkout-totals div { display: flex; justify-content: space-between; font-size: 13px; padding: .3rem 0; color: var(--txt2); }
+    .checkout-final { font-weight: 700; font-size: 16px; color: var(--txt) !important; margin-top: .5rem; padding-top: .5rem; border-top: 2px solid var(--border2); }
+    .checkout-final span:last-child { color: var(--accent) !important; }
+
+    .discount-row { display: flex; gap: .5rem; margin-top: .8rem; }
+
+    /* Form inputs */
+    #checkout-feedback {
+      display: none; padding: .65rem 1rem; border-radius: 8px;
+      font-size: 13px; font-weight: 600; margin-bottom: .75rem;
+      background: var(--bg3); border: 1px solid var(--border);
+    }
+
+    /* Place order btn */
+    #placeOrderBtn {
+      width: 100%; background: var(--accent); color: #fff !important;
+      border: none; padding: 14px; border-radius: 10px;
+      font-weight: 700; font-size: 15px; margin-top: .5rem;
+      transition: .25s; box-shadow: 0 4px 15px var(--abg);
+    }
+    #placeOrderBtn:hover { background: var(--accent2); transform: translateY(-1px); box-shadow: 0 8px 25px var(--abg); }
+    #placeOrderBtn:disabled { opacity: .6; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    /* Trust badges */
+    .trust-badges { display: flex; gap: .6rem; flex-wrap: wrap; margin-top: .8rem; }
+    .trust-badge {
+      display: flex; align-items: center; gap: .3rem;
+      font-size: 11px; color: var(--txt3);
+      background: var(--bg3); border: 1px solid var(--border);
+      padding: 4px 10px; border-radius: 20px;
+    }
+
+    /* Order summary card (right column) */
+    .summary-sticky { position: sticky; top: 80px; }
+
+    /* Delivery info */
+    .delivery-badge {
+      display: flex; align-items: center; gap: .5rem;
+      background: rgba(34,197,94,.1); border: 1px solid rgba(34,197,94,.3);
+      border-radius: 8px; padding: .6rem .9rem;
+      font-size: 12px; color: #16a34a; font-weight: 600;
+      margin-top: .6rem;
+    }
+  </style>
+</head>
+<body class="blue-dark">
+<script>(function(){ var t=localStorage.getItem("a3m_theme")||"blue-dark"; document.body.className=t; })();</script>
+
+<div class="checkout-page">
+
+  <!-- Nav -->
+  <nav class="checkout-nav">
+    <a class="checkout-nav-logo" onclick="history.back()">A<span class="r">3</span><span class="g">M</span></a>
+    <!-- Language switcher -->
+    <div style="display:flex;align-items:center;gap:.5rem">
+      <div style="display:flex;border-radius:8px;overflow:hidden;border:1px solid var(--border2)">
+        <button onclick="setCheckoutLang('ar')" id="co-ar" style="background:var(--accent);color:#fff;border:none;padding:5px 10px;cursor:pointer;font-size:11px;font-weight:700;">🇩🇿 AR</button>
+        <button onclick="setCheckoutLang('en')" id="co-en" style="background:none;border:none;padding:5px 10px;cursor:pointer;font-size:11px;font-weight:700;color:var(--txt2);">🇬🇧 EN</button>
+        <button onclick="setCheckoutLang('fr')" id="co-fr" style="background:none;border:none;padding:5px 10px;cursor:pointer;font-size:11px;font-weight:700;color:var(--txt2);">🇫🇷 FR</button>
+      </div>
+      <button class="checkout-back" onclick="history.back()" id="co-back">← العودة</button>
+    </div>
+  </nav>
+
+  <div style="padding:1.5rem 1.2rem 0;max-width:920px;margin:0 auto">
+    <h1 style="font-family:'Permanent Marker',cursive;font-size:1.6rem;color:var(--txt);margin-bottom:1.2rem">
+      إتمام الطلب
+    </h1>
+
+    <!-- Steps -->
+    <div class="checkout-steps">
+      <div class="step done">
+        <div class="step-num">✓</div>
+        <span>السلة</span>
+      </div>
+      <div class="step-line done"></div>
+      <div class="step active">
+        <div class="step-num">2</div>
+        <span>بياناتك</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <span>التأكيد</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="checkout-wrap">
+
+    <!-- LEFT: Customer form -->
+    <div>
+      <!-- Customer info -->
+      <div class="checkout-card">
+        <h3>👤 بياناتك</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">الاسم الكامل *</label>
+            <input class="form-input" id="c_name" placeholder="أحمد بن علي" autocomplete="name"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">رقم الهاتف *</label>
+            <input class="form-input" id="c_phone" placeholder="0555 123 456" type="tel" autocomplete="tel"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">العنوان *</label>
+            <input class="form-input" id="c_address" placeholder="رقم، شارع، حي"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">الولاية</label>
+            <select class="form-input" id="c_wilaya">
+              <option value="">اختر الولاية...</option>
+              <option>الجزائر</option><option>وهران</option><option>قسنطينة</option>
+              <option>عنابة</option><option>بجاية</option><option>تيزي وزو</option>
+              <option>بومرداس</option><option>تيبازة</option><option>البليدة</option>
+              <option>المدية</option><option>سطيف</option><option>باتنة</option>
+              <option>أخرى</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">ملاحظات (اختياري)</label>
+          <textarea class="form-input" id="c_notes" rows="3"
+            placeholder="تفاصيل إضافية عن الطلب أو التصميم..."
+            style="resize:vertical"></textarea>
+        </div>
+        <div class="delivery-badge">
+          🚚 التوصيل خلال 3-7 أيام عمل في جميع الولايات
+        </div>
+      </div>
+
+      <!-- Payment method (decorative) -->
+      <div class="checkout-card">
+        <h3>💳 طريقة الدفع</h3>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+          <div style="flex:1;min-width:120px;border:2px solid var(--accent);border-radius:10px;padding:.8rem;display:flex;align-items:center;gap:.5rem;cursor:pointer;background:var(--abg)">
+            <span style="font-size:1.3rem">💵</span>
+            <div>
+              <div style="font-size:12px;font-weight:700;color:var(--txt)">الدفع عند الاستلام</div>
+              <div style="font-size:10px;color:var(--txt3)">COD متاح في كل الولايات</div>
+            </div>
+          </div>
+          <div style="flex:1;min-width:120px;border:1px solid var(--border2);border-radius:10px;padding:.8rem;display:flex;align-items:center;gap:.5rem;cursor:pointer;opacity:.5">
+            <span style="font-size:1.3rem">🏦</span>
+            <div>
+              <div style="font-size:12px;font-weight:700;color:var(--txt)">تحويل بنكي</div>
+              <div style="font-size:10px;color:var(--txt3)">قريباً</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="checkout-feedback"></div>
+      <button id="placeOrderBtn" onclick="placeOrder()">✦ تأكيد الطلب</button>
+
+      <!-- Trust badges -->
+      <div class="trust-badges">
+        <div class="trust-badge">🔒 دفع آمن</div>
+        <div class="trust-badge">✅ جودة مضمونة</div>
+        <div class="trust-badge">🔄 استرداد سهل</div>
+        <div class="trust-badge">📞 دعم 24/7</div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Order summary -->
+    <div class="summary-sticky">
+      <div class="checkout-card">
+        <h3>🛒 ملخص الطلب</h3>
+        <div id="checkoutItems">
+          <p style="color:var(--txt3);font-size:13px">جاري التحميل...</p>
+        </div>
+
+        <!-- Discount code -->
+        <div class="discount-row">
+          <input class="discount-input" id="discountInput" placeholder="ENTER CODE" maxlength="20"
+            style="text-transform:uppercase"/>
+          <button class="discount-apply-btn" onclick="applyCheckoutDiscount()">تطبيق</button>
+        </div>
+        <div id="discountMsg" style="margin-top:.4rem;font-size:12px"></div>
+      </div>
+
+      <!-- Info box -->
+      <div style="background:var(--bg2);border-radius:12px;border:1px solid var(--border);padding:1rem;font-size:12px;color:var(--txt3);line-height:1.8">
+        <div style="font-weight:700;color:var(--txt);margin-bottom:.4rem">📋 معلومات مهمة</div>
+        • سيتواصل معك فريقنا لتأكيد التصميم<br>
+        • خصم 20% للطلبات فوق 5000 دج<br>
+        • أوقات العمل: الأحد – الجمعة، 8ص – 6م
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="../js/checkout-main.js"></script>
+
+<script>
+  // Checkout discount handler
+  const CHECKOUT_CODES = {"A3M10":10,"A3M20":20,"STUDENT":15,"WELCOME":25,"VIP50":50};
+  let checkoutDiscount = 0;
+
+  function applyCheckoutDiscount() {
+    const code = document.getElementById("discountInput").value.trim().toUpperCase();
+    const msg  = document.getElementById("discountMsg");
+    if (CHECKOUT_CODES[code]) {
+      checkoutDiscount = CHECKOUT_CODES[code];
+      msg.innerHTML = `<span style="color:#16a34a;font-weight:700">✦ ${checkoutDiscount}% خصم مطبّق!</span>`;
+      rerenderSummary();
+    } else {
+      checkoutDiscount = 0;
+      msg.innerHTML = `<span style="color:#e01010;font-weight:700">✕ كود غير صالح</span>`;
+      rerenderSummary();
+    }
+  }
+  window.applyCheckoutDiscount = applyCheckoutDiscount;
+  window.checkoutDiscount = 0;
+
+  // Override renderCheckoutSummary to include checkoutDiscount
+  function rerenderSummary() {
+    const CART_KEY = "a3m_cart";
+    const cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+    const container = document.getElementById("checkoutItems");
+    if (!container) return;
+    if (!cart.length) { container.innerHTML = "<p style='color:var(--txt3)'>السلة فارغة</p>"; return; }
+    const sub  = cart.reduce((s,i) => s + i.price * i.qty, 0);
+    const bulk = sub >= 5000 ? sub * 0.20 : 0;
+    const aft  = sub - bulk;
+    const code = Math.round(aft * (checkoutDiscount / 100));
+    const tot  = aft - code;
+    container.innerHTML = cart.map(i => `
+      <div class="checkout-item">
+        <span class="checkout-item-emoji">${i.emoji||''}</span>
+        <div style="flex:1">
+          <div class="checkout-item-name">${i.name}</div>
+          <div class="checkout-item-qty">× ${i.qty}</div>
+        </div>
+        <span class="checkout-item-price">${(i.price*i.qty).toLocaleString()} دج</span>
+      </div>`).join('') + `
+      <div class="checkout-totals">
+        ${bulk > 0 ? `<div><span>خصم الجملة (20%)</span><span style="color:#16a34a">- ${bulk.toLocaleString()} دج</span></div>` : ''}
+        ${code > 0 ? `<div><span>خصم الكود (${checkoutDiscount}%)</span><span style="color:#16a34a">- ${code.toLocaleString()} دج</span></div>` : ''}
+        <div class="checkout-final"><span>المجموع الكلي</span><span>${tot.toLocaleString()} دج</span></div>
+      </div>`;
+    // sync discount to checkout.js
+    window.checkoutDiscount = checkoutDiscount;
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    rerenderSummary();
+    // Patch placeOrder to use our checkoutDiscount
+    const origPlace = window.placeOrder;
+    window._checkoutDiscountLocal = () => checkoutDiscount;
+  });
+</script>
+
+<script>
+// Checkout multilang
+const CO_LANGS = {
+  ar: {
+    back: '← العودة للمتجر',
+    title: 'إتمام الطلب',
+    info: '👤 بياناتك',
+    name: 'الاسم الكامل *',
+    phone: 'رقم الهاتف *',
+    address: 'العنوان *',
+    wilaya: 'الولاية',
+    notes: 'ملاحظات (اختياري)',
+    payment: '💳 طريقة الدفع',
+    cod: 'الدفع عند الاستلام',
+    codSub: 'COD متاح في كل الولايات',
+    placeOrder: '✦ تأكيد الطلب',
+    summary: '🛒 ملخص الطلب',
+    dir: 'rtl',
+  },
+  en: {
+    back: '← Back to Store',
+    title: 'Checkout',
+    info: '👤 Your Information',
+    name: 'Full Name *',
+    phone: 'Phone Number *',
+    address: 'Address *',
+    wilaya: 'State / Wilaya',
+    notes: 'Notes (optional)',
+    payment: '💳 Payment Method',
+    cod: 'Cash on Delivery',
+    codSub: 'COD available in all wilayas',
+    placeOrder: '✦ Place Order',
+    summary: '🛒 Order Summary',
+    dir: 'ltr',
+  },
+  fr: {
+    back: '← Retour',
+    title: 'Finaliser la commande',
+    info: '👤 Vos Informations',
+    name: 'Nom complet *',
+    phone: 'Téléphone *',
+    address: 'Adresse *',
+    wilaya: 'Wilaya',
+    notes: 'Remarques (optionnel)',
+    payment: '💳 Mode de Paiement',
+    cod: 'Paiement à la livraison',
+    codSub: 'COD disponible partout',
+    placeOrder: '✦ Confirmer la commande',
+    summary: '🛒 Résumé de commande',
+    dir: 'ltr',
+  }
+};
+
+function setCheckoutLang(lang) {
+  const t = CO_LANGS[lang];
+  if (!t) return;
+  document.body.setAttribute('dir', t.dir);
+  document.body.style.fontFamily = lang === 'ar' ? "'Cairo',sans-serif" : "'Inter',sans-serif";
+  localStorage.setItem('a3m_lang', lang);
+  // Update buttons
+  ['ar','en','fr'].forEach(l => {
+    const btn = document.getElementById('co-' + l);
+    if (btn) { btn.style.background = l === lang ? 'var(--accent)' : 'none'; btn.style.color = l === lang ? '#fff' : 'var(--txt2)'; }
+  });
+  const back = document.getElementById('co-back'); if (back) back.textContent = t.back;
+  const h1 = document.querySelector('h1'); if (h1) h1.childNodes[0] && (h1.firstChild.textContent = t.title + ' ');
+  const placeBtn = document.getElementById('placeOrderBtn'); if (placeBtn) placeBtn.textContent = t.placeOrder;
+  // Labels
+  const labels = document.querySelectorAll('.form-label');
+  const labelKeys = ['name','phone','address','wilaya','notes'];
+  let i = 0;
+  labels.forEach(l => { if (labelKeys[i] && t[labelKeys[i]]) { l.textContent = t[labelKeys[i]]; i++; } });
+}
+
+// Init lang from localStorage
+document.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('a3m_lang') || 'ar';
+  setCheckoutLang(saved);
+});
+</script>
+
+</body>
+</html>
