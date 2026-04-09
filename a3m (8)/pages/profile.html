@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Profile — A3M Print</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Cairo:wght@400;600;700&family=Inter:wght@400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0b0f19; --bg2: #111827; --card: #141d2e;
+      --accent: #2563eb; --gold: #c9a84c; --red: #e63946;
+      --txt: #f1f5f9; --txt2: #94a3b8; --txt3: #64748b;
+      --border: rgba(255,255,255,.08); --border2: rgba(255,255,255,.15);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--txt); min-height: 100vh; }
+
+    /* NAV */
+    .nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 2rem; border-bottom: 1px solid var(--border); background: rgba(11,15,25,.95); backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 100; }
+    .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: var(--txt); text-decoration: none; }
+    .nav-logo .r { color: var(--red); }
+    .nav-logo .g { color: var(--gold); }
+    .back-btn { background: var(--card); border: 1px solid var(--border2); color: var(--txt2); padding: 8px 18px; border-radius: 30px; font-size: 13px; cursor: pointer; font-family: inherit; transition: .2s; text-decoration: none; display: inline-flex; align-items: center; gap: .4rem; }
+    .back-btn:hover { border-color: var(--accent); color: var(--txt); }
+
+    /* HERO */
+    .profile-hero {
+      background: linear-gradient(135deg, var(--bg2) 0%, #0d1829 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 3rem 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .profile-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% -20%, rgba(37,99,235,.15) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .avatar-wrap { position: relative; display: inline-block; margin-bottom: 1.2rem; }
+    .profile-avatar {
+      width: 110px; height: 110px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--gold));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem; font-weight: 700;
+      border: 3px solid var(--gold);
+      cursor: pointer;
+      position: relative;
+      box-shadow: 0 0 40px rgba(201,168,76,.25);
+    }
+    .avatar-edit {
+      position: absolute; bottom: 4px; right: 4px;
+      background: var(--gold); color: #111;
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; cursor: pointer;
+    }
+    .profile-name { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; letter-spacing: 2px; }
+    .profile-handle { color: var(--txt3); font-size: 14px; margin-top: .2rem; margin-bottom: 1.2rem; }
+
+    /* XP BAR */
+    .xp-wrap { max-width: 360px; margin: 0 auto 1.5rem; }
+    .xp-row { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: .4rem; }
+    .xp-rank-badge { font-weight: 700; color: var(--gold); }
+    .xp-bar-bg { height: 8px; background: var(--bg); border-radius: 10px; overflow: hidden; }
+    .xp-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--gold)); border-radius: 10px; transition: width 1s ease; }
+    .xp-milestones { display: flex; justify-content: space-between; margin-top: .4rem; font-size: 16px; }
+
+    /* STATS */
+    .stats-row { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; margin-top: 1.2rem; }
+    .stat-box { text-align: center; }
+    .stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--txt); }
+    .stat-lbl { font-size: 11px; color: var(--txt3); letter-spacing: .5px; text-transform: uppercase; }
+
+    /* MAIN */
+    .profile-main { max-width: 1000px; margin: 2rem auto; padding: 0 1.5rem; }
+
+    /* TABS */
+    .tabs { display: flex; gap: .5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+    .tab { padding: .7rem 1.3rem; font-size: 13px; font-weight: 600; color: var(--txt3); cursor: pointer; border-bottom: 2px solid transparent; transition: .2s; }
+    .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .tab:hover { color: var(--txt); }
+    .pane { display: none; }
+    .pane.active { display: block; }
+
+    /* DESIGNS GRID */
+    .designs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; }
+    .design-thumb {
+      aspect-ratio: 1; background: var(--card); border: 1px dashed var(--border2);
+      border-radius: 12px; display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; cursor: pointer; transition: .2s; color: var(--txt3);
+    }
+    .design-thumb:hover { border-color: var(--accent); color: var(--accent); }
+    .new-design { font-size: 2.5rem; color: var(--accent); }
+
+    /* ORDERS */
+    .orders-list { display: flex; flex-direction: column; gap: 1rem; }
+    .order-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 1.2rem 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+    .order-id { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: var(--gold); }
+    .order-date { font-size: 12px; color: var(--txt3); }
+    .order-status { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+    .status-pending { background: rgba(201,168,76,.15); color: var(--gold); }
+    .status-done { background: rgba(34,197,94,.15); color: #22c55e; }
+
+    /* SETTINGS */
+    .settings-section { margin-bottom: 2rem; }
+    .settings-title { font-size: 12px; font-weight: 700; color: var(--gold); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 1rem; }
+    .setting-row { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.2rem; background: var(--card); border: 1px solid var(--border); border-radius: 12px; margin-bottom: .6rem; }
+    .setting-lbl { font-size: 14px; font-weight: 500; }
+    .setting-sub { font-size: 12px; color: var(--txt3); margin-top: .2rem; }
+    .toggle { width: 42px; height: 24px; background: var(--border2); border-radius: 12px; cursor: pointer; position: relative; transition: background .2s; border: none; }
+    .toggle.on { background: var(--accent); }
+    .toggle::after { content:''; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; background: #fff; border-radius: 50%; transition: left .2s; }
+    .toggle.on::after { left: 21px; }
+    .logout-btn { width: 100%; padding: 12px; background: rgba(230,57,70,.1); border: 1px solid rgba(230,57,70,.3); color: var(--red); border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; transition: .2s; margin-top: 1rem; }
+    .logout-btn:hover { background: var(--red); color: #fff; }
+
+    /* BADGES */
+    .badges-grid { display: flex; flex-wrap: wrap; gap: 1rem; }
+    .badge { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 1rem 1.4rem; text-align: center; min-width: 100px; }
+    .badge-icon { font-size: 2rem; display: block; margin-bottom: .4rem; }
+    .badge-name { font-size: 11px; font-weight: 700; color: var(--txt2); }
+    .badge.earned { border-color: var(--gold); box-shadow: 0 0 16px rgba(201,168,76,.15); }
+
+    /* EMPTY STATE */
+    .empty-state { text-align: center; padding: 3rem; color: var(--txt3); }
+    .empty-state .icon { font-size: 3rem; margin-bottom: 1rem; }
+    .btn-primary { background: var(--accent); color: #fff; border: none; border-radius: 30px; padding: 10px 24px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; transition: .2s; display: inline-block; text-decoration: none; margin-top: 1rem; }
+    .btn-primary:hover { background: #1d4ed8; transform: translateY(-1px); }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-logo" href="../index.html">A<span class="r">3</span><span class="g">M</span> Print</a>
+  <a class="back-btn" href="../index.html">← Back to Store</a>
+</nav>
+
+<!-- Profile Hero -->
+<div class="profile-hero">
+  <div class="avatar-wrap">
+    <div class="profile-avatar" id="profileAvatar">
+      <span id="avatarLetter">A</span>
+    </div>
+    <div class="avatar-edit">✏</div>
+  </div>
+  <div class="profile-name" id="profileName">Ahmed Ben Ali</div>
+  <div class="profile-handle" id="profileHandle">@ahmed · Member since 2024</div>
+
+  <!-- XP Bar -->
+  <div class="xp-wrap">
+    <div class="xp-row">
+      <span class="xp-rank-badge" id="xpRankBadge">🪨 Iron</span>
+      <span style="color:var(--txt3);font-size:12px" id="xpPts">0 / 100 XP</span>
+    </div>
+    <div class="xp-bar-bg">
+      <div class="xp-bar-fill" id="xpBarFill" style="width:0%"></div>
+    </div>
+    <div class="xp-milestones">
+      <span title="Iron">🪨</span><span title="Bronze">🥉</span><span title="Gold">🥇</span><span title="Diamond">💎</span><span title="Premium">⭐</span>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-box"><div class="stat-num">0</div><div class="stat-lbl">Designs</div></div>
+    <div class="stat-box"><div class="stat-num">0</div><div class="stat-lbl">Orders</div></div>
+    <div class="stat-box"><div class="stat-num">0</div><div class="stat-lbl">Followers</div></div>
+    <div class="stat-box"><div class="stat-num">0</div><div class="stat-lbl">Following</div></div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="profile-main">
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('designs')">🎨 My Designs</div>
+    <div class="tab" onclick="switchTab('orders')">📦 My Orders</div>
+    <div class="tab" onclick="switchTab('badges')">🏆 Badges</div>
+    <div class="tab" onclick="switchTab('settings')">⚙️ Settings</div>
+  </div>
+
+  <!-- Designs -->
+  <div class="pane active" id="pane-designs">
+    <div class="designs-grid">
+      <div class="design-thumb new-design" onclick="window.location.href='../index.html'" title="New Design">+</div>
+    </div>
+    <div class="empty-state" style="margin-top:2rem">
+      <div class="icon">🎨</div>
+      <p>No saved designs yet.</p>
+      <a class="btn-primary" href="../index.html">Start Designing →</a>
+    </div>
+  </div>
+
+  <!-- Orders -->
+  <div class="pane" id="pane-orders">
+    <div class="empty-state">
+      <div class="icon">📦</div>
+      <p>No orders yet. Place your first order!</p>
+      <a class="btn-primary" href="../index.html">Shop Now →</a>
+    </div>
+  </div>
+
+  <!-- Badges -->
+  <div class="pane" id="pane-badges">
+    <div class="badges-grid">
+      <div class="badge">
+        <span class="badge-icon">🆕</span>
+        <div class="badge-name">New Member</div>
+      </div>
+      <div class="badge" style="opacity:.3">
+        <span class="badge-icon">🛒</span>
+        <div class="badge-name">First Order</div>
+      </div>
+      <div class="badge" style="opacity:.3">
+        <span class="badge-icon">🎨</span>
+        <div class="badge-name">Designer</div>
+      </div>
+      <div class="badge" style="opacity:.3">
+        <span class="badge-icon">🔥</span>
+        <div class="badge-name">10 Orders</div>
+      </div>
+      <div class="badge" style="opacity:.3">
+        <span class="badge-icon">💎</span>
+        <div class="badge-name">Diamond</div>
+      </div>
+      <div class="badge" style="opacity:.3">
+        <span class="badge-icon">⭐</span>
+        <div class="badge-name">Premium</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings -->
+  <div class="pane" id="pane-settings">
+    <div class="settings-section">
+      <div class="settings-title">Account</div>
+      <div class="setting-row">
+        <div><div class="setting-lbl">Display Name</div><div class="setting-sub">Ahmed Ben Ali</div></div>
+        <button class="back-btn">Edit</button>
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-lbl">Email</div><div class="setting-sub">ahmed@example.com</div></div>
+        <button class="back-btn">Edit</button>
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-lbl">Password</div><div class="setting-sub">Last changed: never</div></div>
+        <button class="back-btn">Change</button>
+      </div>
+    </div>
+    <div class="settings-section">
+      <div class="settings-title">Preferences</div>
+      <div class="setting-row">
+        <div><div class="setting-lbl">Email Notifications</div><div class="setting-sub">Order updates and promotions</div></div>
+        <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-lbl">Dark Mode</div><div class="setting-sub">Use dark theme</div></div>
+        <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-lbl">Language</div><div class="setting-sub">Current: English</div></div>
+        <button class="back-btn">Change</button>
+      </div>
+    </div>
+    <button class="logout-btn" onclick="window.location.href='../index.html'">🚪 Log Out</button>
+  </div>
+</div>
+
+<script>
+  function switchTab(name) {
+    document.querySelectorAll('.tab').forEach((t,i) => {
+      const names = ['designs','orders','badges','settings'];
+      t.classList.toggle('active', names[i] === name);
+    });
+    document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+    const el = document.getElementById('pane-' + name);
+    if (el) el.classList.add('active');
+  }
+  // Load from localStorage
+  window.addEventListener('load', () => {
+    try {
+      const user = JSON.parse(localStorage.getItem('a3m_user') || '{}');
+      if (user.name) {
+        document.getElementById('profileName').textContent = user.name;
+        document.getElementById('avatarLetter').textContent = user.name[0].toUpperCase();
+        if (user.username) document.getElementById('profileHandle').textContent = '@' + user.username.replace('@','') + ' · Member since 2024';
+      }
+      const xp = parseInt(localStorage.getItem('a3m_xp') || '0');
+      const ranks = [{name:'🪨 Iron',max:100},{name:'🥉 Bronze',max:300},{name:'🥇 Gold',max:700},{name:'💎 Diamond',max:1500},{name:'⭐ Premium',max:9999}];
+      let rank = ranks[0], prev = 0;
+      for (const r of ranks) { if (xp < r.max) { rank = r; break; } prev = r.max; }
+      document.getElementById('xpRankBadge').textContent = rank.name;
+      document.getElementById('xpPts').textContent = xp + ' / ' + rank.max + ' XP';
+      document.getElementById('xpBarFill').style.width = Math.min(100, (xp-prev)/(rank.max-prev)*100) + '%';
+    } catch(e) {}
+  });
+</script>
+</body>
+</html>
