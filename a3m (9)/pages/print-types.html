@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>أنواع الطباعة — A3M Print</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cairo:wght@400;600;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:#0b0f19; --bg2:#111827; --card:#141d2e;
+      --accent:#2563eb; --gold:#c9a84c; --red:#e63946;
+      --txt:#f1f5f9; --txt2:#94a3b8; --txt3:#64748b;
+      --border:rgba(255,255,255,.08); --border2:rgba(255,255,255,.15);
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Cairo','Inter',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;}
+
+    /* NAV */
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:.85rem 2rem;border-bottom:1px solid var(--border);background:rgba(11,15,25,.97);backdrop-filter:blur(14px);position:sticky;top:0;z-index:200;}
+    .nav-logo{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--txt);text-decoration:none;letter-spacing:1px;}
+    .nav-logo .r{color:var(--red);} .nav-logo .g{color:var(--gold);}
+    .nav-right{display:flex;align-items:center;gap:.8rem;}
+    .back-btn{background:var(--card);border:1px solid var(--border2);color:var(--txt2);padding:7px 16px;border-radius:30px;font-size:13px;cursor:pointer;font-family:inherit;transition:.2s;text-decoration:none;display:inline-flex;align-items:center;gap:.35rem;}
+    .back-btn:hover{border-color:var(--accent);color:var(--txt);}
+
+    /* Globe lang button */
+    .lang-globe-wrap{position:relative;}
+    .lang-globe-btn{
+      display:flex;align-items:center;gap:.45rem;
+      background:var(--card);border:1px solid var(--border2);
+      color:var(--txt2);padding:7px 14px;border-radius:30px;
+      font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;
+      transition:.2s;white-space:nowrap;
+    }
+    .lang-globe-btn:hover{border-color:var(--accent);color:var(--txt);}
+    .lang-globe-btn svg{flex-shrink:0;}
+    .lang-dropdown{
+      position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);
+      background:var(--bg2);border:1px solid var(--border2);border-radius:14px;
+      padding:.5rem;min-width:150px;box-shadow:0 16px 40px rgba(0,0,0,.5);
+      display:none;z-index:300;
+    }
+    [dir="ltr"] .lang-dropdown{left:auto;right:0;transform:none;}
+    .lang-dropdown.open{display:block;}
+    .lang-opt{display:flex;align-items:center;gap:.6rem;padding:.6rem .9rem;border-radius:9px;cursor:pointer;font-size:13px;font-weight:600;transition:.15s;}
+    .lang-opt:hover{background:rgba(255,255,255,.06);}
+    .lang-opt.active{color:var(--gold);}
+    .lang-opt .flag{font-size:1.1rem;}
+
+    /* HERO */
+    .page-hero{padding:4rem 2rem;text-align:center;background:linear-gradient(135deg,var(--bg2),#0d1829);border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+    .page-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% -30%,rgba(37,99,235,.13) 0%,transparent 60%);pointer-events:none;}
+    .hero-label{font-size:11px;font-weight:800;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:1rem;}
+    .hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.4rem,6vw,4.5rem);line-height:1;margin-bottom:1rem;}
+    .hero-title .r{color:var(--red);} .hero-title .g{color:var(--gold);}
+    .hero-sub{color:var(--txt3);font-size:15px;max-width:560px;margin:0 auto;line-height:1.8;}
+
+    /* FILTER */
+    .filter-bar{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;padding:1.4rem 1rem;border-bottom:1px solid var(--border);position:sticky;top:65px;background:var(--bg);z-index:50;}
+    .filter-btn{padding:6px 18px;border-radius:30px;border:1px solid var(--border2);background:transparent;color:var(--txt3);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;letter-spacing:.3px;}
+    .filter-btn.active,.filter-btn:hover{background:var(--accent);border-color:var(--accent);color:#fff;}
+
+    /* GRID */
+    .types-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.8rem;max-width:1200px;margin:3rem auto;padding:0 2rem;}
+
+    /* CARD */
+    .type-card{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;transition:transform .25s,border-color .25s,box-shadow .25s;display:flex;flex-direction:column;}
+    .type-card:hover{transform:translateY(-6px);border-color:var(--accent);box-shadow:0 20px 50px rgba(0,0,0,.4);}
+    .card-top{padding:1.8rem 2rem 1rem;display:flex;align-items:flex-start;gap:1.2rem;}
+    .card-icon{font-size:2.5rem;flex-shrink:0;width:62px;height:62px;background:var(--bg);border-radius:14px;display:flex;align-items:center;justify-content:center;}
+    .card-title{font-family:'Bebas Neue',sans-serif;font-size:1.55rem;letter-spacing:1px;color:var(--txt);margin-bottom:.25rem;line-height:1.1;}
+    .card-subtitle{font-size:11px;font-weight:700;color:var(--accent);letter-spacing:.5px;text-transform:uppercase;}
+    .card-body{padding:0 2rem 1.5rem;flex:1;}
+    .card-desc{font-size:13.5px;color:var(--txt3);line-height:1.85;margin-bottom:1.1rem;}
+    .card-items{margin-bottom:1.1rem;}
+    .card-items-title{font-size:10.5px;font-weight:800;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:.55rem;}
+    .items-list{display:flex;flex-wrap:wrap;gap:.4rem;}
+    .item-chip{background:var(--bg);border:1px solid var(--border2);border-radius:20px;padding:3px 10px;font-size:11px;color:var(--txt2);}
+    .card-pros{display:flex;flex-direction:column;gap:.3rem;margin-bottom:1rem;}
+    .pro{font-size:12.5px;color:var(--txt2);display:flex;align-items:center;gap:.45rem;}
+    .pro::before{content:'✓';color:#22c55e;font-weight:700;flex-shrink:0;}
+    .con{font-size:12.5px;color:var(--txt3);display:flex;align-items:center;gap:.45rem;}
+    .con::before{content:'·';color:var(--txt3);font-weight:700;font-size:1.2rem;flex-shrink:0;}
+    .card-footer{padding:1.1rem 2rem;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+    .card-price{font-size:12px;color:var(--txt3);}
+    .card-price span{color:var(--gold);font-weight:700;font-size:14px;}
+    .order-btn{background:var(--accent);color:#fff;border:none;border-radius:20px;padding:8px 20px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;text-decoration:none;letter-spacing:.3px;}
+    .order-btn:hover{background:#1d4ed8;transform:translateY(-1px);}
+    .badge-tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:9.5px;font-weight:800;letter-spacing:.5px;margin-right:.4rem;vertical-align:middle;}
+    [dir="ltr"] .badge-tag{margin-right:0;margin-left:.4rem;}
+    .badge-popular{background:rgba(201,168,76,.18);color:var(--gold);}
+    .badge-new{background:rgba(34,197,94,.18);color:#22c55e;}
+    .badge-premium{background:rgba(168,85,247,.18);color:#a855f7;}
+
+    /* CTA */
+    .cta-section{text-align:center;padding:4rem 2rem;border-top:1px solid var(--border);margin-top:1rem;}
+    .cta-title{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;margin-bottom:.8rem;}
+    .cta-sub{color:var(--txt3);margin-bottom:1.5rem;font-size:14px;line-height:1.8;}
+    .btn-gold{background:var(--gold);color:#111;border:none;border-radius:30px;padding:13px 32px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;}
+    .btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(201,168,76,.4);}
+
+    @media(max-width:768px){
+      .types-grid{grid-template-columns:1fr;padding:0 1rem;}
+      .nav{padding:.85rem 1.1rem;}
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-logo" href="../index.html">A<span class="r">3</span><span class="g">M</span> Print</a>
+  <div class="nav-right">
+    <!-- Globe language switcher -->
+    <div class="lang-globe-wrap" id="langWrap">
+      <button class="lang-globe-btn" id="langGlobeBtn" onclick="toggleLangDrop()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span id="langLabel">العربية</span>
+      </button>
+      <div class="lang-dropdown" id="langDrop">
+        <div class="lang-opt active" data-lang="ar" onclick="setPageLang('ar')"><span class="flag">🇩🇿</span> العربية</div>
+        <div class="lang-opt" data-lang="en" onclick="setPageLang('en')"><span class="flag">🇬🇧</span> English</div>
+        <div class="lang-opt" data-lang="fr" onclick="setPageLang('fr')"><span class="flag">🇫🇷</span> Français</div>
+      </div>
+    </div>
+    <a class="back-btn" id="backBtn" href="../index.html">← العودة</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<div class="page-hero">
+  <div class="hero-label" id="heroLabel">✦ تقنيات الطباعة</div>
+  <h1 class="hero-title" id="heroTitle">طُرق <span class="r">الطباعة</span> <span class="g">لدينا</span></h1>
+  <p class="hero-sub" id="heroSub">من الطباعة المباشرة على القماش إلى النقش بالليزر — نختار التقنية المناسبة لكل منتج. اكتشف كل ما يمكنك طباعته وكيف نفعل ذلك.</p>
+</div>
+
+<!-- Filter -->
+<div class="filter-bar" id="filterBar">
+  <button class="filter-btn active" data-cat="all"    onclick="filterCards('all',this)"      id="fAll">✦ الكل</button>
+  <button class="filter-btn"        data-cat="fabric"  onclick="filterCards('fabric',this)"    id="fFabric">👕 قماش</button>
+  <button class="filter-btn"        data-cat="hard"    onclick="filterCards('hard',this)"      id="fHard">☕ أسطح صلبة</button>
+  <button class="filter-btn"        data-cat="paper"   onclick="filterCards('paper',this)"     id="fPaper">📄 ورق</button>
+  <button class="filter-btn"        data-cat="specialty" onclick="filterCards('specialty',this)" id="fSpecialty">✨ خاصة</button>
+</div>
+
+<!-- Cards Grid -->
+<div class="types-grid" id="typesGrid"></div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="cta-title" id="ctaTitle">مش عارف أي طريقة تختار؟</div>
+  <p class="cta-sub" id="ctaSub">أخبرنا عن مشروعك وسنرشّدك لأفضل تقنية طباعة تناسب احتياجك وميزانيتك.</p>
+  <button class="btn-gold" id="ctaBtn" onclick="window.location.href='../index.html'">🖨️ احصل على استشارة مجانية</button>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+//  DATA — trilingual print cards
+// ══════════════════════════════════════════
+const CARDS = [
+  {
+    cat:'fabric', icon:'💧',
+    badge:{type:'popular'},
+    ar:{title:'طباعة DTG',sub:'مباشرة على القماش',
+        desc:'تقنية DTG تستخدم رؤوس حبر نفاثة تطبع مباشرة على القماش. تنتج جودة صور فوتوغرافية بألوان كاملة دون تكلفة إعداد — مثالية للقطع الفردية والكميات الصغيرة ذات التصاميم المعقدة.',
+        surfaces:'ما يمكن طباعته:',
+        chips:['👕 تيشرتات','🧥 هوديات','👗 فساتين','🎽 بولو','👜 توت باغ'],
+        pros:['بدون حد أدنى للطلب','ألوان كاملة وجودة عالية','ناعم على القماش','أحبار مائية صديقة للبيئة'],
+        cons:['الأفضل على القماش الفاتح أو الأبيض'],
+        price:'ابتداءً من'},
+    en:{title:'DTG Printing',sub:'Direct to Garment',
+        desc:'DTG uses inkjet technology to print directly onto fabric. It produces photo-quality, full-color prints with no setup cost — perfect for single items or small batches with complex designs.',
+        surfaces:'What you can print on:',
+        chips:['👕 T-Shirts','🧥 Hoodies','👗 Dresses','🎽 Polo Shirts','👜 Tote Bags'],
+        pros:['No minimum order','Full color, photo-quality','Soft feel on fabric','Eco-friendly water-based inks'],
+        cons:['Best on light or white fabric'],
+        price:'From'},
+    fr:{title:'Impression DTG',sub:'Direct sur Tissu',
+        desc:'La DTG utilise des têtes d\'impression à jet d\'encre directement sur le tissu. Elle produit une qualité photo avec des couleurs complètes, sans frais de configuration — idéale pour les petites séries.',
+        surfaces:'Ce que vous pouvez imprimer:',
+        chips:['👕 T-Shirts','🧥 Hoodies','👗 Robes','🎽 Polos','👜 Tote Bags'],
+        pros:['Pas de minimum de commande','Couleurs complètes, qualité photo','Toucher doux sur tissu','Encres écologiques à base d\'eau'],
+        cons:['Meilleur sur tissu clair ou blanc'],
+        price:'À partir de'},
+    priceVal:'800 DZD', priceNote:''
+  },
+  {
+    cat:'fabric', icon:'🖼️',
+    badge:{type:'popular'},
+    ar:{title:'طباعة سيلك سكرين',sub:'سيريغرافي',
+        desc:'تقنية السيلك سكرين تدفع الحبر عبر شبكة إسطمبة على السطح. تنتج ألواناً زاهية وطويلة الأمد — الأرخص سعراً للكميات الكبيرة والخيار الكلاسيكي للستريت ويير والبضائع التجارية.',
+        surfaces:'ما يمكن طباعته:',
+        chips:['👕 تيشرتات','🧢 كابات','👜 حقائب','🧥 هوديات','📋 بوسترات'],
+        pros:['ألوان شديدة الزهو','متانة استثنائية — 100+ غسلة','أفضل سعر للكميات الكبيرة'],
+        cons:['يُفضّل طلب كميات لا تقل عن 12 قطعة','محدود بـ 4–6 ألوان لكل تصميم'],
+        price:'ابتداءً من'},
+    en:{title:'Screen Printing',sub:'Silkscreen / Sérigraphie',
+        desc:'Screen printing pushes ink through a mesh stencil onto the surface. It produces vibrant, long-lasting results and is cost-effective for large quantities. Classic choice for streetwear and brand merchandise.',
+        surfaces:'What you can print on:',
+        chips:['👕 T-Shirts','🧢 Caps','👜 Bags','🧥 Hoodies','📋 Posters'],
+        pros:['Extremely vibrant colors','Very durable — lasts 100+ washes','Best price for bulk orders'],
+        cons:['Minimum quantity recommended (12+)','Limited to 4–6 colors per design'],
+        price:'From'},
+    fr:{title:'Sérigraphie',sub:'Screen Printing',
+        desc:'La sérigraphie pousse l\'encre à travers un pochoir maillé. Elle produit des résultats vifs et durables, économique pour les grandes quantités. Choix classique pour le streetwear et le merchandising.',
+        surfaces:'Ce que vous pouvez imprimer:',
+        chips:['👕 T-Shirts','🧢 Casquettes','👜 Sacs','🧥 Hoodies','📋 Affiches'],
+        pros:['Couleurs extrêmement vives','Très durable — 100+ lavages','Meilleur prix pour les grosses quantités'],
+        cons:['Quantité minimum recommandée (12+)','Limité à 4–6 couleurs par design'],
+        price:'À partir de'},
+    priceVal:'400 DZD', priceNote:' (bulk)'
+  },
+  {
+    cat:'fabric', icon:'🧵',
+    badge:{type:'premium'},
+    ar:{title:'التطريز',sub:'Broderie',
+        desc:'التطريز يحيك تصميمك مباشرة في القماش باستخدام خيوط ملونة. يعطي مظهراً فاخراً ثلاثي الأبعاد يعكس الاحترافية — مثالي لشعارات الشركات والبضائع الراقية.',
+        surfaces:'ما يمكن تطريزه:',
+        chips:['🧢 كابات','👕 بولو','🧥 جاكيتات','👜 حقائب','🎽 يونيفورمات'],
+        pros:['مظهر فاخر واحترافي','متانة استثنائية — يدوم للأبد','ملمس بارز ثلاثي الأبعاد','مثالي للشعارات والأحرف الأولى'],
+        cons:['غير مناسب للتفاصيل الدقيقة جداً'],
+        price:'ابتداءً من'},
+    en:{title:'Embroidery',sub:'3D Thread Stitching',
+        desc:'Embroidery stitches your design directly into the fabric using colored threads. It creates a premium, 3D textured look that communicates professionalism — ideal for company logos and luxury merchandise.',
+        surfaces:'What you can embroider on:',
+        chips:['🧢 Caps','👕 Polo Shirts','🧥 Jackets','👜 Bags','🎽 Uniforms'],
+        pros:['Luxury, professional appearance','Extremely durable — lasts forever','3D raised texture','Perfect for logos & monograms'],
+        cons:['Not suitable for very fine details'],
+        price:'From'},
+    fr:{title:'Broderie',sub:'Couture Fil 3D',
+        desc:'La broderie coud votre design directement dans le tissu avec des fils colorés. Elle crée un aspect premium en relief 3D qui dégage le professionnalisme — idéale pour logos d\'entreprise et merchandising luxe.',
+        surfaces:'Ce que vous pouvez broder:',
+        chips:['🧢 Casquettes','👕 Polos','🧥 Vestes','👜 Sacs','🎽 Uniformes'],
+        pros:['Aspect luxueux et professionnel','Extrêmement durable — dure toujours','Texture en relief 3D','Parfait pour logos et monogrammes'],
+        cons:['Non adapté aux très fins détails'],
+        price:'À partir de'},
+    priceVal:'1500 DZD', priceNote:''
+  },
+  {
+    cat:'fabric', icon:'🌡️',
+    badge:null,
+    ar:{title:'نقل الحرارة',sub:'Thermal Transfer',
+        desc:'يُطبع التصميم على ورق خاص ثم يُضغط بالحرارة على القماش. ممتاز للطباعة الكاملة الألوان بما فيها الصور، ويعمل على أنواع كثيرة من القماش بما فيها البوليستر.',
+        surfaces:'ما يمكن طباعته:',
+        chips:['👕 تيشرتات','🧥 هوديات','🧢 كابات','🎽 يرسيهات رياضية','👜 حقائب'],
+        pros:['ألوان كاملة وجودة فوتوغرافية','يعمل على البوليستر والخلطات','تسليم سريع'],
+        cons:['أقل متانة من السيلك سكرين'],
+        price:'ابتداءً من'},
+    en:{title:'Thermal Transfer',sub:'Heat Transfer Printing',
+        desc:'A design is printed on special transfer paper, then heat-pressed onto the fabric. Great for full-color prints including photos, and works on many fabric types including polyester.',
+        surfaces:'What you can print on:',
+        chips:['👕 T-Shirts','🧥 Hoodies','🧢 Caps','🎽 Sports Jerseys','👜 Bags'],
+        pros:['Full color & photographic quality','Works on polyester & blends','Fast turnaround'],
+        cons:['Less durable than screen print'],
+        price:'From'},
+    fr:{title:'Transfert Thermique',sub:'Heat Transfer',
+        desc:'Un design est imprimé sur papier spécial puis pressé à chaud sur le tissu. Idéal pour les impressions pleine couleur incluant des photos, fonctionne sur polyester et mélanges.',
+        surfaces:'Ce que vous pouvez imprimer:',
+        chips:['👕 T-Shirts','🧥 Hoodies','🧢 Casquettes','🎽 Maillots Sport','👜 Sacs'],
+        pros:['Pleine couleur et qualité photo','Fonctionne sur polyester et mélanges','Délai rapide'],
+        cons:['Moins durable que la sérigraphie'],
+        price:'À partir de'},
+    priceVal:'600 DZD', priceNote:''
+  },
+  {
+    cat:'fabric hard', icon:'🎨',
+    badge:{type:'popular'},
+    ar:{title:'الطباعة بالتسامي',sub:'Sublimation',
+        desc:'التسامي يحوّل الصبغة إلى غاز يرتبط بشكل دائم بألياف البوليستر. النتيجة طباعة زاهية من حافة لحافة لا تتشقق أو تتقشر أبداً — مثالية للطباعة الشاملة والملابس الرياضية.',
+        surfaces:'ما يمكن طباعته:',
+        chips:['🎽 يرسيهات رياضية','☕ أكواب','🖼️ لوحات صور','🧢 كابات','🏅 جوائز'],
+        pros:['طباعة شاملة من حافة لحافة','لا تتلاشى أو تتشقق أو تتقشر','جودة واقعية فوتوغرافية'],
+        cons:['تعمل فقط على البوليستر أو الأسطح المطلية'],
+        price:'ابتداءً من'},
+    en:{title:'Dye Sublimation',sub:'Sublimation Transfer',
+        desc:'Sublimation converts dye into gas that bonds permanently with polyester fibers. The result is a vibrant, edge-to-edge print that never cracks or peels — perfect for all-over prints and sportswear.',
+        surfaces:'What you can print on:',
+        chips:['🎽 Sports Jerseys','☕ Mugs','🖼️ Photo Panels','🧢 Caps','🏅 Awards'],
+        pros:['Edge-to-edge (all-over) printing','Never fades, cracks or peels','Photo-realistic quality'],
+        cons:['Only works on polyester or coated surfaces'],
+        price:'From'},
+    fr:{title:'Sublimation',sub:'Transfert par Sublimation',
+        desc:'La sublimation convertit la teinture en gaz qui se lie définitivement aux fibres polyester. Résultat : impression bord à bord qui ne craque ni ne pèle jamais — parfait pour l\'impression totale et le sportswear.',
+        surfaces:'Ce que vous pouvez imprimer:',
+        chips:['🎽 Maillots Sport','☕ Tasses','🖼️ Panneaux Photo','🧢 Casquettes','🏅 Récompenses'],
+        pros:['Impression bord à bord (totale)','Ne décolore, ne craque ni ne pèle jamais','Qualité photoréaliste'],
+        cons:['Uniquement sur polyester ou surfaces enduites'],
+        price:'À partir de'},
+    priceVal:'700 DZD', priceNote:''
+  },
+  {
+    cat:'specialty', icon:'✂️',
+    badge:{type:'new'},
+    ar:{title:'قص الفينيل',sub:'Heat Transfer Vinyl',
+        desc:'يُقطع التصميم من ورق فينيل ملوّن ثم يُضغط بالحرارة على القماش. يعطي خطوطاً نظيفة وحادة مثالية للنصوص والشعارات والتصاميم الهندسية. متوفر بتشطيبات معدنية وجلتر وعاكسة للضوء.',
+        surfaces:'ما يمكن تطبيقه على:',
+        chips:['👕 تيشرتات','🧥 هوديات','🧢 كابات','👟 أحذية','🪟 ملصقات'],
+        pros:['حواف حادة ونظيفة','خيارات معدنية وجلتر','رائع للنصوص والشعارات'],
+        cons:['محدود بالألوان الصلبة (لا تدرجات)'],
+        price:'ابتداءً من'},
+    en:{title:'Vinyl Cutting',sub:'Heat Transfer Vinyl',
+        desc:'Designs are cut from colored vinyl sheets and heat-pressed onto the fabric. Creates clean, crisp lines perfect for text, logos, and geometric designs. Available in metallic, glitter, and reflective finishes.',
+        surfaces:'What you can apply on:',
+        chips:['👕 T-Shirts','🧥 Hoodies','🧢 Caps','👟 Shoes','🪟 Stickers'],
+        pros:['Sharp, clean edges','Metallic & glitter options','Great for text & logos'],
+        cons:['Limited to solid colors (no gradients)'],
+        price:'From'},
+    fr:{title:'Découpe Vinyle',sub:'Vinyle Thermocollant',
+        desc:'Les designs sont découpés dans des feuilles de vinyle coloré puis pressés à chaud. Crée des lignes nettes et précises — parfait pour textes, logos et formes géométriques. Disponible en finitions métalliques et paillettes.',
+        surfaces:'Ce que vous pouvez appliquer:',
+        chips:['👕 T-Shirts','🧥 Hoodies','🧢 Casquettes','👟 Chaussures','🪟 Stickers'],
+        pros:['Bords nets et précis','Options métalliques et paillettes','Idéal pour textes et logos'],
+        cons:['Limité aux couleurs unies (pas de dégradés)'],
+        price:'À partir de'},
+    priceVal:'500 DZD', priceNote:''
+  },
+  {
+    cat:'hard specialty', icon:'🔵',
+    badge:{type:'premium'},
+    ar:{title:'الطباعة بالأشعة فوق البنفسجية',sub:'UV Inkjet',
+        desc:'تُعالج طابعات UV الحبرَ فورياً باستخدام الضوء فوق البنفسجي. يتيح ذلك الطباعة على أي سطح صلب تقريباً — زجاج، معدن، خشب، بلاستيك — بمتانة استثنائية وتأثيرات ثلاثية الأبعاد اختيارية.',
+        surfaces:'ما يمكن طباعته:',
+        chips:['📱 حافظات هواتف','🖼️ لوحات خشبية','🪟 زجاج','🔑 مفاتيح','☕ أكواب','💼 جلد'],
+        pros:['يطبع على تقريباً أي سطح','مقاوم للماء والخدش','خيار نسيج ثلاثي الأبعاد','حبر أبيض على الأسطح الداكنة'],
+        cons:[],
+        price:'ابتداءً من'},
+    en:{title:'UV Printing',sub:'Ultraviolet Inkjet',
+        desc:'UV printers cure ink instantly using ultraviolet light. This allows printing on virtually any rigid surface — glass, metal, wood, plastic — with incredible durability and optionally raised (3D) texture effects.',
+        surfaces:'What you can print on:',
+        chips:['📱 Phone Cases','🖼️ Wood Panels','🪟 Glass','🔑 Keychains','☕ Mugs','💼 Leather'],
+        pros:['Prints on almost any surface','Waterproof & scratch resistant','Optional 3D raised texture','White ink on dark surfaces'],
+        cons:[],
+        price:'From'},
+    fr:{title:'Impression UV',sub:'UV Ultraviolet Inkjet',
+        desc:'Les imprimantes UV sèchent l\'encre instantanément avec de la lumière ultraviolette. Cela permet d\'imprimer sur presque toute surface rigide — verre, métal, bois, plastique — avec une durabilité incroyable.',
+        surfaces:'Ce que vous pouvez imprimer:',
+        chips:['📱 Coques Téléphone','🖼️ Panneaux Bois','🪟 Verre','🔑 Porte-clés','☕ Tasses','💼 Cuir'],
+        pros:['Imprime sur presque toute surface','Imperméable et résistant aux rayures','Texture en relief 3D optionnelle','Encre blanche sur surfaces sombres'],
+        cons:[],
+        price:'À partir de'},
+    priceVal:'1200 DZD', priceNote:''
+  },
+  {
+    cat:'hard specialty', icon:'🔆',
+    badge:{type:'premium'},
+    ar:{title:'النقش بالليزر',sub:'Laser Engraving',
+        desc:'شعاع الليزر يبخّر سطح المادة لينقش تصميمك بشكل دائم. يُنتج علامات دقيقة للغاية لا تتلاشى أبداً — مثالي للجوائز والهدايا والإكسسوارات ذات العلامة التجارية.',
+        surfaces:'ما يمكن نقشه:',
+        chips:['🪵 خشب','🔑 معدن','🪨 حجر','🔦 أكريليك','👜 جلد','☕ أكواب','🏅 ميداليات'],
+        pros:['دائم — لا يتلاشى أبداً','دقة استثنائية في التفاصيل','جودة هدايا راقية','يعمل على مواد متعددة'],
+        cons:[],
+        price:'ابتداءً من'},
+    en:{title:'Laser Engraving',sub:'Laser Cutting & Marking',
+        desc:'A laser beam vaporizes the material surface to permanently engrave your design. Produces incredibly precise, permanent markings that never fade — ideal for awards, gifts, and branded accessories.',
+        surfaces:'What you can engrave on:',
+        chips:['🪵 Wood','🔑 Metal','🪨 Stone','🔦 Acrylic','👜 Leather','☕ Mugs','🏅 Medals'],
+        pros:['Permanent — never fades','Incredibly precise detail','Premium gift quality','Works on many materials'],
+        cons:[],
+        price:'From'},
+    fr:{title:'Gravure Laser',sub:'Découpe & Marquage Laser',
+        desc:'Un faisceau laser vaporise la surface du matériau pour graver définitivement votre design. Produit des marquages permanents d\'une précision incroyable — idéal pour récompenses, cadeaux et accessoires de marque.',
+        surfaces:'Ce que vous pouvez graver:',
+        chips:['🪵 Bois','🔑 Métal','🪨 Pierre','🔦 Acrylique','👜 Cuir','☕ Tasses','🏅 Médailles'],
+        pros:['Permanent — ne s\'efface jamais','Précision de détail incroyable','Qualité cadeau premium','Fonctionne sur de nombreux matériaux'],
+        cons:[],
+        price:'À partir de'},
+    priceVal:'1000 DZD', priceNote:''
+  },
+  {
+    cat:'paper', icon:'📄',
+    badge:{type:'popular'},
+    ar:{title:'الطباعة الأوفست',sub:'Commercial Printing',
+        desc:'الأوفست ينقل الحبر من صفيحة إلى بطانة مطاطية ثم على الورق. إنه المعيار الذهبي للطباعة الورقية عالية الجودة بالكميات الكبيرة — تستخدمه دور النشر والمعلنون المحترفون حول العالم.',
+        surfaces:'ما يمكن طباعته:',
+        chips:['📋 فلايرات','📰 بروشورات','📚 كتب','📦 تغليف','🪧 بانرات','🗒️ دفاتر'],
+        pros:['دقة ألوان استثنائية','أقل تكلفة لكل وحدة بالكميات الكبيرة','يدعم تشطيبات خاصة (لامع، مات)'],
+        cons:['الأفضل للكميات الكبيرة (50+ قطعة)'],
+        price:'ابتداءً من'},
+    en:{title:'Offset Printing',sub:'Commercial Printing',
+        desc:'Offset printing transfers ink from a plate to a rubber blanket then onto paper. It\'s the gold standard for high-volume, high-quality paper printing — used by professional publishers and advertisers worldwide.',
+        surfaces:'What you can print on:',
+        chips:['📋 Flyers','📰 Brochures','📚 Books','📦 Packaging','🪧 Banners','🗒️ Notebooks'],
+        pros:['Exceptional color accuracy','Lowest cost per unit at scale','Supports special finishes (glossy, matte)'],
+        cons:['Best for high quantities (50+ pcs)'],
+        price:'From'},
+    fr:{title:'Impression Offset',sub:'Impression Commerciale',
+        desc:'L\'offset transfère l\'encre d\'une plaque à une blanchet caoutchouc puis sur papier. C\'est le standard d\'or pour l\'impression papier en grand volume — utilisé par les éditeurs et annonceurs professionnels.',
+        surfaces:'Ce que vous pouvez imprimer:',
+        chips:['📋 Flyers','📰 Brochures','📚 Livres','📦 Emballages','🪧 Banderoles','🗒️ Carnets'],
+        pros:['Précision de couleur exceptionnelle','Coût unitaire le plus bas à grande échelle','Finitions spéciales (brillant, mat)'],
+        cons:['Meilleur pour grandes quantités (50+ pcs)'],
+        price:'À partir de'},
+    priceVal:'200 DZD', priceNote:' (bulk)'
+  },
+];
+
+// ══════════════════════════════════════════
+//  I18N
+// ══════════════════════════════════════════
+const I18N = {
+  ar:{
+    back:'← العودة', heroLabel:'✦ تقنيات الطباعة',
+    heroTitle:'طُرق <span class="r">الطباعة</span> <span class="g">لدينا</span>',
+    heroSub:'من الطباعة المباشرة على القماش إلى النقش بالليزر — نختار التقنية المناسبة لكل منتج.',
+    fAll:'✦ الكل', fFabric:'👕 قماش', fHard:'☕ أسطح صلبة', fPaper:'📄 ورق', fSpecialty:'✨ خاصة',
+    ctaTitle:'مش عارف أي طريقة تختار؟',
+    ctaSub:'أخبرنا عن مشروعك وسنرشّدك لأفضل تقنية طباعة تناسب احتياجك وميزانيتك.',
+    ctaBtn:'🖨️ احصل على استشارة مجانية',
+    orderBtn:'اطلب الآن', langLabel:'العربية',
+    popular:'الأكثر طلباً', newTag:'جديد', premiumTag:'بريميوم',
+  },
+  en:{
+    back:'← Back', heroLabel:'✦ Printing Technology',
+    heroTitle:'Our <span class="r">Print</span> <span class="g">Methods</span>',
+    heroSub:'From DTG to laser engraving — we use the right technology for every product, every time.',
+    fAll:'✦ All', fFabric:'👕 Fabric', fHard:'☕ Hard Surfaces', fPaper:'📄 Paper', fSpecialty:'✨ Specialty',
+    ctaTitle:"Not Sure Which Method?",
+    ctaSub:"Tell us about your project and we'll recommend the best printing method for your needs and budget.",
+    ctaBtn:'🖨️ Get a Free Consultation',
+    orderBtn:'Order Now', langLabel:'English',
+    popular:'POPULAR', newTag:'NEW', premiumTag:'PREMIUM',
+  },
+  fr:{
+    back:'← Retour', heroLabel:'✦ Technologie d\'impression',
+    heroTitle:'Nos <span class="r">Méthodes</span> <span class="g">d\'impression</span>',
+    heroSub:'De la DTG à la gravure laser — nous utilisons la bonne technologie pour chaque produit.',
+    fAll:'✦ Tout', fFabric:'👕 Tissu', fHard:'☕ Surfaces Dures', fPaper:'📄 Papier', fSpecialty:'✨ Spécial',
+    ctaTitle:"Vous ne savez pas quelle méthode choisir?",
+    ctaSub:"Parlez-nous de votre projet et nous recommanderons la meilleure méthode selon vos besoins.",
+    ctaBtn:'🖨️ Obtenir une consultation gratuite',
+    orderBtn:'Commander', langLabel:'Français',
+    popular:'POPULAIRE', newTag:'NOUVEAU', premiumTag:'PREMIUM',
+  },
+};
+
+// ══════════════════════════════════════════
+//  RENDER
+// ══════════════════════════════════════════
+let currentLang = localStorage.getItem('a3m_lang') || 'ar';
+let currentCat  = 'all';
+
+function badgeHTML(badge, lang) {
+  if (!badge) return '';
+  const t = I18N[lang];
+  const map = {popular:{cls:'badge-popular',txt:t.popular}, new:{cls:'badge-new',txt:t.newTag}, premium:{cls:'badge-premium',txt:t.premiumTag}};
+  const b = map[badge.type];
+  return b ? `<span class="badge-tag ${b.cls}">${b.txt}</span>` : '';
+}
+
+function renderGrid(lang) {
+  const grid = document.getElementById('typesGrid');
+  const t = I18N[lang];
+  grid.innerHTML = CARDS.map(card => {
+    const d = card[lang] || card.en;
+    const cats = card.cat.split(' ');
+    const hide = currentCat !== 'all' && !cats.includes(currentCat) ? 'style="display:none"' : '';
+    const pros = d.pros.map(p => `<div class="pro">${p}</div>`).join('');
+    const cons = d.cons.map(c => `<div class="con">${c}</div>`).join('');
+    const chips = d.chips.map(c => `<span class="item-chip">${c}</span>`).join('');
+    return `
+      <div class="type-card" data-cat="${card.cat}" ${hide}>
+        <div class="card-top">
+          <div class="card-icon">${card.icon}</div>
+          <div>
+            <div class="card-title">${d.title} ${badgeHTML(card.badge, lang)}</div>
+            <div class="card-subtitle">${d.sub}</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">${d.desc}</p>
+          <div class="card-items">
+            <div class="card-items-title">${d.surfaces}</div>
+            <div class="items-list">${chips}</div>
+          </div>
+          <div class="card-pros">${pros}${cons}</div>
+        </div>
+        <div class="card-footer">
+          <div class="card-price">${d.price} <span>${card.priceVal}</span>${card.priceNote}</div>
+          <a class="order-btn" href="../index.html">${t.orderBtn}</a>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function applyLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('a3m_lang', lang);
+  const t = I18N[lang];
+  document.documentElement.lang  = lang;
+  document.documentElement.dir   = lang === 'ar' ? 'rtl' : 'ltr';
+  document.getElementById('backBtn').textContent    = t.back;
+  document.getElementById('heroLabel').textContent  = t.heroLabel;
+  document.getElementById('heroTitle').innerHTML    = t.heroTitle;
+  document.getElementById('heroSub').textContent    = t.heroSub;
+  document.getElementById('fAll').textContent       = t.fAll;
+  document.getElementById('fFabric').textContent    = t.fFabric;
+  document.getElementById('fHard').textContent      = t.fHard;
+  document.getElementById('fPaper').textContent     = t.fPaper;
+  document.getElementById('fSpecialty').textContent = t.fSpecialty;
+  document.getElementById('ctaTitle').textContent   = t.ctaTitle;
+  document.getElementById('ctaSub').textContent     = t.ctaSub;
+  document.getElementById('ctaBtn').textContent     = t.ctaBtn;
+  document.getElementById('langLabel').textContent  = t.langLabel;
+  // Update active lang option
+  document.querySelectorAll('.lang-opt').forEach(o => o.classList.toggle('active', o.dataset.lang === lang));
+  renderGrid(lang);
+}
+
+function filterCards(cat, btn) {
+  currentCat = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.type-card').forEach(card => {
+    if (cat === 'all') { card.style.display = ''; return; }
+    const cats = (card.getAttribute('data-cat') || '').split(' ');
+    card.style.display = cats.includes(cat) ? '' : 'none';
+  });
+}
+
+function toggleLangDrop() {
+  document.getElementById('langDrop').classList.toggle('open');
+}
+function setPageLang(lang) {
+  document.getElementById('langDrop').classList.remove('open');
+  applyLang(lang);
+}
+
+// Close dropdown on outside click
+document.addEventListener('click', e => {
+  const wrap = document.getElementById('langWrap');
+  if (wrap && !wrap.contains(e.target)) document.getElementById('langDrop').classList.remove('open');
+});
+
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+  const theme = localStorage.getItem('a3m_theme') || 'blue-dark';
+  document.body.className = theme;
+  applyLang(currentLang);
+});
+</script>
+</body>
+</html>
