@@ -1,0 +1,1737 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>A3M Print — اطبع أفكارك</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Cairo:wght@400;600;700;900&family=Inter:wght@400;500;600;700&family=Bebas+Neue&family=Pacifico&family=Dancing+Script:wght@700&family=Orbitron:wght@700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="./css/style.css"/>
+
+<style>
+/* ══════════════════════════════════════════════
+   PRODUCT SELECTOR OVERLAY — Full Screen Flow
+══════════════════════════════════════════════ */
+.ps-overlay {
+  display: none;
+  position: fixed; inset: 0; z-index: 1100;
+  background: #0b0f19;
+  flex-direction: column;
+  overflow: hidden;
+}
+.ps-overlay.open { display: flex; }
+
+/* Topbar */
+.ps-topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .75rem 1.5rem;
+  background: #111827;
+  border-bottom: 1px solid #2a2f3a;
+  flex-shrink: 0;
+}
+.ps-logo { font-family:'Permanent Marker',cursive; font-size:1.4rem; color:#fff; }
+.ps-logo .r { color:#c9a84c; }
+.ps-breadcrumb {
+  display: flex; align-items: center; gap:.4rem;
+  font-size:.75rem; color:#6b7280; flex-wrap:wrap;
+}
+.ps-bc-item { cursor:pointer; transition:.15s; padding:2px 6px; border-radius:4px; }
+.ps-bc-item:hover { color:#c9a84c; background:rgba(201,168,76,.08); }
+.ps-bc-item.active { color:#c9a84c; font-weight:700; }
+.ps-bc-sep { color:#374151; }
+.ps-close {
+  background: none; border: 1.5px solid #374151; color:#9ca3af;
+  width:34px; height:34px; border-radius:8px; cursor:pointer;
+  font-size:1rem; transition:.2s; display:flex; align-items:center; justify-content:center;
+}
+.ps-close:hover { border-color:#fff; color:#fff; }
+
+/* Body */
+.ps-body {
+  flex:1; overflow-y:auto; display:flex; flex-direction:column;
+  align-items:center; padding:2.5rem 1.5rem;
+  gap:0;
+}
+
+/* Screens */
+.ps-screen { display:none; width:100%; max-width:800px; flex-direction:column; align-items:center; animation:psFadeUp .3s ease; }
+.ps-screen.active { display:flex; }
+@keyframes psFadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+
+.ps-title {
+  font-size:1.6rem; font-weight:900; color:#fff; margin-bottom:.3rem;
+  text-align:center; font-family:'Cairo',sans-serif;
+}
+.ps-title span { color:#c9a84c; }
+.ps-sub { font-size:.82rem; color:#6b7280; margin-bottom:2rem; text-align:center; }
+
+/* Back btn */
+.ps-back {
+  display:flex; align-items:center; gap:.4rem;
+  background:none; border:1px solid #2a2f3a; color:#6b7280;
+  padding:5px 14px; border-radius:20px; font-size:.76rem;
+  cursor:pointer; transition:.2s; align-self:flex-start; margin-bottom:1.4rem;
+  font-family:'Cairo',sans-serif;
+}
+.ps-back:hover { border-color:#9ca3af; color:#fff; }
+
+/* ── SCREEN 0: Mode cards ── */
+.ps-mode-grid {
+  display:flex; gap:1.4rem; flex-wrap:wrap; justify-content:center; width:100%;
+}
+.ps-mode-card {
+  flex:1; min-width:220px; max-width:320px;
+  background:#111827; border:1.5px solid #2a2f3a;
+  border-radius:20px; padding:2rem 1.5rem;
+  cursor:pointer; transition:.25s; text-align:center; position:relative; overflow:hidden;
+}
+.ps-mode-card::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(135deg,transparent 60%,rgba(201,168,76,.05));
+  pointer-events:none;
+}
+.ps-mode-card:hover { border-color:#c9a84c; transform:translateY(-5px); box-shadow:0 16px 40px rgba(201,168,76,.12); }
+.ps-mode-card.scratch:hover { border-color:#2563eb; box-shadow:0 16px 40px rgba(37,99,235,.15); }
+.ps-mc-badge {
+  position:absolute; top:.8rem; right:.8rem;
+  background:#c9a84c; color:#111; font-size:.62rem; font-weight:800;
+  padding:2px 8px; border-radius:20px; letter-spacing:.5px;
+}
+.ps-mc-icon { font-size:3.5rem; margin-bottom:.8rem; display:block; }
+.ps-mc-title { font-size:1.2rem; font-weight:800; color:#fff; margin-bottom:.4rem; }
+.ps-mc-desc { font-size:.8rem; color:#6b7280; line-height:1.65; }
+
+/* ── SCREEN 1: Categories ── */
+.ps-cat-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+  gap:1rem; width:100%;
+}
+.ps-cat-card {
+  background:#111827; border:1.5px solid #2a2f3a;
+  border-radius:16px; padding:1.5rem 1rem;
+  cursor:pointer; transition:.22s; text-align:center; position:relative;
+}
+.ps-cat-card:hover:not(.cs) { border-color:#c9a84c; transform:translateY(-3px); box-shadow:0 8px 24px rgba(201,168,76,.12); }
+.ps-cat-card.cs { opacity:.42; cursor:not-allowed; filter:grayscale(.5); }
+.ps-cc-icon { font-size:2.6rem; margin-bottom:.5rem; display:block; }
+.ps-cc-title { font-size:.88rem; font-weight:700; color:#fff; }
+.ps-cc-en { font-size:.68rem; color:#4b5563; font-weight:400; }
+.ps-cs-badge {
+  position:absolute; top:.5rem; right:.5rem;
+  background:#1f2937; color:#6b7280; font-size:.58rem; font-weight:700;
+  padding:2px 6px; border-radius:8px; border:1px solid #2a2f3a;
+}
+
+/* ── SCREEN 2: Sub-cats ── */
+.ps-sub-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+  gap:1rem; width:100%;
+}
+.ps-sub-card {
+  background:#111827; border:1.5px solid #2a2f3a;
+  border-radius:14px; padding:1.3rem 1rem;
+  cursor:pointer; transition:.22s;
+  display:flex; flex-direction:column; align-items:center; gap:.5rem; text-align:center;
+}
+.ps-sub-card:hover { border-color:#c9a84c; transform:translateY(-3px); box-shadow:0 8px 20px rgba(201,168,76,.1); }
+.ps-sub-icon { font-size:2rem; }
+.ps-sub-label { font-size:.92rem; font-weight:700; color:#fff; }
+.ps-sub-desc { font-size:.74rem; color:#6b7280; }
+
+/* ── SCREEN 3: Stamp sizes ── */
+.ps-stamp-grid {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:.8rem; width:100%; max-width:500px;
+}
+.ps-sz-card {
+  background:#111827; border:1.5px solid #2a2f3a;
+  border-radius:12px; padding:1.2rem .8rem;
+  cursor:pointer; transition:.2s; text-align:center;
+}
+.ps-sz-card:hover { border-color:#c9a84c; }
+.ps-sz-shape { display:flex; align-items:center; justify-content:center; height:56px; margin-bottom:.5rem; }
+.ps-sz-label { font-size:.82rem; font-weight:700; color:#fff; }
+.ps-sz-type { font-size:.68rem; color:#6b7280; margin-top:.2rem; }
+
+/* ── SCREEN 4: Templates ── */
+.ps-tmpl-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+  gap:1rem; width:100%;
+}
+.ps-tmpl-card {
+  background:#111827; border:1.5px solid #2a2f3a;
+  border-radius:14px; padding:1rem .8rem;
+  cursor:pointer; transition:.22s; text-align:center;
+}
+.ps-tmpl-card:hover { border-color:#2563eb; box-shadow:0 8px 20px rgba(37,99,235,.15); transform:translateY(-3px); }
+.ps-tmpl-thumb {
+  width:100%; aspect-ratio:4/3; border-radius:10px;
+  background:#1f2937; display:flex; align-items:center; justify-content:center;
+  font-size:2.4rem; margin-bottom:.6rem; border:1px solid #374151;
+  overflow:hidden; position:relative;
+}
+.ps-tmpl-name { font-size:.8rem; font-weight:700; color:#fff; }
+
+
+/* ══════════════════════════════════════════════
+   PROFESSIONAL DESIGNER MODAL
+══════════════════════════════════════════════ */
+.designer-modal {
+  display: none; position: fixed; inset: 0; z-index: 1200;
+  background: #080b12; flex-direction: column;
+  font-family: 'Cairo', sans-serif;
+}
+.designer-modal.open { display: flex; }
+
+/* Topbar */
+.ds-topbar {
+  height: 50px; background: #0f1520; border-bottom: 1px solid #1e2535;
+  display: flex; align-items: center; padding: 0 .8rem; gap: .6rem;
+  flex-shrink: 0; position: relative; z-index: 10;
+}
+.ds-topbar-logo { font-family:'Permanent Marker',cursive; font-size:1.1rem; color:#fff; margin-right:.4rem; }
+.ds-topbar-logo span { color:#c9a84c; }
+.ds-topbar-title { font-size:.75rem; color:#6b7280; border-left:1px solid #1e2535; padding-left:.7rem; margin-left:.2rem; }
+.ds-topbar-spacer { flex:1; }
+.ds-topbar-tag { font-size:.68rem; color:#c9a84c; background:rgba(201,168,76,.1); border:1px solid rgba(201,168,76,.25); padding:2px 10px; border-radius:20px; }
+.ds-topbar-btn {
+  background: none; border: 1px solid #1e2535; color: #9ca3af;
+  padding: 5px 12px; border-radius: 6px; font-size: .73rem;
+  cursor: pointer; transition: .18s; font-family:'Cairo',sans-serif;
+  display: flex; align-items: center; gap: .3rem; white-space: nowrap;
+}
+.ds-topbar-btn:hover { border-color:#4b5563; color:#fff; }
+.ds-topbar-btn.gold { background:#c9a84c; border-color:#c9a84c; color:#111; font-weight:700; }
+.ds-topbar-btn.gold:hover { background:#b8973d; }
+.ds-topbar-btn.accent { background:#2563eb; border-color:#2563eb; color:#fff; }
+.ds-topbar-btn.accent:hover { background:#1d4ed8; }
+.ds-topbar-btn.danger:hover { border-color:#ef4444; color:#ef4444; }
+.ds-topbar-sep { width:1px; height:20px; background:#1e2535; margin:0 .2rem; }
+
+/* Workspace */
+.ds-workspace { flex:1; display:flex; overflow:hidden; }
+
+/* Left Toolbar */
+.ds-toolbar {
+  width: 52px; background: #0f1520; border-right: 1px solid #1e2535;
+  display: flex; flex-direction: column; align-items: center;
+  padding: .5rem 0; gap: .15rem; flex-shrink: 0;
+}
+.ds-tool {
+  width: 40px; height: 40px; border-radius: 8px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  cursor: pointer; transition: .18s; border: 1px solid transparent;
+  background: none; color: #6b7280; gap: 2px; font-family:'Cairo',sans-serif;
+}
+.ds-tool:hover { background: #1a2235; color: #9ca3af; }
+.ds-tool.active { background: #1a2a4a; border-color: #2563eb; color: #60a5fa; }
+.ds-tool .ti { font-size:1.05rem; line-height:1; }
+.ds-tool .tl { font-size:.5rem; }
+.ds-tool-sep { width:28px; height:1px; background:#1e2535; margin:.2rem 0; }
+
+/* Canvas area */
+.ds-canvas-area {
+  flex:1; display:flex; align-items:center; justify-content:center;
+  background: #080b12;
+  background-image: radial-gradient(circle, #1a2235 1px, transparent 1px);
+  background-size: 24px 24px;
+  position: relative; overflow:hidden;
+}
+.ds-canvas-wrap {
+  position: relative; box-shadow: 0 8px 48px rgba(0,0,0,.7);
+  border: 1px solid #2a2f3a;
+}
+#designCanvas { display:block; cursor:default; }
+
+/* Canvas size controls */
+.ds-canvas-controls {
+  position:absolute; bottom:1rem; left:50%; transform:translateX(-50%);
+  display:flex; align-items:center; gap:.5rem;
+  background:#0f1520; border:1px solid #1e2535; border-radius:20px;
+  padding:.3rem .8rem; font-size:.72rem; color:#6b7280;
+}
+.ds-zoom-btn {
+  background:none; border:1px solid #1e2535; color:#9ca3af;
+  width:22px; height:22px; border-radius:5px; cursor:pointer;
+  font-size:.8rem; display:flex; align-items:center; justify-content:center; transition:.15s;
+}
+.ds-zoom-btn:hover { border-color:#4b5563; color:#fff; }
+
+/* Scratch canvas size picker */
+.ds-size-picker {
+  position:absolute; bottom:1rem; right:1rem;
+  background:#0f1520; border:1px solid #1e2535; border-radius:12px;
+  padding:.8rem 1rem; font-size:.75rem; color:#9ca3af; display:none;
+}
+.ds-size-picker.show { display:block; }
+.ds-size-row { display:flex; align-items:center; gap:.5rem; margin-bottom:.4rem; }
+.ds-size-inp {
+  width:65px; background:#080b12; border:1px solid #1e2535; color:#fff;
+  padding:4px 7px; border-radius:6px; font-size:.73rem; font-family:inherit; outline:none;
+}
+.ds-size-inp:focus { border-color:#2563eb; }
+.ds-preset-row { display:flex; gap:.35rem; flex-wrap:wrap; }
+.ds-preset {
+  background:none; border:1px solid #1e2535; color:#6b7280;
+  padding:3px 8px; border-radius:6px; font-size:.66rem; cursor:pointer; transition:.15s; font-family:inherit;
+}
+.ds-preset:hover { border-color:#c9a84c; color:#c9a84c; }
+
+/* Right Panel */
+.ds-panel {
+  width: 240px; background: #0f1520; border-left: 1px solid #1e2535;
+  display: flex; flex-direction: column; overflow-y: auto; flex-shrink:0;
+}
+.ds-panel::-webkit-scrollbar { width:4px; }
+.ds-panel::-webkit-scrollbar-track { background:#080b12; }
+.ds-panel::-webkit-scrollbar-thumb { background:#2a2f3a; border-radius:2px; }
+
+.ds-section { border-bottom:1px solid #1a2235; padding:.8rem; }
+.ds-section-title {
+  font-size:.65rem; font-weight:800; color:#4b5563;
+  letter-spacing:1.5px; text-transform:uppercase; margin-bottom:.6rem;
+}
+.ds-row { display:flex; align-items:center; gap:.4rem; margin-bottom:.4rem; flex-wrap:wrap; }
+.ds-label { font-size:.68rem; color:#6b7280; min-width:32px; flex-shrink:0; }
+.ds-input {
+  background:#080b12; border:1px solid #1e2535; color:#fff;
+  padding:5px 7px; border-radius:6px; font-size:.72rem; outline:none;
+  font-family:inherit; transition:.15s; width:100%;
+}
+.ds-input:focus { border-color:#2563eb; box-shadow:0 0 0 2px rgba(37,99,235,.15); }
+.ds-select {
+  background:#080b12; border:1px solid #1e2535; color:#fff;
+  padding:5px 7px; border-radius:6px; font-size:.72rem; outline:none;
+  font-family:inherit; width:100%; cursor:pointer;
+}
+.ds-color { width:30px; height:28px; border:1px solid #1e2535; border-radius:6px; cursor:pointer; padding:0; }
+.ds-small-btn {
+  background:#1a2235; border:1px solid #1e2535; color:#9ca3af;
+  padding:5px 9px; border-radius:6px; cursor:pointer; font-size:.68rem;
+  transition:.18s; font-family:inherit; white-space:nowrap;
+}
+.ds-small-btn:hover { border-color:#c9a84c; color:#c9a84c; background:#1f2a1a; }
+.ds-small-btn.red:hover { border-color:#ef4444; color:#ef4444; background:#1f1a1a; }
+.ds-small-btn.active-btn { border-color:#2563eb; color:#60a5fa; background:#1a2a4a; }
+
+/* Color presets */
+.ds-color-presets { display:flex; gap:.3rem; flex-wrap:wrap; }
+.ds-cp {
+  width:20px; height:20px; border-radius:4px; cursor:pointer;
+  border:1.5px solid transparent; transition:.15s;
+}
+.ds-cp:hover { transform:scale(1.2); border-color:#fff; }
+
+/* Layers */
+.ds-layer-item {
+  display:flex; align-items:center; gap:.4rem; padding:.35rem .4rem;
+  border-radius:6px; cursor:pointer; transition:.15s; margin-bottom:.2rem;
+  border:1px solid transparent;
+}
+.ds-layer-item:hover { background:#1a2235; }
+.ds-layer-item.selected { background:#1a2a4a; border-color:#2563eb; }
+.ds-layer-thumb { width:24px; height:24px; border-radius:4px; background:#1f2937; border:1px solid #2a2f3a; display:flex; align-items:center; justify-content:center; font-size:.8rem; flex-shrink:0; }
+.ds-layer-name { font-size:.7rem; color:#d1d5db; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.ds-layer-vis { background:none; border:none; color:#6b7280; cursor:pointer; font-size:.75rem; transition:.15s; padding:2px; }
+.ds-layer-vis:hover { color:#fff; }
+
+/* Templates mini grid */
+.ds-tmpl-mini { display:grid; grid-template-columns:repeat(3,1fr); gap:.4rem; }
+.ds-tmpl-mini-item {
+  background:#1a2235; border:1px solid #1e2535; border-radius:8px;
+  aspect-ratio:1; display:flex; align-items:center; justify-content:center;
+  font-size:1.2rem; cursor:pointer; transition:.18s; flex-direction:column; gap:2px;
+}
+.ds-tmpl-mini-item:hover { border-color:#c9a84c; }
+.ds-tmpl-mini-name { font-size:.48rem; color:#6b7280; }
+
+/* Upload zone */
+.ds-upload-zone {
+  border:1.5px dashed #2a2f3a; border-radius:8px; padding:.8rem;
+  text-align:center; cursor:pointer; transition:.2s; font-size:.72rem; color:#6b7280;
+}
+.ds-upload-zone:hover { border-color:#c9a84c; color:#c9a84c; background:rgba(201,168,76,.04); }
+
+/* Slider */
+.ds-slider { width:100%; height:3px; -webkit-appearance:none; appearance:none; background:#1e2535; border-radius:2px; outline:none; cursor:pointer; }
+.ds-slider::-webkit-slider-thumb { -webkit-appearance:none; width:13px; height:13px; background:#2563eb; border-radius:50%; cursor:pointer; }
+
+/* Status bar */
+.ds-statusbar {
+  height:24px; background:#080b12; border-top:1px solid #1a2235;
+  display:flex; align-items:center; padding:0 .8rem; gap:1.2rem;
+  font-size:.63rem; color:#4b5563; flex-shrink:0;
+}
+.ds-status-item span { color:#6b7280; }
+
+/* Canvas ruler hint */
+.ds-ruler { position:absolute; top:0; left:0; right:0; height:20px; background:#0a0e18; border-bottom:1px solid #1a2235; display:flex; align-items:center; pointer-events:none; overflow:hidden; }
+
+/* Responsive */
+@media(max-width:768px) {
+  .ds-panel { display:none; }
+  .ps-cat-grid { grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); }
+}
+</style>
+</head>
+<body class="blue-dark">
+
+<!-- ===== OVERLAYS ===== -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+<div class="cart-overlay"    id="cartOverlay"    onclick="closeCart()"></div>
+
+<!-- ===== SIDEBAR ===== -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">A<span class="r">3</span><span class="g">M</span></div>
+    <button class="sidebar-close" onclick="closeSidebar()">✕</button>
+  </div>
+  <div class="sidebar-menu">
+    <div class="sidebar-item" onclick="toggleSB(this,'tkhfid')">
+      <div class="sidebar-item-header"><span>🏷️ <span id="sb-disc">الخصومات</span></span><span class="sidebar-arrow">›</span></div>
+      <div class="sidebar-sub" id="sub-tkhfid">
+        <div class="sidebar-sub-item" onclick="filterAndClose('all')">🔥 كل العروض</div>
+        <div class="sidebar-sub-item" onclick="filterAndClose('tshirt')">👕 تيشرتات</div>
+        <div class="sidebar-sub-item" onclick="filterAndClose('mug')">☕ أكواب</div>
+        <div class="sidebar-sub-item" onclick="filterAndClose('hat')">🧢 قبعات</div>
+      </div>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-item" onclick="toggleSB(this,'excl')">
+      <div class="sidebar-item-header"><span>⭐ حصري</span><span class="sidebar-arrow">›</span></div>
+      <div class="sidebar-sub" id="sub-excl">
+        <div class="sidebar-sub-item" onclick="filterAndClose('hat')">🧢 قبعات ذهبية</div>
+        <div class="sidebar-sub-item" onclick="filterAndClose('laser')">🔆 نقش ليزر</div>
+        <div class="sidebar-sub-item" onclick="filterAndClose('bag')">👜 حقائب بريميوم</div>
+      </div>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-item" onclick="toggleSB(this,'print')">
+      <div class="sidebar-item-header"><span>🖨️ أنواع الطباعة</span><span class="sidebar-arrow">›</span></div>
+      <div class="sidebar-sub" id="sub-print">
+        <div class="sidebar-sub-item" onclick="showPrint('thermal')">🌡️ طباعة حرارية</div>
+        <div class="sidebar-sub-item" onclick="showPrint('embroid')">🧵 تطريز</div>
+        <div class="sidebar-sub-item" onclick="showPrint('dye')">🎨 صباغة حرارية</div>
+        <div class="sidebar-sub-item" onclick="showPrint('dtg')">💧 DTG</div>
+        <div class="sidebar-sub-item" onclick="showPrint('screen')">🖼️ سيلك سكرين</div>
+        <div class="sidebar-sub-item" onclick="showPrint('uv')">🔵 UV</div>
+        <div class="sidebar-sub-item" onclick="showPrint('laser')">🔆 ليزر</div>
+        <div class="sidebar-sub-item" onclick="showPrint('vinyl')">✂️ فينيل</div>
+        <div class="sidebar-sub-item" onclick="showPrint('offset')">📄 أوفست</div>
+      </div>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-item" onclick="openOrderForm();closeSidebar()">
+      <div class="sidebar-item-header"><span>📋 <span id="sb-order">نموذج الطلب</span></span></div>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-item" onclick="toggleSB(this,'theme')">
+      <div class="sidebar-item-header"><span>🎨 الثيم</span><span class="sidebar-arrow">›</span></div>
+      <div class="sidebar-sub" id="sub-theme" style="padding:.8rem 1.3rem">
+        <div style="font-size:11px;color:var(--txt3);margin-bottom:.5rem;font-weight:700">اللون</div>
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.7rem">
+          <button class="theme-color-btn" style="background:linear-gradient(135deg,#0b0f19,#2563eb)" title="Blue"   onclick="setThemeColor('blue');event.stopPropagation()"></button>
+          <button class="theme-color-btn" style="background:linear-gradient(135deg,#1a1510,#b5832a)" title="Beige"  onclick="setThemeColor('beige');event.stopPropagation()"></button>
+          <button class="theme-color-btn" style="background:linear-gradient(135deg,#0d0b1a,#7c3aed)" title="Purple" onclick="setThemeColor('purple');event.stopPropagation()"></button>
+          <button class="theme-color-btn" style="background:linear-gradient(135deg,#18181b,#c0c0c0)" title="White"  onclick="setThemeColor('white');event.stopPropagation()"></button>
+        </div>
+        <div style="font-size:11px;color:var(--txt3);margin-bottom:.4rem;font-weight:700">الوضع</div>
+        <div style="display:flex;gap:.4rem">
+          <button class="theme-mode-btn" onclick="setThemeMode('dark');event.stopPropagation()">🌙 Dark</button>
+          <button class="theme-mode-btn" onclick="setThemeMode('light');event.stopPropagation()">☀️ Light</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CART PANEL ===== -->
+<div class="cart-panel" id="cartPanel">
+  <div class="cart-header">
+    <h3 id="cartTitle">🛒 السلة</h3>
+    <button class="close-btn" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems"><div class="cart-empty">السلة فارغة</div></div>
+  <div id="discountSection" style="padding:.8rem 1.2rem;border-top:1px solid var(--border);display:none">
+    <div style="font-size:10px;font-weight:700;color:var(--gold);margin-bottom:.5rem;letter-spacing:1px">كود الخصم</div>
+    <div class="discount-row">
+      <input class="discount-input" id="discountInput" placeholder="ENTER CODE" maxlength="20"/>
+      <button class="discount-apply-btn" onclick="applyDiscount()">تطبيق</button>
+    </div>
+    <div id="discountMsg" style="margin-top:.4rem;font-size:12px"></div>
+  </div>
+  <div class="cart-footer" id="cartFooter" style="display:none">
+    <div class="cart-total">
+      <span class="cart-total-label" id="cartTotalLabel">المجموع</span>
+      <span class="cart-total-val"   id="cartTotalVal">0</span>
+    </div>
+    <button class="checkout-btn" id="checkoutBtn" onclick="goToCheckout()">إتمام الطلب →</button>
+  </div>
+</div>
+
+<!-- ===== NAV ===== -->
+<nav class="nav">
+  <div class="nav-left">
+    <button class="hamburger" onclick="openSidebar()"><span></span><span></span><span></span></button>
+    <a class="logo" onclick="scrollToTop()">A<span class="r">3</span><span class="g">M</span></a>
+  </div>
+  <div class="nav-links">
+    <a href="#" id="n-home">الرئيسية</a>
+    <a href="#products" id="n-products">المنتجات</a>
+    <a href="#" onclick="openProductSelector()" id="n-design">تصميمي</a>
+    <a href="#" onclick="openOrderForm()" id="n-contact">تواصل</a>
+  </div>
+  <div class="nav-right">
+    <div class="currency-wrap">
+      <button class="currency-btn active" id="btnDZD" onclick="setCurrency('DZD')">DZD</button>
+      <button class="currency-btn"        id="btnUSD" onclick="setCurrency('USD')">USD</button>
+    </div>
+    <div class="lang-wrapper">
+      <button class="lang-btn" onclick="toggleLangMenu()" id="langBtn">🇩🇿 AR ▾</button>
+      <div class="lang-dropdown" id="langDropdown">
+        <div class="lang-option" onclick="setLang('en')">🇬🇧 English</div>
+        <div class="lang-option" onclick="setLang('fr')">🇫🇷 Français</div>
+        <div class="lang-option active" onclick="setLang('ar')">🇩🇿 العربية</div>
+      </div>
+    </div>
+    <div class="theme-wrapper" id="themeWrapper">
+      <button class="theme-toggle" onclick="toggleThemeMenu()" id="themeToggleBtn" title="تغيير الثيم">🎨 <span id="themeIcon">الثيم</span> ▾</button>
+      <div class="theme-dropdown" id="themeDropdown">
+        <div class="theme-drop-title">اختر اللون</div>
+        <div class="theme-colors">
+          <button class="theme-color-btn" style="background:linear-gradient(135deg,#0b0f19,#2563eb)" title="Blue" onclick="setThemeColor('blue')"></button>
+          <button class="theme-color-btn" style="background:linear-gradient(135deg,#1a1510,#b5832a)" title="Beige" onclick="setThemeColor('beige')"></button>
+          <button class="theme-color-btn" style="background:linear-gradient(135deg,#0d0b1a,#7c3aed)" title="Purple" onclick="setThemeColor('purple')"></button>
+          <button class="theme-color-btn" style="background:linear-gradient(135deg,#18181b,#c0c0c0)" title="White/Grey" onclick="setThemeColor('white')"></button>
+        </div>
+        <div class="theme-color-label" style="margin-top:.5rem">الوضع</div>
+        <div class="theme-modes">
+          <button class="theme-mode-btn" id="modeDarkBtn"  onclick="setThemeMode('dark')">🌙 Dark</button>
+          <button class="theme-mode-btn" id="modeLightBtn" onclick="setThemeMode('light')">☀️ Light</button>
+        </div>
+      </div>
+    </div>
+    <button class="cart-btn-nav" onclick="openCart()">🛒 <span class="cart-count" id="cartCount">0</span></button>
+    <button class="acc-btn" id="accountNavBtn" onclick="openAccount()">👤 حساب</button>
+    <button class="design-nav-btn" onclick="openProductSelector()" id="designNowBtn">🎨 صمّم</button>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="heroSection">
+  <div class="hero-eyebrow" id="heroEyebrow">✦ Premium Print Studio ✦</div>
+  <h1>A<span class="r">3</span><span class="g">M</span><br>PRINT</h1>
+  <div class="hero-tagline-wrap">
+    <p class="hero-tagline-animated" id="heroTaglineAnimated">
+      <span class="tagline-word">اطبع</span>
+      <span class="tagline-word accent-word">أفكارك</span>
+      <span class="tagline-sep">—</span>
+      <span class="tagline-word">اصنع</span>
+      <span class="tagline-word gold-word">واقعك</span>
+    </p>
+    <p class="hero-tagline-en" id="heroTaglineEn">
+      <span class="tagline-char">I</span><span class="tagline-char">n</span><span class="tagline-char">k</span><span class="tagline-char"> </span><span class="tagline-char">y</span><span class="tagline-char">o</span><span class="tagline-char">u</span><span class="tagline-char">r</span><span class="tagline-char"> </span><span class="tagline-char accent-char">v</span><span class="tagline-char accent-char">i</span><span class="tagline-char accent-char">s</span><span class="tagline-char accent-char">i</span><span class="tagline-char accent-char">o</span><span class="tagline-char accent-char">n</span><span class="tagline-sep"> — </span><span class="tagline-char">w</span><span class="tagline-char">e</span><span class="tagline-char">a</span><span class="tagline-char">r</span><span class="tagline-char"> </span><span class="tagline-char gold-char">y</span><span class="tagline-char gold-char">o</span><span class="tagline-char gold-char">u</span><span class="tagline-char gold-char">r</span><span class="tagline-char"> </span><span class="tagline-char gold-char">s</span><span class="tagline-char gold-char">t</span><span class="tagline-char gold-char">o</span><span class="tagline-char gold-char">r</span><span class="tagline-char gold-char">y</span>
+    </p>
+  </div>
+  <p class="hero-sub" id="heroSub">طباعة احترافية على التيشرتات والأكواب والقبعات وأكثر.</p>
+  <div class="hero-btns">
+    <button class="btn-primary" id="shopNowBtn" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">تسوّق الآن</button>
+    <button class="btn-gold" id="startDesignBtn" onclick="openProductSelector()">🎨 ابدأ التصميم</button>
+  </div>
+</section>
+
+<div class="design-banner">
+  <div class="design-banner-text" id="bannerMain">🖨️ صمّم قطعتك الخاصة بالكامل<span id="bannerSub">ارفع تصميمك أو اكتب نصك — نطبع ونوصّل لك باحترافية</span></div>
+  <button class="design-btn" id="startDesignBtn2" onclick="openProductSelector()">ابدأ التصميم →</button>
+</div>
+
+<!-- ===== PRODUCTS SECTION ===== -->
+<section class="section" id="products">
+  <div class="section-title" id="sectionTitle">منتجاتنا <span class="r">المميزة</span> <span class="g">✦</span></div>
+  <div class="section-sub" id="sectionSub">المجموعة البريميوم</div>
+  <div class="categories">
+    <button class="cat-btn active" id="c-all"    onclick="filterCat('all',this)">✦ الكل</button>
+    <button class="cat-btn"        id="c-tshirt" onclick="filterCat('tshirt',this)">تيشرتات</button>
+    <button class="cat-btn"        id="c-hoodie" onclick="filterCat('hoodie',this)">🧥 هوديات</button>
+    <button class="cat-btn"        id="c-bag"    onclick="filterCat('bag',this)">👜 حقائب</button>
+    <button class="cat-btn"        id="c-laser"  onclick="filterCat('laser',this)">🔑 إكسسوارات</button>
+    <button class="cat-btn"        id="c-paper"  onclick="filterCat('paper',this)">📄 أوراق</button>
+  </div>
+  <div class="products-grid" id="grid"></div>
+  <div id="paperSection" style="display:none">
+    <p id="paperSub" style="font-size:13px;color:var(--txt3);margin-bottom:1rem">اختر مقاس الطباعة</p>
+    <div class="paper-grid" id="paperGrid"></div>
+  </div>
+</section>
+
+<!-- ===== PRODUCT MODAL ===== -->
+<div class="prod-modal" id="prodModal">
+  <div class="prod-page-box">
+    <div class="prod-page-header">
+      <button class="prod-page-back" onclick="closeProdModal()">← رجوع</button>
+      <div class="prod-page-brand" id="modalHeadTitle">تفاصيل المنتج</div>
+      <div></div>
+    </div>
+    <div class="prod-page-body">
+      <div class="prod-gallery">
+        <div class="prod-main-img-wrap">
+          <div class="prod-main-img" id="modalImg" style="font-size:6rem">👕</div>
+        </div>
+        <div class="prod-thumbs" id="modalThumbs"></div>
+      </div>
+      <div class="prod-info-col">
+        <div class="prod-page-title" id="modalTitle">Product</div>
+        <div class="prod-page-sub"   id="modalSub"></div>
+        <div class="prod-stars-row"><span class="prod-stars">★★★★★</span><span class="prod-review-count">(24 تقييم)</span></div>
+        <div class="prod-price-box">
+          <span class="prod-page-price" id="modalPrice">0 دج</span>
+          <span class="prod-page-old"   id="modalOld"></span>
+          <span class="prod-page-disc"  id="modalDisc"></span>
+        </div>
+        <div class="prod-page-desc" id="modalDesc"></div>
+        <div id="sizesWrap" style="display:none">
+          <div class="prod-option-label" id="sizeLabel">المقاس</div>
+          <div class="sizes-row" id="sizesRow"></div>
+        </div>
+        <div>
+          <div class="prod-option-label" id="qtyLabelM">الكمية</div>
+          <div class="prod-qty-row">
+            <button class="modal-qty-btn" onclick="changeModalQty(-1)">−</button>
+            <span class="modal-qty-val" id="modalQty">1</span>
+            <button class="modal-qty-btn" onclick="changeModalQty(1)">+</button>
+          </div>
+        </div>
+        <div class="prod-total-box">
+          <span class="prod-total-lbl" id="totalLabel">المجموع</span>
+          <span class="prod-total-val" id="modalTotalVal">0 دج</span>
+        </div>
+        <button class="prod-cart-btn" id="modalAddBtn" onclick="addToCartFromModal()">🛒 أضف للسلة</button>
+        <button class="prod-design-btn" onclick="closeProdModal();openProductSelector()">🎨 صمّم هذا المنتج</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PRODUCT SELECTOR OVERLAY (NEW)
+══════════════════════════════════════════════ -->
+<div class="ps-overlay" id="psOverlay">
+  <div class="ps-topbar">
+    <div class="ps-logo">A<span class="r">3</span>M Studio</div>
+    <div class="ps-breadcrumb" id="psBreadcrumb"></div>
+    <button class="ps-close" onclick="closeProductSelector()">✕</button>
+  </div>
+  <div class="ps-body">
+
+    <!-- SCREEN 0: Mode -->
+    <div id="ps-s0" class="ps-screen active">
+      <div class="ps-title">كيف تريد <span>أن تبدأ؟</span></div>
+      <div class="ps-sub">اختر طريقتك في التصميم</div>
+      <div class="ps-mode-grid">
+        <div class="ps-mode-card" onclick="psPickMode('template')">
+          <div class="ps-mc-badge">⚡ الأسرع</div>
+          <span class="ps-mc-icon">🎨</span>
+          <div class="ps-mc-title">قوالب جاهزة</div>
+          <div class="ps-mc-desc">ابدأ من تصميم احترافي جاهز وخصّصه كيف تريد بسهولة</div>
+        </div>
+        <div class="ps-mode-card scratch" onclick="psPickMode('scratch')">
+          <span class="ps-mc-icon">✏️</span>
+          <div class="ps-mc-title">من الصفر</div>
+          <div class="ps-mc-desc">تحكم كامل بأبعاد اللوحة وكل تفاصيلها — مثل Illustrator</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN 1: Category -->
+    <div id="ps-s1" class="ps-screen">
+      <button class="ps-back" onclick="psGoBack()">← رجوع</button>
+      <div class="ps-title" id="ps-s1-title">اختر <span>التصنيف</span></div>
+      <div class="ps-sub" id="ps-s1-sub">اختر نوع المنتج الذي تريد تصميمه</div>
+      <div class="ps-cat-grid" id="psCatGrid"></div>
+    </div>
+
+    <!-- SCREEN 2: Sub-category -->
+    <div id="ps-s2" class="ps-screen">
+      <button class="ps-back" onclick="psGoBack()">← رجوع</button>
+      <div class="ps-title" id="ps-s2-title">اختر <span>النوع</span></div>
+      <div class="ps-sub" id="ps-s2-sub"></div>
+      <div class="ps-sub-grid" id="psSubGrid"></div>
+    </div>
+
+    <!-- SCREEN 3: Stamp sizes -->
+    <div id="ps-s3" class="ps-screen">
+      <button class="ps-back" onclick="psGoBack()">← رجوع</button>
+      <div class="ps-title">اختر <span>حجم الختم</span></div>
+      <div class="ps-sub">اختر المقاس المناسب لاحتياجك</div>
+      <div class="ps-stamp-grid" id="psStampGrid"></div>
+    </div>
+
+    <!-- SCREEN 4: Templates -->
+    <div id="ps-s4" class="ps-screen">
+      <button class="ps-back" onclick="psGoBack()">← رجوع</button>
+      <div class="ps-title">اختر <span>القالب</span></div>
+      <div class="ps-sub">اختر قالبًا وخصّصه في المحرر</div>
+      <div class="ps-tmpl-grid" id="psTmplGrid"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PROFESSIONAL DESIGNER MODAL (NEW)
+══════════════════════════════════════════════ -->
+<div class="designer-modal" id="designerModal">
+
+  <!-- Topbar -->
+  <div class="ds-topbar">
+    <span class="ds-topbar-logo">A<span>3</span>M</span>
+    <span class="ds-topbar-title" id="dsTitle">Design Studio</span>
+    <span class="ds-topbar-tag" id="dsTag">جاهز</span>
+    <div class="ds-topbar-spacer"></div>
+    <button class="ds-topbar-btn" onclick="dsUndo()">↩ تراجع</button>
+    <button class="ds-topbar-btn" onclick="dsClearCanvas()">🗑 مسح</button>
+    <div class="ds-topbar-sep"></div>
+    <button class="ds-topbar-btn gold" onclick="dsDownload()">⬇ PNG</button>
+    <button class="ds-topbar-btn accent" onclick="dsSaveCart()">🛒 للسلة</button>
+    <button class="ds-topbar-btn" onclick="openOrderFromDesign()">📋 اطلب</button>
+    <div class="ds-topbar-sep"></div>
+    <button class="ds-topbar-btn danger" onclick="closeDesignerModal()">✕ خروج</button>
+  </div>
+
+  <div class="ds-workspace">
+
+    <!-- Left toolbar -->
+    <div class="ds-toolbar">
+      <button class="ds-tool active" id="dt-select" onclick="dsTool('select')" title="تحديد V">
+        <span class="ti">↖</span><span class="tl">Select</span>
+      </button>
+      <div class="ds-tool-sep"></div>
+      <button class="ds-tool" id="dt-text" onclick="dsTool('text')" title="نص T">
+        <span class="ti" style="font-weight:900;font-size:1.1rem">T</span><span class="tl">Text</span>
+      </button>
+      <button class="ds-tool" id="dt-rect" onclick="dsTool('rect')" title="مستطيل R">
+        <span class="ti">▭</span><span class="tl">Rect</span>
+      </button>
+      <button class="ds-tool" id="dt-circle" onclick="dsTool('circle')" title="دائرة C">
+        <span class="ti">○</span><span class="tl">Circle</span>
+      </button>
+      <button class="ds-tool" id="dt-triangle" onclick="dsTool('triangle')" title="مثلث">
+        <span class="ti">△</span><span class="tl">Tri</span>
+      </button>
+      <button class="ds-tool" id="dt-pen" onclick="dsTool('pen')" title="قلم P">
+        <span class="ti">✒</span><span class="tl">Pen</span>
+      </button>
+      <div class="ds-tool-sep"></div>
+      <button class="ds-tool" onclick="document.getElementById('dsImgUpload').click()" title="صورة">
+        <span class="ti">🖼</span><span class="tl">Image</span>
+      </button>
+      <input type="file" id="dsImgUpload" accept="image/*" style="display:none" onchange="dsUploadImage(event)"/>
+      <div class="ds-tool-sep"></div>
+      <button class="ds-tool" onclick="dsBringForward()" title="للأمام">
+        <span class="ti">⬆</span><span class="tl">Fwd</span>
+      </button>
+      <button class="ds-tool" onclick="dsSendBackward()" title="للخلف">
+        <span class="ti">⬇</span><span class="tl">Bck</span>
+      </button>
+      <div class="ds-tool-sep"></div>
+      <button class="ds-tool" onclick="dsFlipH()" title="قلب أفقي">
+        <span class="ti">↔</span><span class="tl">FlipH</span>
+      </button>
+      <button class="ds-tool" onclick="dsFlipV()" title="قلب رأسي">
+        <span class="ti">↕</span><span class="tl">FlipV</span>
+      </button>
+    </div>
+
+    <!-- Canvas -->
+    <div class="ds-canvas-area" id="dsCanvasArea">
+      <div class="ds-canvas-wrap" id="dsCanvasWrap">
+        <canvas id="designCanvas" width="500" height="500"></canvas>
+      </div>
+
+      <!-- Canvas controls: zoom + size -->
+      <div class="ds-canvas-controls">
+        <button class="ds-zoom-btn" onclick="dsZoom(-0.1)">−</button>
+        <span id="dsZoomVal">100%</span>
+        <button class="ds-zoom-btn" onclick="dsZoom(0.1)">+</button>
+        <span style="margin:0 .4rem;color:#2a2f3a">|</span>
+        <span id="dsSizeInfo" style="color:#4b5563">500 × 500 px</span>
+        <button class="ds-zoom-btn" onclick="dsFitCanvas()" title="ملاءمة الشاشة" style="padding:0 6px;width:auto">⊡</button>
+      </div>
+
+      <!-- Scratch: canvas size picker -->
+      <div class="ds-size-picker" id="dsSizePicker">
+        <div style="font-size:.68rem;font-weight:700;color:#c9a84c;margin-bottom:.6rem;letter-spacing:.5px">أبعاد اللوحة</div>
+        <div class="ds-size-row">
+          <span style="font-size:.68rem;color:#6b7280;width:50px">عرض</span>
+          <input class="ds-size-inp" id="dsCanvasW" type="number" value="500" min="100" max="4000"/>
+          <span style="font-size:.68rem;color:#4b5563">px</span>
+        </div>
+        <div class="ds-size-row">
+          <span style="font-size:.68rem;color:#6b7280;width:50px">ارتفاع</span>
+          <input class="ds-size-inp" id="dsCanvasH" type="number" value="500" min="100" max="4000"/>
+          <span style="font-size:.68rem;color:#4b5563">px</span>
+        </div>
+        <div class="ds-preset-row" style="margin-bottom:.5rem">
+          <button class="ds-preset" onclick="dsApplyPreset(500,500)">1:1</button>
+          <button class="ds-preset" onclick="dsApplyPreset(794,1123)">A4</button>
+          <button class="ds-preset" onclick="dsApplyPreset(1123,1587)">A3</button>
+          <button class="ds-preset" onclick="dsApplyPreset(1587,2245)">A2</button>
+          <button class="ds-preset" onclick="dsApplyPreset(2245,3179)">A1</button>
+          <button class="ds-preset" onclick="dsApplyPreset(3179,4494)">A0</button>
+          <button class="ds-preset" onclick="dsApplyPreset(1920,1080)">HD</button>
+          <button class="ds-preset" onclick="dsApplyPreset(1080,1080)">IG</button>
+        </div>
+        <button onclick="dsApplyCanvasSize()" style="width:100%;background:#2563eb;border:none;color:#fff;padding:6px;border-radius:6px;cursor:pointer;font-size:.72rem;font-family:inherit">تطبيق</button>
+      </div>
+    </div>
+
+    <!-- Right Panel -->
+    <div class="ds-panel" id="dsPanel">
+
+      <!-- Text section -->
+      <div class="ds-section" id="dsPanelText">
+        <div class="ds-section-title">نص</div>
+        <div class="ds-row">
+          <input class="ds-input" id="txtContent" placeholder="اكتب هنا..." oninput="syncSelected()"/>
+        </div>
+        <div class="ds-row">
+          <span class="ds-label">الخط</span>
+          <select class="ds-select" id="txtFont" onchange="syncSelected()">
+            <option value="Cairo">Cairo</option>
+            <option value="Inter">Inter</option>
+            <option value="Permanent Marker">Permanent Marker</option>
+            <option value="Bebas Neue">Bebas Neue</option>
+            <option value="Pacifico">Pacifico</option>
+            <option value="Dancing Script">Dancing Script</option>
+            <option value="Orbitron">Orbitron</option>
+            <option value="Arial">Arial</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Courier New">Courier New</option>
+            <option value="Impact">Impact</option>
+          </select>
+        </div>
+        <div class="ds-row">
+          <span class="ds-label">حجم</span>
+          <input class="ds-input" id="txtSize" type="number" value="40" min="6" max="300" style="width:65px" oninput="document.getElementById('txtSzVal').textContent=this.value+'px';syncSelected()"/>
+          <span id="txtSzVal" style="font-size:.65rem;color:#4b5563;min-width:32px">40px</span>
+          <span class="ds-label" style="margin-right:.2rem">لون</span>
+          <input class="ds-color" id="txtColor" type="color" value="#ffffff" oninput="syncSelected()"/>
+        </div>
+        <!-- Text style buttons -->
+        <div class="ds-row">
+          <button class="ds-small-btn" id="tbBold"   onclick="dsToggleTxtStyle('bold')"><b>B</b></button>
+          <button class="ds-small-btn" id="tbItalic" onclick="dsToggleTxtStyle('italic')"><i>I</i></button>
+          <button class="ds-small-btn" id="tbUnder"  onclick="dsToggleTxtStyle('underline')"><u>U</u></button>
+          <button class="ds-small-btn" onclick="setTxtAlign('right')">←</button>
+          <button class="ds-small-btn" onclick="setTxtAlign('center')">≡</button>
+          <button class="ds-small-btn" onclick="setTxtAlign('left')">→</button>
+        </div>
+        <!-- Letter spacing, line height -->
+        <div class="ds-row">
+          <span class="ds-label">تباعد</span>
+          <input class="ds-slider" id="txtLetterSpacing" type="range" min="-5" max="30" value="0" oninput="document.getElementById('lsVal').textContent=this.value;syncSelected()"/>
+          <span id="lsVal" style="font-size:.65rem;color:#4b5563;min-width:20px">0</span>
+        </div>
+        <!-- Color presets -->
+        <div class="ds-color-presets" style="margin-bottom:.4rem">
+          <div class="ds-cp" style="background:#fff" onclick="document.getElementById('txtColor').value='#ffffff';syncSelected()"></div>
+          <div class="ds-cp" style="background:#000" onclick="document.getElementById('txtColor').value='#000000';syncSelected()"></div>
+          <div class="ds-cp" style="background:#c9a84c" onclick="document.getElementById('txtColor').value='#c9a84c';syncSelected()"></div>
+          <div class="ds-cp" style="background:#2563eb" onclick="document.getElementById('txtColor').value='#2563eb';syncSelected()"></div>
+          <div class="ds-cp" style="background:#7c3aed" onclick="document.getElementById('txtColor').value='#7c3aed';syncSelected()"></div>
+          <div class="ds-cp" style="background:#ef4444" onclick="document.getElementById('txtColor').value='#ef4444';syncSelected()"></div>
+          <div class="ds-cp" style="background:#10b981" onclick="document.getElementById('txtColor').value='#10b981';syncSelected()"></div>
+          <div class="ds-cp" style="background:#f97316" onclick="document.getElementById('txtColor').value='#f97316';syncSelected()"></div>
+        </div>
+        <button class="ds-small-btn" style="width:100%;padding:7px;margin-top:.2rem" onclick="addText()">+ إضافة نص</button>
+      </div>
+
+      <!-- Shape section -->
+      <div class="ds-section">
+        <div class="ds-section-title">أشكال</div>
+        <div class="ds-row">
+          <span class="ds-label">تعبئة</span>
+          <input class="ds-color" id="shapeFill" type="color" value="#7c3aed" oninput="syncSelected()"/>
+          <span class="ds-label">حدود</span>
+          <input class="ds-color" id="shapeStroke" type="color" value="#c9a84c" oninput="syncSelected()"/>
+        </div>
+        <div class="ds-row">
+          <span class="ds-label">سُمك</span>
+          <input class="ds-input" id="strokeW" type="number" value="2" min="0" max="30" style="width:50px" oninput="syncSelected()"/>
+          <span class="ds-label">شفافية</span>
+          <input class="ds-slider" id="shapeOpacity" type="range" value="100" min="0" max="100" oninput="document.getElementById('opVal').textContent=this.value+'%';syncSelected()"/>
+          <span id="opVal" style="font-size:.65rem;color:#4b5563;min-width:30px">100%</span>
+        </div>
+        <input class="ds-input" id="shapeOpacityHidden" type="number" value="100" style="display:none"/>
+        <div class="ds-row">
+          <button class="ds-small-btn" onclick="addShape('rect')">▭ مستطيل</button>
+          <button class="ds-small-btn" onclick="addShape('circle')">○ دائرة</button>
+          <button class="ds-small-btn" onclick="addShape('triangle')">△ مثلث</button>
+        </div>
+        <!-- Shape fill presets -->
+        <div class="ds-color-presets">
+          <div class="ds-cp" style="background:#7c3aed" onclick="document.getElementById('shapeFill').value='#7c3aed';syncSelected()"></div>
+          <div class="ds-cp" style="background:#2563eb" onclick="document.getElementById('shapeFill').value='#2563eb';syncSelected()"></div>
+          <div class="ds-cp" style="background:#c9a84c" onclick="document.getElementById('shapeFill').value='#c9a84c';syncSelected()"></div>
+          <div class="ds-cp" style="background:#ef4444" onclick="document.getElementById('shapeFill').value='#ef4444';syncSelected()"></div>
+          <div class="ds-cp" style="background:#10b981" onclick="document.getElementById('shapeFill').value='#10b981';syncSelected()"></div>
+          <div class="ds-cp" style="background:#111827" onclick="document.getElementById('shapeFill').value='#111827';syncSelected()"></div>
+          <div class="ds-cp" style="background:#fff;border:1px solid #2a2f3a" onclick="document.getElementById('shapeFill').value='#ffffff';syncSelected()"></div>
+          <div class="ds-cp" style="background:transparent;border:1px dashed #6b7280" onclick="document.getElementById('shapeFill').value='rgba(0,0,0,0)';syncSelected()" title="بدون تعبئة"></div>
+        </div>
+      </div>
+
+      <!-- Transform section -->
+      <div class="ds-section">
+        <div class="ds-section-title">تحويل</div>
+        <div class="ds-row">
+          <span class="ds-label">X</span>
+          <input class="ds-input" id="objX" type="number" value="250" style="width:60px" onchange="applyTransform()"/>
+          <span class="ds-label">Y</span>
+          <input class="ds-input" id="objY" type="number" value="250" style="width:60px" onchange="applyTransform()"/>
+        </div>
+        <div class="ds-row">
+          <span class="ds-label">W</span>
+          <input class="ds-input" id="objW" type="number" value="150" style="width:60px" onchange="applyTransform()"/>
+          <span class="ds-label">H</span>
+          <input class="ds-input" id="objH" type="number" value="80"  style="width:60px" onchange="applyTransform()"/>
+          <button class="ds-small-btn" id="lockBtn" onclick="dsToggleLock()" title="قفل النسبة">🔓</button>
+        </div>
+        <div class="ds-row">
+          <span class="ds-label">دوران</span>
+          <input class="ds-slider" id="objRot" type="range" value="0" min="-180" max="180" oninput="document.getElementById('rotVal').textContent=this.value+'°';applyTransform()"/>
+          <span id="rotVal" style="font-size:.65rem;color:#4b5563;min-width:32px">0°</span>
+        </div>
+        <div class="ds-row" style="margin-top:.3rem">
+          <button class="ds-small-btn" onclick="dsAlignLayer('hcenter')" title="توسيط أفقي">⬌</button>
+          <button class="ds-small-btn" onclick="dsAlignLayer('vcenter')" title="توسيط رأسي">⬍</button>
+          <button class="ds-small-btn" onclick="duplicateSelected()" title="نسخ">⊕ نسخ</button>
+          <button class="ds-small-btn red" onclick="deleteSelected()" title="حذف">✕</button>
+        </div>
+      </div>
+
+      <!-- Background section -->
+      <div class="ds-section">
+        <div class="ds-section-title">الخلفية</div>
+        <div class="ds-row">
+          <span class="ds-label">لون</span>
+          <input class="ds-color" id="bgColor" type="color" value="#ffffff"/>
+          <div class="ds-color-presets" style="flex:1">
+            <div class="ds-cp" style="background:#fff;border:1px solid #2a2f3a" onclick="document.getElementById('bgColor').value='#ffffff';if(window.dsSetBg)window.dsSetBg('#ffffff')"></div>
+            <div class="ds-cp" style="background:#000" onclick="document.getElementById('bgColor').value='#000000';if(window.dsSetBg)window.dsSetBg('#000000')"></div>
+            <div class="ds-cp" style="background:#111827" onclick="document.getElementById('bgColor').value='#111827';if(window.dsSetBg)window.dsSetBg('#111827')"></div>
+            <div class="ds-cp" style="background:transparent;border:1px dashed #6b7280" onclick="document.getElementById('bgColor').value='#ffffff';if(window.dsSetBg)window.dsSetBg('transparent')" title="شفاف"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upload section -->
+      <div class="ds-section">
+        <div class="ds-section-title">صورة</div>
+        <div class="ds-upload-zone" onclick="document.getElementById('dsImgUpload').click()">
+          🖼 اضغط لرفع صورة<br>
+          <span style="font-size:.65rem;color:#4b5563">PNG · JPG · SVG · WebP</span>
+        </div>
+      </div>
+
+      <!-- Templates mini -->
+      <div class="ds-section" id="dsTmplSection">
+        <div class="ds-section-title">قوالب سريعة</div>
+        <div class="ds-tmpl-mini" id="dsTmplMini"></div>
+      </div>
+
+      <!-- Layers -->
+      <div class="ds-section" style="border-bottom:none">
+        <div class="ds-section-title" style="display:flex;align-items:center;justify-content:space-between">
+          <span>الطبقات</span>
+          <span id="dsLayerCount" style="font-size:.62rem;color:#4b5563">0</span>
+        </div>
+        <div id="layersList"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Status bar -->
+  <div class="ds-statusbar">
+    <span id="dsStatusTool">أداة: تحديد</span>
+    <span>|</span>
+    <span>موضع: <span id="dsCursorPos">—</span></span>
+    <span>|</span>
+    <span>طبقات: <span id="dsLayerCountStatus">0</span></span>
+    <span>|</span>
+    <span id="dsStatusSelected">لا يوجد تحديد</span>
+    <div style="flex:1"></div>
+    <span id="dsModeTag" style="color:#c9a84c">—</span>
+  </div>
+</div>
+
+<!-- ===== ORDER FORM MODAL ===== -->
+<div class="order-modal" id="orderModal">
+  <div class="order-box">
+    <div class="order-header">
+      <h2 id="orderTitle">📋 نموذج الطلب</h2>
+      <button class="close-btn" onclick="closeOrderForm()">✕</button>
+    </div>
+    <div class="order-body">
+      <div id="formContent">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label" id="fName">الاسم الكامل *</label><input class="form-input" id="inp-name" placeholder="أحمد بن علي"/></div>
+          <div class="form-group"><label class="form-label" id="fPhone">الهاتف *</label><input class="form-input" id="inp-phone" placeholder="0555 123 456" type="tel"/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" id="fProduct">المنتج *</label>
+            <select class="form-input" id="inp-product">
+              <option value="">اختر...</option>
+              <option value="tshirt">👕 تيشرت</option>
+              <option value="mug">☕ كوب</option>
+              <option value="hat">🧢 قبعة</option>
+              <option value="hoodie">🧥 هودي</option>
+              <option value="bag">👜 حقيبة</option>
+              <option value="papers">📄 طباعة ورقية</option>
+              <option value="packs">📦 باكات</option>
+              <option value="accessories">🔑 إكسسوارات</option>
+              <option value="stamps">🔖 أختام</option>
+              <option value="other">أخرى</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label" id="fQty">الكمية *</label><input class="form-input" id="inp-qty" type="number" placeholder="1" min="1"/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label" id="fEmail">البريد الإلكتروني</label><input class="form-input" id="inp-email" type="email" placeholder="your@email.com"/></div>
+          <div class="form-group"><label class="form-label" id="fCity">المدينة / الولاية</label><input class="form-input" id="inp-city" placeholder="الجزائر"/></div>
+        </div>
+        <div class="form-group"><label class="form-label" id="fNotes">ملاحظات / وصف التصميم</label><textarea class="form-textarea" id="inp-notes" rows="3" placeholder="صِف تصميمك أو أضف تفاصيل إضافية..."></textarea></div>
+        <button class="submit-btn" id="submitBtn" onclick="submitOrder()">✦ إرسال الطلب</button>
+      </div>
+      <div class="form-success" id="formSuccess">
+        <div class="success-icon">✅</div>
+        <h3 id="successTitle">تم الإرسال!</h3>
+        <p id="successMsg">شكراً! سيتواصل معك فريق A3M خلال 24 ساعة.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ACCOUNT MODAL ===== -->
+<div class="account-modal" id="accountModal">
+  <div class="account-box">
+    <div class="acc-header"><h2>👤 حسابي</h2><button class="close-btn" onclick="closeAccount()">✕</button></div>
+    <div id="authPane" style="padding:1.4rem">
+      <div id="loginForm">
+        <div class="auth-form-header"><div class="auth-logo">A<span class="r">3</span><span class="g">M</span> Account</div><div class="auth-subtitle" id="authSubtitle">تسجيل الدخول للوصول لتصاميمك وطلباتك</div></div>
+        <div class="auth-form">
+          <div class="form-group"><label class="form-label">البريد الإلكتروني</label><input class="form-input" id="loginEmail" placeholder="your@email.com" type="email"/></div>
+          <div class="form-group"><label class="form-label">كلمة المرور</label><input class="form-input" id="loginPass" placeholder="••••••••" type="password"/></div>
+          <button class="submit-btn" onclick="doLogin()" id="loginBtn">تسجيل الدخول</button>
+          <div class="auth-divider">— أو —</div>
+          <div class="auth-switch">ليس لديك حساب؟ <a onclick="showRegister()">إنشاء حساب</a></div>
+        </div>
+      </div>
+      <div id="registerForm" style="display:none">
+        <div class="auth-form-header"><div class="auth-logo">إنشاء حساب</div><div class="auth-subtitle">انضم لمجتمع A3M</div></div>
+        <div class="auth-form">
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">الاسم الكامل</label><input class="form-input" id="regName" placeholder="أحمد بن علي"/></div>
+            <div class="form-group"><label class="form-label">اسم المستخدم</label><input class="form-input" id="regUser" placeholder="@ahmed"/></div>
+          </div>
+          <div class="form-group"><label class="form-label">البريد الإلكتروني</label><input class="form-input" id="regEmail" placeholder="your@email.com" type="email"/></div>
+          <div class="form-group"><label class="form-label">كلمة المرور</label><input class="form-input" id="regPass" placeholder="••••••••" type="password"/></div>
+          <button class="submit-btn" onclick="doRegister()">إنشاء الحساب</button>
+          <div class="auth-switch">لديك حساب؟ <a onclick="showLogin()">تسجيل الدخول</a></div>
+        </div>
+      </div>
+    </div>
+    <div id="profilePane" style="display:none">
+      <div class="acc-tabs">
+        <div class="acc-tab active" onclick="switchAccTab('profile')">👤 الملف</div>
+        <div class="acc-tab" onclick="switchAccTab('designs')">🎨 تصاميمي</div>
+        <div class="acc-tab" onclick="switchAccTab('orders')">📦 طلباتي</div>
+        <div class="acc-tab" onclick="switchAccTab('follow')">👥 اجتماعي</div>
+      </div>
+      <div class="acc-pane active" id="tab-profile">
+        <div class="acc-profile-row">
+          <div class="acc-avatar" id="accAvatar" onclick="changeAvatar()"><span id="accAvatarLetter">A</span><div class="acc-avatar-edit">✏</div></div>
+          <div><div class="acc-name" id="accName">Ahmed</div><div class="acc-username" id="accUsername">@ahmed</div><button style="margin-top:.5rem;background:none;border:1px solid var(--border2);border-radius:6px;padding:4px 12px;cursor:pointer;font-size:11px;color:var(--accent);font-family:inherit;transition:.2s" onclick="doLogout()" onmouseover="this.style.background='var(--accent)';this.style.color='#fff'" onmouseout="this.style.background='none';this.style.color='var(--accent)'">تسجيل الخروج</button></div>
+        </div>
+        <div class="xp-section">
+          <div class="xp-header"><span class="xp-rank" id="xpRankLabel">🪨 Iron</span><span class="xp-pts" id="xpPtsLabel">0 / 100 XP</span></div>
+          <div class="xp-bar-wrap"><div class="xp-bar-fill" id="xpBarFill" style="width:0%"></div></div>
+          <div class="xp-milestones"><span class="xp-milestone">🪨</span><span class="xp-milestone">🥉</span><span class="xp-milestone">🥇</span><span class="xp-milestone">💎</span><span class="xp-milestone">⭐</span></div>
+        </div>
+        <div class="acc-stats">
+          <div class="acc-stat"><div class="acc-stat-num" id="statFollowers">0</div><div class="acc-stat-label">متابعون</div></div>
+          <div class="acc-stat"><div class="acc-stat-num" id="statFollowing">0</div><div class="acc-stat-label">متابَعون</div></div>
+          <div class="acc-stat"><div class="acc-stat-num" id="statDesigns">0</div><div class="acc-stat-label">تصاميم</div></div>
+          <div class="acc-stat"><div class="acc-stat-num" id="statSold">0</div><div class="acc-stat-label">مُباع</div></div>
+        </div>
+      </div>
+      <div class="acc-pane" id="tab-designs">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.9rem">
+          <div style="font-weight:700;font-size:14px;color:var(--txt)">تصاميمي المنشورة</div>
+          <button class="d-btn d-btn-accent" style="font-size:11px;padding:5px 12px" onclick="closeAccount();openProductSelector()">+ تصميم جديد</button>
+        </div>
+        <div class="designs-grid" id="designsGrid"><div class="design-thumb" onclick="closeAccount();openProductSelector()" title="جديد">+</div></div>
+      </div>
+      <div class="acc-pane" id="tab-orders"><div id="ordersList" style="font-size:13px;color:var(--txt3);text-align:center;padding:2rem">لا توجد طلبات بعد</div></div>
+      <div class="acc-pane" id="tab-follow">
+        <div class="acc-stats" style="grid-template-columns:1fr 1fr;margin-bottom:1rem">
+          <div class="acc-stat"><div class="acc-stat-num" id="statFollowers2">0</div><div class="acc-stat-label">متابعون</div></div>
+          <div class="acc-stat"><div class="acc-stat-num" id="statFollowing2">0</div><div class="acc-stat-label">متابَعون</div></div>
+        </div>
+        <div style="font-size:13px;color:var(--txt3);text-align:center;padding:1rem">ميزات المجتمع قادمة قريباً 🚀</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="footer-logo">A<span class="r">3</span><span class="g">M</span></div>
+      <div class="gold-line"></div>
+      <p id="footerTagline">شركة طباعة احترافية — نطبع أحلامك على الواقع</p>
+      <div class="footer-social" id="footerSocialMain"></div>
+    </div>
+    <div>
+      <div style="font-size:12px;font-weight:700;color:var(--gold);letter-spacing:1px;margin-bottom:.7rem">روابط سريعة</div>
+      <div class="footer-links">
+        <a onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">🛍️ المنتجات</a>
+        <a onclick="openProductSelector()">🎨 تصميم</a>
+        <a onclick="openOrderForm()">📋 طلب مخصص</a>
+        <a onclick="openAccount()">👤 حسابي</a>
+      </div>
+    </div>
+    <div>
+      <div style="font-size:12px;font-weight:700;color:var(--gold);letter-spacing:1px;margin-bottom:.7rem">تواصل معنا</div>
+      <div class="footer-social-real" id="footerSocialReal"></div>
+      <div style="margin-top:.7rem;font-size:12px;color:var(--txt3);line-height:1.8">
+        📍 الجزائر<br>
+        📞 <a href="tel:+213555000000" style="color:var(--accent)">+213 555 000 000</a><br>
+        ✉️ <a href="mailto:info@a3m.dz" style="color:var(--accent)">info@a3m.dz</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2024 A3M Print. جميع الحقوق محفوظة.</p>
+    <p>Made with ❤️ in Algeria 🇩🇿</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<!-- ===== SCRIPTS ===== -->
+<script>
+  (function(){
+    var t = localStorage.getItem("a3m_theme") || "blue-dark";
+    document.body.className = t;
+  })();
+</script>
+
+<script type="module" src="./js/main.js"></script>
+<script src="./js/ai.js"></script>
+<script src="./js/designer.js"></script>
+
+<!-- ══════════════════════════════════════════════
+     PRODUCT SELECTOR LOGIC
+══════════════════════════════════════════════ -->
+<script>
+(function(){
+  'use strict';
+
+  const CATS = [
+    { id:'mugs',        icon:'☕', ar:'أكواب',           en:'Mugs',         hasSub:false, scratchSoon:true  },
+    { id:'cap',         icon:'🧢', ar:'كابات',           en:'Cap',          hasSub:false, scratchSoon:true  },
+    { id:'tshirt',      icon:'👕', ar:'تيشيرت',          en:'T-Shirt',      hasSub:false, scratchSoon:true  },
+    { id:'hoodie',      icon:'🧥', ar:'هودي',            en:'Hoodie',       hasSub:false, scratchSoon:true  },
+    { id:'papers',      icon:'📄', ar:'أوراق',           en:'Papers',       hasSub:true,  scratchSoon:true  },
+    { id:'packs',       icon:'📦', ar:'حقائب وباكات',   en:'Packs',        hasSub:true,  scratchSoon:true  },
+    { id:'accessories', icon:'🔑', ar:'إكسسوارات',       en:'Accessories',  hasSub:true,  scratchSoon:true  },
+    { id:'stamps',      icon:'🔖', ar:'أختام',           en:'Stamps',       hasSub:'size',scratchSoon:false },
+  ];
+
+  const SUBCATS = {
+    papers: [
+      { id:'a0', icon:'📋', label:'A0', desc:'84.1 × 118.9 cm' },
+      { id:'a1', icon:'📋', label:'A1', desc:'59.4 × 84.1 cm' },
+      { id:'a2', icon:'📋', label:'A2', desc:'42.0 × 59.4 cm' },
+      { id:'a3', icon:'📋', label:'A3', desc:'29.7 × 42.0 cm' },
+      { id:'a4', icon:'📋', label:'A4', desc:'21.0 × 29.7 cm' },
+      { id:'a5', icon:'📋', label:'A5', desc:'14.8 × 21.0 cm' },
+    ],
+    packs: [
+      { id:'hand',      icon:'👜', label:'Hand Pack',      desc:'حقيبة يد' },
+      { id:'packaging', icon:'📦', label:'Packaging Pack', desc:'تغليف احترافي' },
+      { id:'back',      icon:'🎒', label:'Back Pack',      desc:'حقيبة ظهر' },
+    ],
+    accessories: [
+      { id:'keychain', icon:'🔑', label:'Key Chain', desc:'سلسلة مفاتيح' },
+      { id:'pin',      icon:'📌', label:'Pin Badge', desc:'بادج دبوس' },
+    ],
+  };
+
+  const STAMP_SIZES = [
+    { id:'sq20', shape:'square', label:'20×20 mm', w:20, h:20 },
+    { id:'sq30', shape:'square', label:'30×30 mm', w:30, h:30 },
+    { id:'sq40', shape:'square', label:'40×40 mm', w:40, h:40 },
+    { id:'rc40', shape:'rect',   label:'40×25 mm', w:40, h:25 },
+    { id:'rc50', shape:'rect',   label:'50×30 mm', w:50, h:30 },
+    { id:'rc60', shape:'rect',   label:'60×40 mm', w:60, h:40 },
+    { id:'ci30', shape:'circle', label:'⌀ 30 mm',  w:30, h:30 },
+    { id:'ci40', shape:'circle', label:'⌀ 40 mm',  w:40, h:40 },
+    { id:'ci50', shape:'circle', label:'⌀ 50 mm',  w:50, h:50 },
+  ];
+
+  const TEMPLATES = {
+    mugs:   [{icon:'☕',name:'Classic Mug',bg:'#111'},{icon:'🌊',name:'Wave Pattern',bg:'#0a1628'},{icon:'🔤',name:'Bold Text',bg:'#1a0a2e'},{icon:'🌿',name:'Botanical',bg:'#0a1f0a'}],
+    cap:    [{icon:'🧢',name:'Street Style',bg:'#111'},{icon:'🏆',name:'Sports Cap',bg:'#0a1628'},{icon:'✨',name:'Minimal',bg:'#1f1f1f'},{icon:'🔥',name:'Flame',bg:'#1a0800'}],
+    tshirt: [{icon:'🅰',name:'Bold Logo',bg:'#111'},{icon:'✏',name:'Graffiti',bg:'#0d0d1a'},{icon:'◻',name:'Minimal',bg:'#fff'},{icon:'𝒮',name:'Script',bg:'#fafaf5'},{icon:'🛸',name:'Orbitron',bg:'#0a0a1a'},{icon:'🏅',name:'Classic',bg:'#111'}],
+    hoodie: [{icon:'🧥',name:'Urban',bg:'#111'},{icon:'🌙',name:'Night Vibe',bg:'#0a0a1a'},{icon:'⚡',name:'Electric',bg:'#001a1a'},{icon:'🎭',name:'Art Drop',bg:'#1a001a'}],
+    papers: [{icon:'📄',name:'Clean Layout',bg:'#fff'},{icon:'📐',name:'Grid Style',bg:'#f8f8ff'},{icon:'🎨',name:'Colorful',bg:'#fff0f5'},{icon:'🖋',name:'Letterhead',bg:'#fffff0'}],
+    packs:  [{icon:'📦',name:'Minimal Box',bg:'#fff'},{icon:'🌈',name:'Vibrant',bg:'#fff'},{icon:'🤍',name:'Clean White',bg:'#f5f5f5'}],
+    accessories:[{icon:'🔑',name:'Chain Classic',bg:'#111'},{icon:'🌟',name:'Star Shape',bg:'#0a0a1a'},{icon:'💎',name:'Premium',bg:'#0a1628'}],
+    stamps: [{icon:'🔖',name:'Business',bg:'#fff'},{icon:'🎨',name:'Creative',bg:'#fffff0'},{icon:'📮',name:'Postal Style',bg:'#fff5e0'},{icon:'💼',name:'Corporate',bg:'#f0f4ff'}],
+  };
+
+  let psMode = null, psCat = null, psSubcat = null, psStampSize = null;
+  let psHistory = [];
+
+  function psShowScreen(id) {
+    document.querySelectorAll('.ps-screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    psBuildBreadcrumb();
+  }
+
+  function psBuildBreadcrumb() {
+    const bc = document.getElementById('psBreadcrumb');
+    if(!bc) return;
+    const items = [];
+    if(psMode) items.push({label: psMode==='scratch'?'من الصفر':'قوالب جاهزة'});
+    if(psCat) { const c=CATS.find(x=>x.id===psCat); items.push({label:c?c.ar:psCat}); }
+    if(psSubcat) items.push({label:psSubcat.toUpperCase()});
+    if(psStampSize) items.push({label:psStampSize});
+    bc.innerHTML = items.map((it,i)=>`${i>0?'<span class="ps-bc-sep">›</span>':''}<span class="ps-bc-item active">${it.label}</span>`).join('');
+  }
+
+  window.openProductSelector = function() {
+    psMode=null; psCat=null; psSubcat=null; psStampSize=null; psHistory=[];
+    psShowScreen('ps-s0');
+    document.getElementById('psOverlay').classList.add('open');
+    // close old modePicker if present
+    const mp = document.getElementById('modePicker');
+    if(mp) mp.style.display='none';
+  };
+
+  window.closeProductSelector = function() {
+    document.getElementById('psOverlay').classList.remove('open');
+  };
+
+  window.psPickMode = function(mode) {
+    psMode = mode;
+    psHistory.push('ps-s0');
+    // Build category screen
+    const s1sub = document.getElementById('ps-s1-sub');
+    if(s1sub) s1sub.textContent = mode==='scratch' ? 'اختر نوع المنتج — ستبدأ بلوحة فارغة تتحكم بأبعادها' : 'اختر نوع المنتج الذي تريد تصميمه';
+
+    const grid = document.getElementById('psCatGrid');
+    grid.innerHTML = CATS.map(c => {
+      const isSoon = mode==='scratch' && c.scratchSoon;
+      return `<div class="ps-cat-card ${isSoon?'cs':''}" onclick="${isSoon?'':(`psPickCat('${c.id}')`)}">
+        ${isSoon?'<span class="ps-cs-badge">قريبًا</span>':''}
+        <span class="ps-cc-icon">${c.icon}</span>
+        <div class="ps-cc-title">${c.ar}</div>
+        <div class="ps-cc-en">${c.en}</div>
+      </div>`;
+    }).join('');
+    psShowScreen('ps-s1');
+  };
+
+  window.psPickCat = function(catId) {
+    psCat = catId;
+    psHistory.push('ps-s1');
+    const cat = CATS.find(c=>c.id===catId);
+
+    if(cat.hasSub === 'size') {
+      // Stamps: go to size picker
+      psBuildStampSizes();
+      psShowScreen('ps-s3');
+    } else if(cat.hasSub && SUBCATS[catId]) {
+      // Has sub-categories
+      const s2title = document.getElementById('ps-s2-title');
+      const s2sub   = document.getElementById('ps-s2-sub');
+      if(s2title) s2title.innerHTML = `اختر <span>${cat.ar}</span>`;
+      if(s2sub)   s2sub.textContent = '';
+      const grid = document.getElementById('psSubGrid');
+      grid.innerHTML = SUBCATS[catId].map(item=>`
+        <div class="ps-sub-card" onclick="psPickSubcat('${item.id}')">
+          <span class="ps-sub-icon">${item.icon}</span>
+          <div class="ps-sub-label">${item.label}</div>
+          <div class="ps-sub-desc">${item.desc}</div>
+        </div>
+      `).join('');
+      psShowScreen('ps-s2');
+    } else {
+      // Go directly to templates or designer
+      if(psMode==='template') { psBuildTemplates(catId); psShowScreen('ps-s4'); }
+      else { psLaunchScratch(catId); }
+    }
+  };
+
+  window.psPickSubcat = function(subId) {
+    psSubcat = subId;
+    psHistory.push('ps-s2');
+    if(psMode==='template') { psBuildTemplates(psCat); psShowScreen('ps-s4'); }
+    else { psLaunchScratch(psCat); }
+  };
+
+  function psBuildStampSizes() {
+    const grid = document.getElementById('psStampGrid');
+    grid.innerHTML = STAMP_SIZES.map(sz=>{
+      let svg='';
+      if(sz.shape==='circle')
+        svg=`<svg width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" fill="none" stroke="#c9a84c" stroke-width="2" stroke-dasharray="5,3"/></svg>`;
+      else if(sz.shape==='square')
+        svg=`<svg width="48" height="48" viewBox="0 0 48 48"><rect x="4" y="4" width="40" height="40" rx="3" fill="none" stroke="#c9a84c" stroke-width="2" stroke-dasharray="5,3"/></svg>`;
+      else
+        svg=`<svg width="60" height="40" viewBox="0 0 60 40"><rect x="3" y="3" width="54" height="34" rx="3" fill="none" stroke="#c9a84c" stroke-width="2" stroke-dasharray="5,3"/></svg>`;
+      return `<div class="ps-sz-card" onclick="psPickStampSize('${sz.id}','${sz.label}')">
+        <div class="ps-sz-shape">${svg}</div>
+        <div class="ps-sz-label">${sz.label}</div>
+        <div class="ps-sz-type">${sz.shape==='circle'?'دائري':sz.w===sz.h?'مربع':'مستطيل'}</div>
+      </div>`;
+    }).join('');
+  }
+
+  window.psPickStampSize = function(sizeId, label) {
+    psStampSize = label;
+    psHistory.push('ps-s3');
+    if(psMode==='template') { psBuildTemplates('stamps'); psShowScreen('ps-s4'); }
+    else { psLaunchScratch('stamps'); }
+  };
+
+  function psBuildTemplates(catId) {
+    const tmpls = TEMPLATES[catId] || TEMPLATES.tshirt;
+    const grid = document.getElementById('psTmplGrid');
+    grid.innerHTML = tmpls.map((t,i)=>`
+      <div class="ps-tmpl-card" onclick="psPickTemplate('${catId}',${i},'${t.name}')">
+        <div class="ps-tmpl-thumb" style="background:${t.bg||'#111'}">
+          <span style="font-size:2.4rem">${t.icon}</span>
+        </div>
+        <div class="ps-tmpl-name">${t.name}</div>
+      </div>
+    `).join('');
+  }
+
+  window.psPickTemplate = function(catId, idx, name) {
+    closeProductSelector();
+    // Launch designer in template mode
+    psLaunchDesigner(catId, name, false);
+  };
+
+  function psLaunchScratch(catId) {
+    closeProductSelector();
+    psLaunchDesigner(catId, null, true);
+  }
+
+  function psLaunchDesigner(catId, templateName, isScratch) {
+    const cat = CATS.find(c=>c.id===catId);
+    // Set title/tag
+    const dsTitle = document.getElementById('dsTitle');
+    const dsTag   = document.getElementById('dsTag');
+    const dsModeTag = document.getElementById('dsModeTag');
+    if(dsTitle) dsTitle.textContent = `Design Studio · ${cat?cat.ar:catId}`;
+    if(dsTag)   dsTag.textContent   = isScratch ? 'من الصفر' : templateName||'قالب';
+    if(dsModeTag) dsModeTag.textContent = `${cat?cat.ar:catId}${psSubcat?' · '+psSubcat.toUpperCase():''}${psStampSize?' · '+psStampSize:''}`;
+
+    // Show/hide size picker for scratch mode
+    const sizePicker = document.getElementById('dsSizePicker');
+    if(sizePicker) {
+      if(isScratch) sizePicker.classList.add('show');
+      else sizePicker.classList.remove('show');
+    }
+
+    // Open designer modal
+    const dm = document.getElementById('designerModal');
+    if(dm) dm.classList.add('open');
+
+    // Init canvas
+    setTimeout(()=>{
+      if(typeof initCanvasRefs === 'function') initCanvasRefs();
+      if(typeof clearCanvas === 'function') clearCanvas();
+      if(typeof drawAll === 'function') drawAll();
+
+      // Apply template if selected
+      if(!isScratch && templateName && typeof window.TEMPLATES !== 'undefined') {
+        const t = window.TEMPLATES.find(x=>x.name===templateName);
+        if(t && typeof t.fn === 'function') t.fn();
+      }
+
+      // Build templates mini panel
+      dsBuildTmplMini(catId);
+      if(typeof addSmartPalette === 'function') addSmartPalette();
+      if(typeof buildTemplates === 'function') buildTemplates();
+      if(typeof bindCanvasEvents === 'function') bindCanvasEvents();
+    }, 60);
+  }
+
+  function dsBuildTmplMini(catId) {
+    const grid = document.getElementById('dsTmplMini');
+    if(!grid) return;
+    const tmpls = TEMPLATES[catId] || TEMPLATES.tshirt;
+    grid.innerHTML = tmpls.map((t,i)=>`
+      <div class="ds-tmpl-mini-item" onclick="dsApplyTmpl(${i},'${catId}')" title="${t.name}">
+        <span style="font-size:1.4rem">${t.icon}</span>
+        <span class="ds-tmpl-mini-name">${t.name}</span>
+      </div>
+    `).join('');
+  }
+
+  window.dsApplyTmpl = function(idx, catId) {
+    const tmpls = TEMPLATES[catId] || TEMPLATES.tshirt;
+    const t = tmpls[idx];
+    if(!t) return;
+    // Try to match with designer.js TEMPLATES
+    if(window.TEMPLATES) {
+      const dt = window.TEMPLATES.find(x=>x.name===t.name);
+      if(dt && typeof dt.fn==='function') { if(typeof saveHist==='function') saveHist(); dt.fn(); showToast('✦ '+t.name); return; }
+    }
+    showToast('✦ '+t.name);
+  };
+
+  window.psGoBack = function() {
+    if(!psHistory.length) return;
+    const prev = psHistory.pop();
+    if(prev==='ps-s0') { psMode=null; }
+    else if(prev==='ps-s1') { psCat=null; }
+    else if(prev==='ps-s2') { psSubcat=null; }
+    else if(prev==='ps-s3') { psStampSize=null; }
+    psShowScreen(prev);
+  };
+
+  window.closeDesignerModal = function() {
+    const dm = document.getElementById('designerModal');
+    if(dm) dm.classList.remove('open');
+  };
+
+  // ── Bridge old openDesigner calls ──
+  window.openModePicker = window.openProductSelector;
+  window.closeModePicker = window.closeProductSelector;
+  window.openDesigner = function(mode) { psPickMode(mode); openProductSelector(); };
+
+})();
+</script>
+
+<!-- ══════════════════════════════════════════════
+     DESIGNER ENHANCEMENTS (canvas UX upgrades)
+══════════════════════════════════════════════ -->
+<script>
+(function(){
+
+  // Zoom
+  let _zoom = 1;
+  window.dsZoom = function(delta) {
+    _zoom = Math.min(3, Math.max(0.2, _zoom + delta));
+    const wrap = document.getElementById('dsCanvasWrap');
+    if(wrap) wrap.style.transform = `scale(${_zoom})`;
+    document.getElementById('dsZoomVal').textContent = Math.round(_zoom*100)+'%';
+  };
+  window.dsFitCanvas = function() {
+    const area = document.getElementById('dsCanvasArea');
+    const canvas = document.getElementById('designCanvas');
+    if(!area||!canvas) return;
+    const scaleW = (area.clientWidth - 80) / canvas.width;
+    const scaleH = (area.clientHeight - 80) / canvas.height;
+    _zoom = Math.min(scaleW, scaleH, 1);
+    const wrap = document.getElementById('dsCanvasWrap');
+    if(wrap) wrap.style.transform = `scale(${_zoom})`;
+    document.getElementById('dsZoomVal').textContent = Math.round(_zoom*100)+'%';
+  };
+
+  // Canvas size (scratch)
+  window.dsApplyPreset = function(w,h) {
+    document.getElementById('dsCanvasW').value = w;
+    document.getElementById('dsCanvasH').value = h;
+    dsApplyCanvasSize();
+  };
+  window.dsApplyCanvasSize = function() {
+    const w = parseInt(document.getElementById('dsCanvasW').value)||500;
+    const h = parseInt(document.getElementById('dsCanvasH').value)||500;
+    const canvas = document.getElementById('designCanvas');
+    if(!canvas) return;
+    canvas.width  = Math.min(w,4000);
+    canvas.height = Math.min(h,4000);
+    document.getElementById('dsSizeInfo').textContent = canvas.width+' × '+canvas.height+' px';
+    if(typeof drawAll==='function') drawAll();
+    dsFitCanvas();
+    showToast('📐 '+canvas.width+' × '+canvas.height);
+  };
+
+  // Cursor position tracking
+  document.addEventListener('DOMContentLoaded',()=>{
+    const canvas = document.getElementById('designCanvas');
+    if(canvas){
+      canvas.addEventListener('mousemove', e=>{
+        const r=canvas.getBoundingClientRect(), scale=canvas.width/r.width;
+        const x=Math.round((e.clientX-r.left)*scale);
+        const y=Math.round((e.clientY-r.top)*scale);
+        const el=document.getElementById('dsCursorPos');
+        if(el) el.textContent=x+', '+y;
+      });
+    }
+  });
+
+  // Tool setter bridging
+  window.dsTool = function(t) {
+    if(typeof setTool==='function') setTool(t);
+    // Update toolbar UI
+    document.querySelectorAll('.ds-tool').forEach(b=>b.classList.remove('active'));
+    const btn = document.getElementById('dt-'+t);
+    if(btn) btn.classList.add('active');
+    // Status bar
+    const tools={select:'تحديد',text:'نص',rect:'مستطيل',circle:'دائرة',triangle:'مثلث',pen:'قلم'};
+    const el=document.getElementById('dsStatusTool');
+    if(el) el.textContent='أداة: '+(tools[t]||t);
+  };
+
+  // Align helpers
+  window.dsAlignLayer = function(dir) {
+    const canvas = document.getElementById('designCanvas');
+    if(!canvas||typeof layers==='undefined'||!selectedId) return;
+    const l = layers.find(x=>x.id===selectedId);
+    if(!l) return;
+    if(typeof saveHist==='function') saveHist();
+    if(dir==='hcenter') l.x = canvas.width/2 - l.w/2;
+    if(dir==='vcenter') l.y = canvas.height/2 - l.h/2;
+    if(typeof drawAll==='function') drawAll();
+  };
+
+  // Lock ratio
+  let _locked = false;
+  window.dsToggleLock = function() {
+    _locked = !_locked;
+    const btn = document.getElementById('lockBtn');
+    if(btn) btn.textContent = _locked ? '🔒' : '🔓';
+  };
+
+  // Text style toggles
+  window.dsToggleTxtStyle = function(style) {
+    if(typeof layers==='undefined'||!selectedId) return;
+    const l = layers.find(x=>x.id===selectedId);
+    if(!l||l.type!=='text') return;
+    if(typeof saveHist==='function') saveHist();
+    if(style==='bold')      l.bold      = !l.bold;
+    if(style==='italic')    l.italic    = !l.italic;
+    if(style==='underline') l.underline = !l.underline;
+    if(typeof drawAll==='function') drawAll();
+    ['bold','italic','underline'].forEach(s=>{
+      const btn=document.getElementById('tb'+s.charAt(0).toUpperCase()+s.slice(1));
+      if(btn) btn.classList.toggle('active-btn', l[s]);
+    });
+  };
+
+  // Bg color direct setter
+  window.dsSetBg = function(c) {
+    if(typeof bgColorVal!=='undefined') window.bgColorVal=c;
+    if(typeof drawAll==='function') drawAll();
+  };
+
+  // Download
+  window.dsDownload = function() { if(typeof downloadDesign==='function') downloadDesign(); };
+  window.dsSaveCart = function() { if(typeof saveToCart==='function') saveToCart(); };
+  window.dsUndo = function()     { if(typeof undoAction==='function') undoAction(); };
+  window.dsClearCanvas = function() {
+    if(typeof clearCanvas==='function'){ if(typeof saveHist==='function') saveHist(); clearCanvas(); }
+  };
+  window.dsBringForward = function()  { if(typeof bringForward==='function') bringForward(); };
+  window.dsSendBackward = function()  { if(typeof sendBackward==='function') sendBackward(); };
+  window.dsFlipH = function()         { if(typeof flipH==='function') flipH(); };
+  window.dsFlipV = function()         { if(typeof flipV==='function') flipV(); };
+  window.dsUploadImage = function(e)  { if(typeof uploadImage==='function') uploadImage(e); };
+
+  // Opacity slider sync (shapeOpacity is now a range, but designer.js reads the hidden number input)
+  document.addEventListener('input', e=>{
+    if(e.target.id==='shapeOpacity'){
+      const h = document.getElementById('shapeOpacityHidden');
+      if(h) h.value = e.target.value;
+    }
+  });
+
+  // Layer count updater — patch drawAll
+  const _orig_notifyChange = window.notifyChange;
+  window.notifyChange = function(){
+    if(_orig_notifyChange) _orig_notifyChange.apply(this,arguments);
+    try {
+      const cnt = (typeof layers!=='undefined') ? layers.length : 0;
+      ['dsLayerCount','dsLayerCountStatus'].forEach(id=>{
+        const el=document.getElementById(id); if(el) el.textContent=cnt;
+      });
+    } catch(e){}
+  };
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', e=>{
+    const dm=document.getElementById('designerModal');
+    if(!dm||!dm.classList.contains('open')) return;
+    if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT') return;
+    if(e.key==='v'||e.key==='V') dsTool('select');
+    if(e.key==='t'||e.key==='T') dsTool('text');
+    if(e.key==='r'||e.key==='R') dsTool('rect');
+    if(e.key==='c'||e.key==='C') dsTool('circle');
+    if(e.key==='Delete'||e.key==='Backspace') { if(typeof deleteSelected==='function') deleteSelected(); }
+    if((e.ctrlKey||e.metaKey)&&e.key==='z') { e.preventDefault(); if(typeof undoAction==='function') undoAction(); }
+    if((e.ctrlKey||e.metaKey)&&e.key==='d') { e.preventDefault(); if(typeof duplicateSelected==='function') duplicateSelected(); }
+    if(e.key==='+'||e.key==='=') dsZoom(0.1);
+    if(e.key==='-') dsZoom(-0.1);
+    if(e.key==='0') { _zoom=1; const w=document.getElementById('dsCanvasWrap'); if(w) w.style.transform='scale(1)'; document.getElementById('dsZoomVal').textContent='100%'; }
+    if(e.key==='Escape') closeDesignerModal();
+  });
+
+})();
+</script>
+
+<!-- ══════════════════════════════════════════════
+     EXISTING INLINE HELPERS (theme, lang, etc.)
+══════════════════════════════════════════════ -->
+<script>
+  let _themeColor = (localStorage.getItem("a3m_theme") || "blue-dark").replace(/-dark$|-light$/,"");
+  let _themeMode  = (localStorage.getItem("a3m_theme") || "blue-dark").includes("light") ? "light" : "dark";
+
+  const HERO_TAGLINES = {
+    ar: {
+      animated: true,
+      words: [
+        {text:'اطبع', cls:''},
+        {text:'أفكارك', cls:'accent-word'},
+        {text:'—', cls:'tagline-sep'},
+        {text:'اصنع', cls:''},
+        {text:'واقعك', cls:'gold-word'},
+      ]
+    },
+    en: {
+      animated: false,
+      line: `<span class="tagline-char">I</span><span class="tagline-char">n</span><span class="tagline-char">k</span><span class="tagline-char"> </span><span class="tagline-char">y</span><span class="tagline-char">o</span><span class="tagline-char">u</span><span class="tagline-char">r</span><span class="tagline-char"> </span><span class="tagline-char accent-char">v</span><span class="tagline-char accent-char">i</span><span class="tagline-char accent-char">s</span><span class="tagline-char accent-char">i</span><span class="tagline-char accent-char">o</span><span class="tagline-char accent-char">n</span><span class="tagline-sep"> — </span><span class="tagline-char">w</span><span class="tagline-char">e</span><span class="tagline-char">a</span><span class="tagline-char">r</span><span class="tagline-char"> </span><span class="tagline-char gold-char">y</span><span class="tagline-char gold-char">o</span><span class="tagline-char gold-char">u</span><span class="tagline-char gold-char">r</span><span class="tagline-char"> </span><span class="tagline-char gold-char">s</span><span class="tagline-char gold-char">t</span><span class="tagline-char gold-char">o</span><span class="tagline-char gold-char">r</span><span class="tagline-char gold-char">y</span>`
+    },
+    fr: {
+      animated: false,
+      line: `<span class="tagline-char">I</span><span class="tagline-char">m</span><span class="tagline-char">p</span><span class="tagline-char">r</span><span class="tagline-char">i</span><span class="tagline-char">m</span><span class="tagline-char">e</span><span class="tagline-char"> </span><span class="tagline-char accent-char">t</span><span class="tagline-char accent-char">e</span><span class="tagline-char accent-char">s</span><span class="tagline-char"> </span><span class="tagline-char accent-char">i</span><span class="tagline-char accent-char">d</span><span class="tagline-char accent-char">é</span><span class="tagline-char accent-char">e</span><span class="tagline-char accent-char">s</span><span class="tagline-sep"> — </span><span class="tagline-char gold-char">v</span><span class="tagline-char gold-char">i</span><span class="tagline-char gold-char">s</span><span class="tagline-char gold-char"> </span><span class="tagline-char gold-char">t</span><span class="tagline-char gold-char">o</span><span class="tagline-char gold-char">n</span><span class="tagline-char"> </span><span class="tagline-char gold-char">h</span><span class="tagline-char gold-char">i</span><span class="tagline-char gold-char">s</span><span class="tagline-char gold-char">t</span><span class="tagline-char gold-char">o</span><span class="tagline-char gold-char">i</span><span class="tagline-char gold-char">r</span><span class="tagline-char gold-char">e</span>`
+    }
+  };
+
+  function updateHeroTagline(lang) {
+    const arEl = document.getElementById('heroTaglineAnimated');
+    const enEl = document.getElementById('heroTaglineEn');
+    if (!arEl || !enEl) return;
+    const data = HERO_TAGLINES[lang] || HERO_TAGLINES['ar'];
+    if (lang === 'ar') {
+      arEl.style.display = 'flex'; enEl.style.display = 'none';
+      arEl.classList.add('retrigger'); void arEl.offsetWidth; arEl.classList.remove('retrigger');
+      arEl.innerHTML = data.words.map((w,i) =>
+        w.cls === 'tagline-sep'
+          ? `<span class="tagline-sep">${w.text}</span>`
+          : `<span class="tagline-word ${w.cls}" style="animation-delay:${.15*(i+1)}s">${w.text}</span>`
+      ).join('');
+    } else {
+      arEl.style.display = 'none'; enEl.style.display = 'flex';
+      enEl.classList.add('retrigger'); void enEl.offsetWidth; enEl.classList.remove('retrigger');
+      enEl.innerHTML = data.line;
+      setTimeout(() => {
+        enEl.querySelectorAll('.tagline-char').forEach((el,i) => {
+          el.style.animationDelay = (0.08 + i*0.04) + 's';
+          el.style.animation = 'none'; void el.offsetWidth; el.style.animation = '';
+        });
+      }, 10);
+    }
+  }
+
+  const NAV_EXTRAS = {
+    ar: { account:'👤 حساب', design:'🎨 صمّم', cart:'🛒 السلة', empty:'السلة فارغة', checkout:'إتمام الطلب →', total:'المجموع', disc:'الخصومات', order:'نموذج الطلب' },
+    en: { account:'👤 Account', design:'🎨 Design', cart:'🛒 Cart', empty:'Cart is empty', checkout:'Checkout →', total:'Total', disc:'Discounts', order:'Order Form' },
+    fr: { account:'👤 Compte', design:'🎨 Créer', cart:'🛒 Panier', empty:'Panier vide', checkout:'Commander →', total:'Total', disc:'Réductions', order:'Formulaire' },
+  };
+  function applyNavExtras(lang) {
+    const t = NAV_EXTRAS[lang] || NAV_EXTRAS['ar'];
+    const safe = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    safe('accountNavBtn', t.account);
+    safe('designNowBtn', '🎨 ' + (lang==='ar'?'صمّم':lang==='fr'?'Créer':'Design'));
+    safe('cartTitle', t.cart);
+    const emptyEl = document.querySelector('.cart-empty');
+    if (emptyEl) emptyEl.textContent = t.empty;
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    if (checkoutBtn) checkoutBtn.textContent = t.checkout;
+    const totalLabel = document.getElementById('cartTotalLabel');
+    if (totalLabel) totalLabel.textContent = t.total;
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const storedLang = localStorage.getItem('a3m_lang') || 'ar';
+    setTimeout(() => { updateHeroTagline(storedLang); applyNavExtras(storedLang); }, 300);
+    const _origSetLang = window.setLang;
+    window.setLang = function(lang) {
+      if (_origSetLang) _origSetLang(lang);
+      updateHeroTagline(lang); applyNavExtras(lang);
+    };
+  });
+
+  function setThemeColor(color) {
+    _themeColor = color;
+    if (typeof setTheme === "function") setTheme(_themeColor + "-" + _themeMode);
+    _updateThemeButtons();
+    document.getElementById("themeDropdown").classList.remove("open");
+  }
+  function setThemeMode(mode) {
+    _themeMode = mode;
+    if (typeof setTheme === "function") setTheme(_themeColor + "-" + _themeMode);
+    _updateThemeButtons();
+  }
+  function toggleThemeMenu() { document.getElementById("themeDropdown").classList.toggle("open"); }
+  function _updateThemeButtons() {
+    const dark = document.getElementById("modeDarkBtn");
+    const light = document.getElementById("modeLightBtn");
+    if (dark)  dark.classList.toggle("active",  _themeMode === "dark");
+    if (light) light.classList.toggle("active", _themeMode === "light");
+    const icon = document.getElementById("themeIcon");
+    if (icon) icon.textContent = _themeMode === "dark" ? "🌙" : "☀️";
+  }
+  document.addEventListener("click", function(e) {
+    const wrapper = document.getElementById("themeWrapper");
+    if (wrapper && !wrapper.contains(e.target)) {
+      const dd = document.getElementById("themeDropdown");
+      if (dd) dd.classList.remove("open");
+    }
+  });
+  document.addEventListener("DOMContentLoaded", function() {
+    _updateThemeButtons();
+    function injectSocials() {
+      if (!window.SOCIAL_ICONS) { setTimeout(injectSocials, 200); return; }
+      const socials = [
+        {key:"instagram", href:"#", title:"Instagram"},
+        {key:"facebook",  href:"#", title:"Facebook"},
+        {key:"whatsapp",  href:"#", title:"WhatsApp"},
+        {key:"telegram",  href:"#", title:"Telegram"},
+        {key:"viber",     href:"#", title:"Viber"},
+        {key:"gmail",     href:"#", title:"Gmail"},
+      ];
+      const makeBtn = (s) => {
+        const a = document.createElement("a");
+        a.className = "social-btn-img"; a.href = s.href; a.title = s.title;
+        a.target = "_blank"; a.rel = "noopener";
+        if (window.SOCIAL_ICONS[s.key]) {
+          const img = document.createElement("img");
+          img.src = window.SOCIAL_ICONS[s.key];
+          img.alt = s.title; img.style.cssText = "width:100%;height:100%;object-fit:contain;border-radius:10px";
+          a.appendChild(img);
+        } else { a.textContent = s.title[0]; }
+        return a;
+      };
+      ["footerSocialMain","footerSocialReal"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { el.innerHTML = ""; socials.forEach(s => el.appendChild(makeBtn(s))); }
+      });
+    }
+    injectSocials();
+  });
+</script>
+</body>
+</html>
