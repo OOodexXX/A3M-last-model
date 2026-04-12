@@ -1,0 +1,2765 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>A3M Print — Print Your Ideas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Cairo:wght@400;600;700;900&family=Inter:wght@400;500;600;700&family=Bebas+Neue&family=Pacifico&family=Dancing+Script:wght@700&family=Orbitron:wght@700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="./css/style.css"/>
+  <style>
+    /* ── Footer enhancements ── */
+    .footer-col { display:flex; flex-direction:column; gap:.5rem; }
+    .footer-col-title { font-size:12px; font-weight:700; color:var(--gold); letter-spacing:1px; margin-bottom:.4rem; text-transform:uppercase; }
+    .footer-tagline-text { font-size:13px; color:var(--txt3); line-height:1.6; margin:.4rem 0; }
+    .footer-contact-socials { display:flex; flex-direction:column; gap:.45rem; margin-bottom:.8rem; }
+    .footer-social-link {
+      display:flex; align-items:center; gap:.55rem;
+      font-size:12px; font-weight:600; color:var(--txt2);
+      text-decoration:none; padding:.35rem .6rem;
+      border-radius:8px; border:1px solid var(--border);
+      transition:all .18s ease; width:fit-content;
+    }
+    .footer-social-link:hover { color:#fff; transform:translateX(-2px); }
+    .footer-social-link.instagram:hover { background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045); border-color:transparent; }
+    .footer-social-link.whatsapp:hover  { background:#25d366; border-color:transparent; }
+    .footer-social-link.telegram:hover  { background:#229ed9; border-color:transparent; }
+    .footer-social-link.viber:hover     { background:#7360f2; border-color:transparent; }
+    .footer-social-link.gmail:hover     { background:#ea4335; border-color:transparent; }
+    .footer-contact-info { display:flex; flex-direction:column; gap:.35rem; }
+    .footer-contact-item { display:flex; align-items:center; gap:.5rem; font-size:12px; color:var(--txt3); }
+    .fc-icon { font-size:13px; min-width:18px; }
+    .footer-contact-link { color:var(--accent); text-decoration:none; font-weight:500; }
+    .footer-contact-link:hover { text-decoration:underline; }
+    [dir="rtl"] .footer-social-link:hover { transform:translateX(2px); }
+  
+  /* Globe lang switcher */
+  .lang-globe-wrap{position:relative;display:inline-block;}
+  .lang-globe-btn{display:flex;align-items:center;gap:.45rem;background:var(--card,rgba(20,29,46,.9));border:1px solid var(--border2,rgba(255,255,255,.15));color:var(--txt2,#94a3b8);padding:7px 14px;border-radius:30px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:.2s;white-space:nowrap;}
+  .lang-globe-btn:hover{border-color:var(--accent,#2563eb);color:var(--txt,#f1f5f9);}
+  .lang-globe-dd{position:absolute;top:calc(100% + 8px);right:0;background:var(--bg2,#111827);border:1px solid var(--border2,rgba(255,255,255,.15));border-radius:14px;padding:.5rem;min-width:150px;box-shadow:0 16px 40px rgba(0,0,0,.5);display:none;z-index:999;}
+  [dir="rtl"] .lang-globe-dd{right:auto;left:0;}
+  .lang-globe-dd.open{display:block;}
+  .lang-globe-opt{display:flex;align-items:center;gap:.6rem;padding:.6rem .9rem;border-radius:9px;cursor:pointer;font-size:13px;font-weight:600;transition:.15s;color:var(--txt2,#94a3b8);}
+  .lang-globe-opt:hover{background:rgba(255,255,255,.06);color:var(--txt,#f1f5f9);}
+  .lang-globe-opt.active{color:var(--gold,#c9a84c);}
+  .lang-globe-opt .flag{font-size:1.1rem;}
+
+
+  /* ── Designer 3D button ── */
+  .ds-3d-btn {
+    background: linear-gradient(135deg, #7c3aed22, #c9a84c11) !important;
+    border-color: #7c3aed55 !important;
+    color: #c9a84c !important;
+    font-weight: 700;
+  }
+  .ds-3d-btn:hover {
+    background: linear-gradient(135deg, #7c3aed44, #c9a84c22) !important;
+    border-color: #7c3aed !important;
+    color: #fff !important;
+  }
+
+  /* ── 3D Preview Modal ── */
+  .preview3d-modal {
+    display: none; position: fixed; inset: 0; z-index: 9999;
+    background: rgba(0,0,0,.82); backdrop-filter: blur(8px);
+    align-items: center; justify-content: center; padding: 12px;
+  }
+  .preview3d-modal.active { display: flex; animation: p3dIn .22s cubic-bezier(.2,.8,.3,1); }
+  @keyframes p3dIn { from { opacity:0; transform:scale(.94) translateY(10px); } to { opacity:1; transform:none; } }
+  .p3d-shell {
+    width: min(96vw, 980px); height: min(92vh, 660px);
+    background: #0d0f1a; border: 1px solid #252540; border-radius: 18px;
+    display: flex; flex-direction: column; overflow: hidden;
+    box-shadow: 0 32px 80px rgba(0,0,0,.8), 0 0 0 1px rgba(124,58,237,.15);
+  }
+  .p3d-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: .55rem .85rem; background: #10121e;
+    border-bottom: 1px solid #1e1e32; flex-shrink: 0; gap: .6rem; flex-wrap: wrap;
+  }
+  .p3d-title {
+    display: flex; align-items: center; gap: .5rem;
+    font-family: 'Cairo', sans-serif; font-weight: 800;
+    font-size: 15px; color: #f0f0f0; white-space: nowrap;
+  }
+  .p3d-logo { font-family: 'Permanent Marker', cursive; font-size: 16px; color: #c9a84c; }
+  .p3d-logo span { color: #7c3aed; }
+  .p3d-badge {
+    font-size: 9px; font-weight: 900; letter-spacing: 1.5px;
+    border: 1px solid #7c3aed55; padding: 1px 7px; border-radius: 20px;
+    background: linear-gradient(135deg,#7c3aed,#c9a84c);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  }
+  .p3d-actions { display: flex; align-items: center; gap: .35rem; flex-wrap: wrap; }
+  .p3d-prod-tabs { display: flex; gap: 2px; background: #1a1a2e; padding: 3px; border-radius: 10px; }
+  .p3d-prod-tab {
+    background: transparent; border: none; cursor: pointer;
+    font-size: 15px; padding: 4px 7px; border-radius: 7px; transition: all .15s; line-height: 1;
+  }
+  .p3d-prod-tab:hover  { background: #252540; transform: scale(1.12); }
+  .p3d-prod-tab.active { background: #7c3aed33; box-shadow: 0 0 0 1px #7c3aed66; }
+  .p3d-divider { width: 1px; height: 22px; background: #252540; }
+  .p3d-color-wrap {
+    display: flex; align-items: center; gap: .3rem; cursor: pointer;
+    background: #1a1a2e; border: 1px solid #252540; border-radius: 8px;
+    padding: .28rem .55rem; font-size: 13px; transition: border-color .15s;
+  }
+  .p3d-color-wrap:hover { border-color: #7c3aed; }
+  .p3d-color-wrap input[type="color"] { width:22px; height:22px; border:none; background:none; cursor:pointer; padding:0; border-radius:4px; }
+  .p3d-ctrl-btn {
+    display: inline-flex; align-items: center; gap: .3rem;
+    background: #1a1a2e; border: 1px solid #252540; color: #9090b0;
+    border-radius: 8px; padding: .32rem .65rem; font-size: 12px; font-weight: 600;
+    cursor: pointer; transition: all .15s; white-space: nowrap; font-family: 'Cairo', sans-serif;
+  }
+  .p3d-ctrl-btn:hover { background: #252540; color: #fff; border-color: #7c3aed66; }
+  .p3d-ctrl-btn.active { color: #c9a84c; border-color: #c9a84c55; background: #c9a84c11; }
+  .p3d-upload-btn { color: #7c3aed; border-color: #7c3aed44; }
+  .p3d-upload-btn:hover { background: #7c3aed22; border-color: #7c3aed; }
+  .p3d-close-btn { color: #ff6b6b66; }
+  .p3d-close-btn:hover { color: #ff6b6b; background: #ff6b6b15; border-color: #ff6b6b44; }
+  .p3d-progress-wrap { height: 2px; background: #151525; flex-shrink: 0; }
+  .p3d-progress-bar {
+    height: 100%; width: 0; opacity: 0;
+    background: linear-gradient(90deg,#7c3aed,#c9a84c,#7c3aed); background-size: 200% 100%;
+    animation: p3dProg 1.5s linear infinite;
+    transition: width .25s ease, opacity .3s; border-radius: 2px;
+  }
+  @keyframes p3dProg { 0%{background-position:100% 0} 100%{background-position:-100% 0} }
+  .p3d-canvas-wrap {
+    flex: 1; position: relative; overflow: hidden; cursor: grab; background: #0e1018;
+  }
+  .p3d-canvas-wrap:active { cursor: grabbing; }
+  .p3d-canvas-wrap.drag-over { outline: 2px dashed #c9a84c88; outline-offset: -6px; background: #c9a84c08; }
+  .p3d-canvas-wrap canvas { display: block; width: 100% !important; height: 100% !important; }
+  .p3d-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: .42rem .85rem; background: #0c0e18; border-top: 1px solid #1a1a2c;
+    flex-shrink: 0; gap: .5rem; flex-wrap: wrap;
+  }
+  #preview3dStatus { font-size: 12px; color: #c9a84caa; font-family: 'Cairo', sans-serif; min-width: 0; }
+  .p3d-hint-row { display: flex; gap: .4rem; flex-wrap: wrap; }
+  .p3d-hint-chip {
+    font-size: 10px; color: #3a3a55; background: #13131f;
+    border: 1px solid #1e1e2e; padding: 2px 8px; border-radius: 20px; white-space: nowrap;
+  }
+  @media (max-width: 600px) {
+    .p3d-hint-row { display: none; }
+    .p3d-prod-tabs .p3d-prod-tab { font-size: 13px; padding: 3px 5px; }
+    .p3d-ctrl-btn { padding: .28rem .45rem; font-size: 11px; }
+    .p3d-shell { border-radius: 14px; }
+  }
+
+
+  /* ════════════════════════════════════════
+     A3M NAV — clean glassmorphism navbar
+  ════════════════════════════════════════ */
+  .a3m-nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1100;
+    height: 62px; padding: 0 1rem;
+    display: flex; align-items: center; gap: .6rem;
+    background: rgba(11,15,25,.88);
+    backdrop-filter: blur(18px) saturate(1.6);
+    -webkit-backdrop-filter: blur(18px) saturate(1.6);
+    border-bottom: 1px solid rgba(255,255,255,.07);
+    box-shadow: 0 2px 24px rgba(0,0,0,.4);
+  }
+  .a3m-logo {
+    display: flex; align-items: baseline; gap: .2rem;
+    font-family: 'Permanent Marker', cursive;
+    font-size: 1.45rem; color: #fff;
+    text-decoration: none; cursor: pointer;
+    letter-spacing: -1px;
+  }
+  .a3m-logo .logo-sub {
+    font-family: 'Cairo', sans-serif;
+    font-size: .5rem; font-weight: 800;
+    letter-spacing: 3px; color: var(--txt3);
+    align-self: flex-end; margin-bottom: .12rem;
+    margin-right: .15rem;
+  }
+  .a3m-theme-btn {
+    background: none; border: 1px solid rgba(255,255,255,.1);
+    border-radius: 8px; color: var(--txt2);
+    padding: .36rem .55rem; cursor: pointer;
+    font-size: .9rem; transition: .2s;
+    line-height: 1;
+  }
+  .a3m-theme-btn:hover { border-color: var(--accent); background: rgba(255,255,255,.06); }
+  .a3m-cart-btn {
+    position: relative; background: none;
+    border: 1px solid rgba(255,255,255,.1); border-radius: 8px;
+    color: var(--txt2); padding: .38rem .6rem;
+    font-size: .95rem; cursor: pointer; transition: .18s;
+    line-height: 1;
+  }
+  .a3m-cart-btn:hover { border-color: var(--accent); color: #fff; }
+  .a3m-cart-btn .cart-count {
+    position: absolute; top: -6px; right: -6px;
+    background: var(--accent); color: #fff;
+    font-size: .55rem; font-weight: 900;
+    min-width: 16px; height: 16px; padding: 0 3px;
+    border-radius: 8px; display: flex;
+    align-items: center; justify-content: center;
+    border: 2px solid var(--bg);
+  }
+  .a3m-design-btn {
+    background: linear-gradient(135deg, var(--accent,#2563eb) 0%, #c9a84c 100%);
+    color: #fff; border: none;
+    padding: .44rem 1.1rem; border-radius: 20px;
+    font-size: .78rem; font-weight: 800;
+    cursor: pointer; transition: all .2s;
+    white-space: nowrap; font-family: 'Cairo', sans-serif;
+    letter-spacing: .5px;
+    box-shadow: 0 2px 14px rgba(37,99,235,.35);
+  }
+  .a3m-design-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 22px rgba(37,99,235,.5);
+    filter: brightness(1.08);
+  }
+
+  /* ════════════════════════════════════════
+     A3M HERO — proper spacing & layout
+  ════════════════════════════════════════ */
+  .hero { padding-top: 100px; }
+
+  .hero-h1 {
+    margin-top: .5rem;
+    margin-bottom: .3rem;
+    line-height: 1;
+  }
+  .a3m-tagline-wrap {
+    margin: .8rem 0 .6rem;
+    min-height: 2.4rem;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .a3m-hero-sub {
+    margin: 1rem auto 2rem !important;
+    max-width: 480px;
+    line-height: 1.75 !important;
+    font-size: clamp(.88rem, 1.8vw, 1rem) !important;
+    color: var(--txt3);
+  }
+  .hero-btns {
+    display: flex; gap: .9rem; justify-content: center;
+    flex-wrap: wrap; margin-bottom: 2rem;
+  }
+  </style>
+</head>
+<body class="blue-dark">
+
+<!-- ===== OVERLAYS ===== -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+<div class="cart-overlay"    id="cartOverlay"    onclick="closeCart()"></div>
+
+<div class="ps-overlay" id="psOverlay">
+  <div class="ps-topbar">
+    <div class="ps-logo">A<span class="r">3</span>M Studio</div>
+    <div class="ps-breadcrumb" id="psBreadcrumb"></div>
+    <button class="ps-close" onclick="closeProductSelector()">✕</button>
+  </div>
+  <div class="ps-body">
+
+    <!-- SCREEN 0: Mode -->
+    <div id="ps-s0" class="ps-screen active">
+      <div class="ps-title">كيف تريد <span>أن تبدأ؟</span></div>
+      <div class="ps-sub">اختر طريقتك في التصميم</div>
+      <div class="ps-mode-grid">
+        <div class="ps-mode-card" onclick="psPickMode('template')">
+          <div class="ps-mc-badge">⚡ الأسرع</div>
+          <span class="ps-mc-icon">🎨</span>
+          <div class="ps-mc-title">قوالب جاهزة</div>
+          <div class="ps-mc-desc">ابدأ من تصميم احترافي جاهز وخصّصه كيف تريد بسهولة</div>
+        </div>
+        <div class="ps-mode-card scratch" onclick="psPickMode('scratch')">
+          <span class="ps-mc-icon">✏️</span>
+          <div class="ps-mc-title">من الصفر</div>
+          <div class="ps-mc-desc">تحكم كامل بأبعاد اللوحة وكل تفاصيلها — مثل Illustrator</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN 1: Category -->
+    <div id="ps-s1" class="ps-screen">
+      <button class="ps-back" onclick="psGoBack()">← رجوع</button>
+      <div class="ps-title" id="ps-s1-title">اختر <span>التصنيف</span></div>
+      <div class="ps-sub" id="ps-s1-sub">اختر نوع المنتج الذي تريد تصميمه</div>
+      <div class="ps-cat-grid" id="psCatGrid"></div>
+    </div>
+
+    <!-- SCREEN 2: Sub-category -->
+    <div id="ps-s2" class="ps-screen">
+      <button class="ps-back" onclick="psGoBack()">← رجوع</button>
+      <div class="ps-title" id="ps-s2-title">اختر <span>النوع</span></div>
+      <div class="ps-sub" id="ps-s2-sub"></div>
+      <div class="ps-sub-grid" id="psSubGrid"></div>
+    </div>
+
+    <!-- SCREEN 3: Stamp sizes -->
+    <div id="ps-s3" class="ps-screen">
+      <button class="ps-back" onclick="psGoBack()">← رجوع</button>
+      <div class="ps-title">اختر <span>حجم الختم</span></div>
+      <div class="ps-sub">اختر المقاس المناسب لاحتياجك</div>
+      <div class="ps-stamp-grid" id="psStampGrid"></div>
+    </div>
+
+    <!-- SCREEN 4: Templates -->
+    <div id="ps-s4" class="ps-screen">
+      <button class="ps-back" onclick="psGoBack()">← رجوع</button>
+      <div class="ps-title">اختر <span>القالب</span></div>
+      <div class="ps-sub">اختر قالبًا وخصّصه في المحرر</div>
+      <div class="ps-tmpl-grid" id="psTmplGrid"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PROFESSIONAL DESIGNER MODAL (NEW)
+══════════════════════════════════════════════ -->
+<div class="designer-modal" id="designerModal">
+
+  <!-- Topbar -->
+  <div class="ds-topbar">
+    <span class="ds-topbar-logo">A<span>3</span>M</span>
+    <span class="ds-topbar-title" id="dsTitle">Design Studio</span>
+    <span class="ds-topbar-tag" id="dsTag">جاهز</span>
+    <div class="ds-topbar-spacer"></div>
+    <button class="ds-topbar-btn" onclick="dsUndo()">↩ تراجع</button>
+    <button class="ds-topbar-btn" onclick="dsClearCanvas()">🗑 مسح</button>
+    <div class="ds-topbar-sep"></div>
+    <button class="ds-topbar-btn gold" onclick="dsDownload()">⬇ PNG</button>
+    <button class="ds-topbar-btn accent" onclick="dsSaveCart()">🛒 للسلة</button>
+    <button class="ds-topbar-btn" onclick="openOrderFromDesign()">📋 اطلب</button>
+    <button class="ds-topbar-btn ds-3d-btn" onclick="open3DViewer()" title="معاينة التصميم على موديل 3D">📦 معاينة 3D</button>
+    <div class="ds-topbar-sep"></div>
+    <button class="ds-topbar-btn danger" onclick="closeDesignerModal()">✕ خروج</button>
+  </div>
+
+  <div class="ds-workspace">
+
+    <!-- Left toolbar -->
+    <div class="ds-toolbar">
+      <button class="ds-tool active" id="dt-select" onclick="dsTool('select')" title="تحديد V">
+        <span class="ti">↖</span><span class="tl">Select</span>
+      </button>
+      <div class="ds-tool-sep"></div>
+      <button class="ds-tool" id="dt-text" onclick="dsTool('text')" title="نص T">
+        <span class="ti" style="font-weight:900;font-size:1.1rem">T</span><span class="tl">Text</span>
+      </button>
+      <button class="ds-tool" id="dt-rect" onclick="dsTool('rect')" title="مستطيل R">
+        <span class="ti">▭</span><span class="tl">Rect</span>
+      </button>
+      <button class="ds-tool" id="dt-circle" onclick="dsTool('circle')" title="دائرة C">
+        <span class="ti">○</span><span class="tl">Circle</span>
+      </button>
+      <button class="ds-tool" id="dt-triangle" onclick="dsTool('triangle')" title="مثلث">
+        <span class="ti">△</span><span class="tl">Tri</span>
+      </button>
+      <button class="ds-tool" id="dt-pen" onclick="dsTool('pen')" title="قلم P">
+        <span class="ti">✒</span><span class="tl">Pen</span>
+      </button>
+      <div class="ds-tool-sep"></div>
+      <button class="ds-tool" onclick="document.getElementById('dsImgUpload').click()" title="صورة">
+        <span class="ti">🖼</span><span class="tl">Image</span>
+      </button>
+      <input type="file" id="dsImgUpload" accept="image/*" style="display:none" onchange="dsUploadImage(event)"/>
+      <div class="ds-tool-sep"></div>
+      <button class="ds-tool" onclick="dsBringForward()" title="للأمام">
+        <span class="ti">⬆</span><span class="tl">Fwd</span>
+      </button>
+      <button class="ds-tool" onclick="dsSendBackward()" title="للخلف">
+        <span class="ti">⬇</span><span class="tl">Bck</span>
+      </button>
+      <div class="ds-tool-sep"></div>
+      <button class="ds-tool" onclick="dsFlipH()" title="قلب أفقي">
+        <span class="ti">↔</span><span class="tl">FlipH</span>
+      </button>
+      <button class="ds-tool" onclick="dsFlipV()" title="قلب رأسي">
+        <span class="ti">↕</span><span class="tl">FlipV</span>
+      </button>
+    </div>
+
+    <!-- Canvas -->
+    <div class="ds-canvas-area" id="dsCanvasArea">
+      <div class="ds-canvas-wrap" id="dsCanvasWrap">
+        <canvas id="designCanvas" width="500" height="500"></canvas>
+      </div>
+
+      <!-- Canvas controls: zoom + size -->
+      <div class="ds-canvas-controls">
+        <button class="ds-zoom-btn" onclick="dsZoom(-0.1)">−</button>
+        <span id="dsZoomVal">100%</span>
+        <button class="ds-zoom-btn" onclick="dsZoom(0.1)">+</button>
+        <span style="margin:0 .4rem;color:#2a2f3a">|</span>
+        <span id="dsSizeInfo" style="color:#4b5563">500 × 500 px</span>
+        <button class="ds-zoom-btn" onclick="dsFitCanvas()" title="ملاءمة الشاشة" style="padding:0 6px;width:auto">⊡</button>
+      </div>
+
+      <!-- Scratch: canvas size picker -->
+      <div class="ds-size-picker" id="dsSizePicker">
+        <div style="font-size:.68rem;font-weight:700;color:#c9a84c;margin-bottom:.6rem;letter-spacing:.5px">أبعاد اللوحة</div>
+        <div class="ds-size-row">
+          <span style="font-size:.68rem;color:#6b7280;width:50px">عرض</span>
+          <input class="ds-size-inp" id="dsCanvasW" type="number" value="500" min="100" max="4000"/>
+          <span style="font-size:.68rem;color:#4b5563">px</span>
+        </div>
+        <div class="ds-size-row">
+          <span style="font-size:.68rem;color:#6b7280;width:50px">ارتفاع</span>
+          <input class="ds-size-inp" id="dsCanvasH" type="number" value="500" min="100" max="4000"/>
+          <span style="font-size:.68rem;color:#4b5563">px</span>
+        </div>
+        <div class="ds-preset-row" style="margin-bottom:.5rem">
+          <button class="ds-preset" onclick="dsApplyPreset(500,500)">1:1</button>
+          <button class="ds-preset" onclick="dsApplyPreset(794,1123)">A4</button>
+          <button class="ds-preset" onclick="dsApplyPreset(1123,1587)">A3</button>
+          <button class="ds-preset" onclick="dsApplyPreset(1587,2245)">A2</button>
+          <button class="ds-preset" onclick="dsApplyPreset(2245,3179)">A1</button>
+          <button class="ds-preset" onclick="dsApplyPreset(3179,4494)">A0</button>
+          <button class="ds-preset" onclick="dsApplyPreset(1920,1080)">HD</button>
+          <button class="ds-preset" onclick="dsApplyPreset(1080,1080)">IG</button>
+        </div>
+        <button onclick="dsApplyCanvasSize()" style="width:100%;background:#2563eb;border:none;color:#fff;padding:6px;border-radius:6px;cursor:pointer;font-size:.72rem;font-family:inherit">تطبيق</button>
+      </div>
+    </div>
+
+    <!-- Right Panel -->
+    <div class="ds-panel" id="dsPanel">
+
+      <!-- Text section -->
+      <div class="ds-section" id="dsPanelText">
+        <div class="ds-section-title">نص</div>
+        <div class="ds-row">
+          <input class="ds-input" id="txtContent" placeholder="اكتب هنا..." oninput="syncSelected()"/>
+        </div>
+        <div class="ds-row">
+          <span class="ds-label">الخط</span>
+          <select class="ds-select" id="txtFont" onchange="syncSelected()">
+            <option value="Cairo">Cairo</option>
+            <option value="Inter">Inter</option>
+            <option value="Permanent Marker">Permanent Marker</option>
+            <option value="Bebas Neue">Bebas Neue</option>
+            <option value="Pacifico">Pacifico</option>
+            <option value="Dancing Script">Dancing Script</option>
+            <option value="Orbitron">Orbitron</option>
+            <option value="Arial">Arial</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Courier New">Courier New</option>
+            <option value="Impact">Impact</option>
+          </select>
+        </div>
+        <div class="ds-row">
+          <span class="ds-label">حجم</span>
+          <input class="ds-input" id="txtSize" type="number" value="40" min="6" max="300" style="width:65px" oninput="document.getElementById('txtSzVal').textContent=this.value+'px';syncSelected()"/>
+          <span id="txtSzVal" style="font-size:.65rem;color:#4b5563;min-width:32px">40px</span>
+          <span class="ds-label" style="margin-right:.2rem">لون</span>
+          <input class="ds-color" id="txtColor" type="color" value="#ffffff" oninput="syncSelected()"/>
+        </div>
+        <!-- Text style buttons -->
+        <div class="ds-row">
+          <button class="ds-small-btn" id="tbBold"   onclick="dsToggleTxtStyle('bold')"><b>B</b></button>
+          <button class="ds-small-btn" id="tbItalic" onclick="dsToggleTxtStyle('italic')"><i>I</i></button>
+          <button class="ds-small-btn" id="tbUnder"  onclick="dsToggleTxtStyle('underline')"><u>U</u></button>
+          <button class="ds-small-btn" onclick="setTxtAlign('right')">←</button>
+          <button class="ds-small-btn" onclick="setTxtAlign('center')">≡</button>
+          <button class="ds-small-btn" onclick="setTxtAlign('left')">→</button>
+        </div>
+        <!-- Letter spacing, line height -->
+        <div class="ds-row">
+          <span class="ds-label">تباعد</span>
+          <input class="ds-slider" id="txtLetterSpacing" type="range" min="-5" max="30" value="0" oninput="document.getElementById('lsVal').textContent=this.value;syncSelected()"/>
+          <span id="lsVal" style="font-size:.65rem;color:#4b5563;min-width:20px">0</span>
+        </div>
+        <!-- Color presets -->
+        <div class="ds-color-presets" style="margin-bottom:.4rem">
+          <div class="ds-cp" style="background:#fff" onclick="document.getElementById('txtColor').value='#ffffff';syncSelected()"></div>
+          <div class="ds-cp" style="background:#000" onclick="document.getElementById('txtColor').value='#000000';syncSelected()"></div>
+          <div class="ds-cp" style="background:#c9a84c" onclick="document.getElementById('txtColor').value='#c9a84c';syncSelected()"></div>
+          <div class="ds-cp" style="background:#2563eb" onclick="document.getElementById('txtColor').value='#2563eb';syncSelected()"></div>
+          <div class="ds-cp" style="background:#7c3aed" onclick="document.getElementById('txtColor').value='#7c3aed';syncSelected()"></div>
+          <div class="ds-cp" style="background:#ef4444" onclick="document.getElementById('txtColor').value='#ef4444';syncSelected()"></div>
+          <div class="ds-cp" style="background:#10b981" onclick="document.getElementById('txtColor').value='#10b981';syncSelected()"></div>
+          <div class="ds-cp" style="background:#f97316" onclick="document.getElementById('txtColor').value='#f97316';syncSelected()"></div>
+        </div>
+        <button class="ds-small-btn" style="width:100%;padding:7px;margin-top:.2rem" onclick="addText()">+ إضافة نص</button>
+      </div>
+
+      <!-- Shape section -->
+      <div class="ds-section">
+        <div class="ds-section-title">أشكال</div>
+        <div class="ds-row">
+          <span class="ds-label">تعبئة</span>
+          <input class="ds-color" id="shapeFill" type="color" value="#7c3aed" oninput="syncSelected()"/>
+          <span class="ds-label">حدود</span>
+          <input class="ds-color" id="shapeStroke" type="color" value="#c9a84c" oninput="syncSelected()"/>
+        </div>
+        <div class="ds-row">
+          <span class="ds-label">سُمك</span>
+          <input class="ds-input" id="strokeW" type="number" value="2" min="0" max="30" style="width:50px" oninput="syncSelected()"/>
+          <span class="ds-label">شفافية</span>
+          <input class="ds-slider" id="shapeOpacity" type="range" value="100" min="0" max="100" oninput="document.getElementById('opVal').textContent=this.value+'%';syncSelected()"/>
+          <span id="opVal" style="font-size:.65rem;color:#4b5563;min-width:30px">100%</span>
+        </div>
+        <input class="ds-input" id="shapeOpacityHidden" type="number" value="100" style="display:none"/>
+        <div class="ds-row">
+          <button class="ds-small-btn" onclick="addShape('rect')">▭ مستطيل</button>
+          <button class="ds-small-btn" onclick="addShape('circle')">○ دائرة</button>
+          <button class="ds-small-btn" onclick="addShape('triangle')">△ مثلث</button>
+        </div>
+        <!-- Shape fill presets -->
+        <div class="ds-color-presets">
+          <div class="ds-cp" style="background:#7c3aed" onclick="document.getElementById('shapeFill').value='#7c3aed';syncSelected()"></div>
+          <div class="ds-cp" style="background:#2563eb" onclick="document.getElementById('shapeFill').value='#2563eb';syncSelected()"></div>
+          <div class="ds-cp" style="background:#c9a84c" onclick="document.getElementById('shapeFill').value='#c9a84c';syncSelected()"></div>
+          <div class="ds-cp" style="background:#ef4444" onclick="document.getElementById('shapeFill').value='#ef4444';syncSelected()"></div>
+          <div class="ds-cp" style="background:#10b981" onclick="document.getElementById('shapeFill').value='#10b981';syncSelected()"></div>
+          <div class="ds-cp" style="background:#111827" onclick="document.getElementById('shapeFill').value='#111827';syncSelected()"></div>
+          <div class="ds-cp" style="background:#fff;border:1px solid #2a2f3a" onclick="document.getElementById('shapeFill').value='#ffffff';syncSelected()"></div>
+          <div class="ds-cp" style="background:transparent;border:1px dashed #6b7280" onclick="document.getElementById('shapeFill').value='rgba(0,0,0,0)';syncSelected()" title="بدون تعبئة"></div>
+        </div>
+      </div>
+
+      <!-- Transform section -->
+      <div class="ds-section">
+        <div class="ds-section-title">تحويل</div>
+        <div class="ds-row">
+          <span class="ds-label">X</span>
+          <input class="ds-input" id="objX" type="number" value="250" style="width:60px" onchange="applyTransform()"/>
+          <span class="ds-label">Y</span>
+          <input class="ds-input" id="objY" type="number" value="250" style="width:60px" onchange="applyTransform()"/>
+        </div>
+        <div class="ds-row">
+          <span class="ds-label">W</span>
+          <input class="ds-input" id="objW" type="number" value="150" style="width:60px" onchange="applyTransform()"/>
+          <span class="ds-label">H</span>
+          <input class="ds-input" id="objH" type="number" value="80"  style="width:60px" onchange="applyTransform()"/>
+          <button class="ds-small-btn" id="lockBtn" onclick="dsToggleLock()" title="قفل النسبة">🔓</button>
+        </div>
+        <div class="ds-row">
+          <span class="ds-label">دوران</span>
+          <input class="ds-slider" id="objRot" type="range" value="0" min="-180" max="180" oninput="document.getElementById('rotVal').textContent=this.value+'°';applyTransform()"/>
+          <span id="rotVal" style="font-size:.65rem;color:#4b5563;min-width:32px">0°</span>
+        </div>
+        <div class="ds-row" style="margin-top:.3rem">
+          <button class="ds-small-btn" onclick="dsAlignLayer('hcenter')" title="توسيط أفقي">⬌</button>
+          <button class="ds-small-btn" onclick="dsAlignLayer('vcenter')" title="توسيط رأسي">⬍</button>
+          <button class="ds-small-btn" onclick="duplicateSelected()" title="نسخ">⊕ نسخ</button>
+          <button class="ds-small-btn red" onclick="deleteSelected()" title="حذف">✕</button>
+        </div>
+      </div>
+
+      <!-- Background section -->
+      <div class="ds-section">
+        <div class="ds-section-title">الخلفية</div>
+        <div class="ds-row">
+          <span class="ds-label">لون</span>
+          <input class="ds-color" id="bgColor" type="color" value="#ffffff"/>
+          <div class="ds-color-presets" style="flex:1">
+            <div class="ds-cp" style="background:#fff;border:1px solid #2a2f3a" onclick="document.getElementById('bgColor').value='#ffffff';if(window.dsSetBg)window.dsSetBg('#ffffff')"></div>
+            <div class="ds-cp" style="background:#000" onclick="document.getElementById('bgColor').value='#000000';if(window.dsSetBg)window.dsSetBg('#000000')"></div>
+            <div class="ds-cp" style="background:#111827" onclick="document.getElementById('bgColor').value='#111827';if(window.dsSetBg)window.dsSetBg('#111827')"></div>
+            <div class="ds-cp" style="background:transparent;border:1px dashed #6b7280" onclick="document.getElementById('bgColor').value='#ffffff';if(window.dsSetBg)window.dsSetBg('transparent')" title="شفاف"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upload section -->
+      <div class="ds-section">
+        <div class="ds-section-title">صورة</div>
+        <div class="ds-upload-zone" onclick="document.getElementById('dsImgUpload').click()">
+          🖼 اضغط لرفع صورة<br>
+          <span style="font-size:.65rem;color:#4b5563">PNG · JPG · SVG · WebP</span>
+        </div>
+      </div>
+
+      <!-- Templates mini -->
+      <div class="ds-section" id="dsTmplSection">
+        <div class="ds-section-title">قوالب سريعة</div>
+        <div class="ds-tmpl-mini" id="dsTmplMini"></div>
+      </div>
+
+      <!-- Layers -->
+      <div class="ds-section" style="border-bottom:none">
+        <div class="ds-section-title" style="display:flex;align-items:center;justify-content:space-between">
+          <span>الطبقات</span>
+          <span id="dsLayerCount" style="font-size:.62rem;color:#4b5563">0</span>
+        </div>
+        <div id="layersList"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Status bar -->
+  <div class="ds-statusbar">
+    <span id="dsStatusTool">أداة: تحديد</span>
+    <span>|</span>
+    <span>موضع: <span id="dsCursorPos">—</span></span>
+    <span>|</span>
+    <span>طبقات: <span id="dsLayerCountStatus">0</span></span>
+    <span>|</span>
+    <span id="dsStatusSelected">لا يوجد تحديد</span>
+    <div style="flex:1"></div>
+    <span id="dsModeTag" style="color:#c9a84c">—</span>
+  </div>
+</div>
+
+<!-- ===== ORDER FORM MODAL ===== -->
+<div class="order-modal" id="orderModal">
+  <div class="order-box">
+    <div class="order-header">
+      <h2 id="orderTitle">📋 نموذج الطلب</h2>
+      <button class="close-btn" onclick="closeOrderForm()">✕</button>
+    </div>
+    <div class="order-body">
+      <div id="formContent">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label" id="fName">الاسم الكامل *</label><input class="form-input" id="inp-name" placeholder="أحمد بن علي"/></div>
+          <div class="form-group"><label class="form-label" id="fPhone">الهاتف *</label><input class="form-input" id="inp-phone" placeholder="0555 123 456" type="tel"/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" id="fProduct">المنتج *</label>
+            <select class="form-input" id="inp-product">
+              <option value="">اختر...</option>
+              <option value="tshirt">👕 تيشرت</option>
+              <option value="mug">☕ كوب</option>
+              <option value="hat">🧢 قبعة</option>
+              <option value="hoodie">🧥 هودي</option>
+              <option value="bag">👜 حقيبة</option>
+              <option value="papers">📄 طباعة ورقية</option>
+              <option value="packs">📦 باكات</option>
+              <option value="accessories">🔑 إكسسوارات</option>
+              <option value="stamps">🔖 أختام</option>
+              <option value="other">أخرى</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label" id="fQty">الكمية *</label><input class="form-input" id="inp-qty" type="number" placeholder="1" min="1"/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label" id="fEmail">البريد الإلكتروني</label><input class="form-input" id="inp-email" type="email" placeholder="your@email.com"/></div>
+          <div class="form-group"><label class="form-label" id="fCity">المدينة / الولاية</label><input class="form-input" id="inp-city" placeholder="الجزائر"/></div>
+        </div>
+        <div class="form-group"><label class="form-label" id="fNotes">ملاحظات / وصف التصميم</label><textarea class="form-textarea" id="inp-notes" rows="3" placeholder="صِف تصميمك أو أضف تفاصيل إضافية..."></textarea></div>
+        <button class="submit-btn" id="submitBtn" onclick="submitOrder()">✦ إرسال الطلب</button>
+      </div>
+      <div class="form-success" id="formSuccess">
+        <div class="success-icon">✅</div>
+        <h3 id="successTitle">تم الإرسال!</h3>
+        <p id="successMsg">شكراً! سيتواصل معك فريق A3M خلال 24 ساعة.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ACCOUNT MODAL ===== -->
+<div class="account-modal" id="accountModal">
+  <div class="account-box">
+    <div class="acc-header"><h2>👤 حسابي</h2><button class="close-btn" onclick="closeAccount()">✕</button></div>
+    <div id="authPane" style="padding:1.4rem">
+      <div id="loginForm">
+        <div class="auth-form-header"><div class="auth-logo">A<span class="r">3</span><span class="g">M</span> Account</div><div class="auth-subtitle" id="authSubtitle">تسجيل الدخول للوصول لتصاميمك وطلباتك</div></div>
+        <div class="auth-form">
+          <div class="form-group"><label class="form-label">البريد الإلكتروني</label><input class="form-input" id="loginEmail" placeholder="your@email.com" type="email"/></div>
+          <div class="form-group"><label class="form-label">كلمة المرور</label><input class="form-input" id="loginPass" placeholder="••••••••" type="password"/></div>
+          <button class="submit-btn" onclick="doLogin()" id="loginBtn">تسجيل الدخول</button>
+          <div class="auth-divider">— أو —</div>
+          <div class="auth-switch">ليس لديك حساب؟ <a onclick="showRegister()">إنشاء حساب</a></div>
+        </div>
+      </div>
+      <div id="registerForm" style="display:none">
+        <div class="auth-form-header"><div class="auth-logo">إنشاء حساب</div><div class="auth-subtitle">انضم لمجتمع A3M</div></div>
+        <div class="auth-form">
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">الاسم الكامل</label><input class="form-input" id="regName" placeholder="أحمد بن علي"/></div>
+            <div class="form-group"><label class="form-label">اسم المستخدم</label><input class="form-input" id="regUser" placeholder="@ahmed"/></div>
+          </div>
+          <div class="form-group"><label class="form-label">البريد الإلكتروني</label><input class="form-input" id="regEmail" placeholder="your@email.com" type="email"/></div>
+          <div class="form-group"><label class="form-label">كلمة المرور</label><input class="form-input" id="regPass" placeholder="••••••••" type="password"/></div>
+          <button class="submit-btn" onclick="doRegister()">إنشاء الحساب</button>
+          <div class="auth-switch">لديك حساب؟ <a onclick="showLogin()">تسجيل الدخول</a></div>
+        </div>
+      </div>
+    </div>
+    <div id="profilePane" style="display:none">
+      <div class="acc-tabs">
+        <div class="acc-tab active" onclick="switchAccTab('profile')">👤 الملف</div>
+        <div class="acc-tab" onclick="switchAccTab('designs')">🎨 تصاميمي</div>
+        <div class="acc-tab" onclick="switchAccTab('orders')">📦 طلباتي</div>
+        <div class="acc-tab" onclick="switchAccTab('follow')">👥 اجتماعي</div>
+      </div>
+      <div class="acc-pane active" id="tab-profile">
+        <div class="acc-profile-row">
+          <div class="acc-avatar" id="accAvatar" onclick="changeAvatar()"><span id="accAvatarLetter">A</span><div class="acc-avatar-edit">✏</div></div>
+          <div><div class="acc-name" id="accName">Ahmed</div><div class="acc-username" id="accUsername">@ahmed</div><button style="margin-top:.5rem;background:none;border:1px solid var(--border2);border-radius:6px;padding:4px 12px;cursor:pointer;font-size:11px;color:var(--accent);font-family:inherit;transition:.2s" onclick="doLogout()" onmouseover="this.style.background='var(--accent)';this.style.color='#fff'" onmouseout="this.style.background='none';this.style.color='var(--accent)'">تسجيل الخروج</button></div>
+        </div>
+        <div class="xp-section">
+          <div class="xp-header"><span class="xp-rank" id="xpRankLabel">🪨 Iron</span><span class="xp-pts" id="xpPtsLabel">0 / 100 XP</span></div>
+          <div class="xp-bar-wrap"><div class="xp-bar-fill" id="xpBarFill" style="width:0%"></div></div>
+          <div class="xp-milestones"><span class="xp-milestone">🪨</span><span class="xp-milestone">🥉</span><span class="xp-milestone">🥇</span><span class="xp-milestone">💎</span><span class="xp-milestone">⭐</span></div>
+        </div>
+        <div class="acc-stats">
+          <div class="acc-stat"><div class="acc-stat-num" id="statFollowers">0</div><div class="acc-stat-label">متابعون</div></div>
+          <div class="acc-stat"><div class="acc-stat-num" id="statFollowing">0</div><div class="acc-stat-label">متابَعون</div></div>
+          <div class="acc-stat"><div class="acc-stat-num" id="statDesigns">0</div><div class="acc-stat-label">تصاميم</div></div>
+          <div class="acc-stat"><div class="acc-stat-num" id="statSold">0</div><div class="acc-stat-label">مُباع</div></div>
+        </div>
+      </div>
+      <div class="acc-pane" id="tab-designs">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.9rem">
+          <div style="font-weight:700;font-size:14px;color:var(--txt)">تصاميمي المنشورة</div>
+          <button class="d-btn d-btn-accent" style="font-size:11px;padding:5px 12px" onclick="closeAccount();openProductSelector()">+ تصميم جديد</button>
+        </div>
+        <div class="designs-grid" id="designsGrid"><div class="design-thumb" onclick="closeAccount();openProductSelector()" title="جديد">+</div></div>
+      </div>
+      <div class="acc-pane" id="tab-orders"><div id="ordersList" style="font-size:13px;color:var(--txt3);text-align:center;padding:2rem">لا توجد طلبات بعد</div></div>
+      <div class="acc-pane" id="tab-follow">
+        <div class="acc-stats" style="grid-template-columns:1fr 1fr;margin-bottom:1rem">
+          <div class="acc-stat"><div class="acc-stat-num" id="statFollowers2">0</div><div class="acc-stat-label">متابعون</div></div>
+          <div class="acc-stat"><div class="acc-stat-num" id="statFollowing2">0</div><div class="acc-stat-label">متابَعون</div></div>
+        </div>
+        <div style="font-size:13px;color:var(--txt3);text-align:center;padding:1rem">ميزات المجتمع قادمة قريباً 🚀</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- ===== SCRIPTS ===== -->
+<script>
+  (function(){
+    var t = localStorage.getItem("a3m_theme") || "blue-dark";
+    document.body.className = t;
+  })();
+</script>
+
+<script type="module" src="./js/main.js"></script>
+<script src="./js/ai.js"></script>
+
+<!-- ══════════════════════════════════════════════
+     PRODUCT SELECTOR LOGIC
+══════════════════════════════════════════════ -->
+<script>
+(function(){
+  'use strict';
+
+  const CATS = [
+    { id:'mugs',        icon:'☕', ar:'أكواب',           en:'Mugs',         hasSub:false, scratchSoon:true  },
+    { id:'cap',         icon:'🧢', ar:'كابات',           en:'Cap',          hasSub:false, scratchSoon:true  },
+    { id:'tshirt',      icon:'👕', ar:'تيشيرت',          en:'T-Shirt',      hasSub:false, scratchSoon:true  },
+    { id:'hoodie',      icon:'🧥', ar:'هودي',            en:'Hoodie',       hasSub:false, scratchSoon:true  },
+    { id:'papers',      icon:'📄', ar:'أوراق',           en:'Papers',       hasSub:true,  scratchSoon:true  },
+    { id:'packs',       icon:'📦', ar:'حقائب وباكات',   en:'Packs',        hasSub:true,  scratchSoon:true  },
+    { id:'accessories', icon:'🔑', ar:'إكسسوارات',       en:'Accessories',  hasSub:true,  scratchSoon:true  },
+    { id:'stamps',      icon:'🔖', ar:'أختام',           en:'Stamps',       hasSub:'size',scratchSoon:false },
+  ];
+
+  const SUBCATS = {
+    papers: [
+      { id:'a0', icon:'📋', label:'A0', desc:'84.1 × 118.9 cm' },
+      { id:'a1', icon:'📋', label:'A1', desc:'59.4 × 84.1 cm' },
+      { id:'a2', icon:'📋', label:'A2', desc:'42.0 × 59.4 cm' },
+      { id:'a3', icon:'📋', label:'A3', desc:'29.7 × 42.0 cm' },
+      { id:'a4', icon:'📋', label:'A4', desc:'21.0 × 29.7 cm' },
+      { id:'a5', icon:'📋', label:'A5', desc:'14.8 × 21.0 cm' },
+    ],
+    packs: [
+      { id:'hand',      icon:'👜', label:'Hand Pack',      desc:'حقيبة يد' },
+      { id:'packaging', icon:'📦', label:'Packaging Pack', desc:'تغليف احترافي' },
+      { id:'back',      icon:'🎒', label:'Back Pack',      desc:'حقيبة ظهر' },
+    ],
+    accessories: [
+      { id:'keychain', icon:'🔑', label:'Key Chain', desc:'سلسلة مفاتيح' },
+      { id:'pin',      icon:'📌', label:'Pin Badge', desc:'بادج دبوس' },
+    ],
+  };
+
+  const STAMP_SIZES = [
+    { id:'sq20', shape:'square', label:'20×20 mm', w:20, h:20 },
+    { id:'sq30', shape:'square', label:'30×30 mm', w:30, h:30 },
+    { id:'sq40', shape:'square', label:'40×40 mm', w:40, h:40 },
+    { id:'rc40', shape:'rect',   label:'40×25 mm', w:40, h:25 },
+    { id:'rc50', shape:'rect',   label:'50×30 mm', w:50, h:30 },
+    { id:'rc60', shape:'rect',   label:'60×40 mm', w:60, h:40 },
+    { id:'ci30', shape:'circle', label:'⌀ 30 mm',  w:30, h:30 },
+    { id:'ci40', shape:'circle', label:'⌀ 40 mm',  w:40, h:40 },
+    { id:'ci50', shape:'circle', label:'⌀ 50 mm',  w:50, h:50 },
+  ];
+
+  const TEMPLATES = {
+    mugs:   [{icon:'☕',name:'Classic Mug',bg:'#111'},{icon:'🌊',name:'Wave Pattern',bg:'#0a1628'},{icon:'🔤',name:'Bold Text',bg:'#1a0a2e'},{icon:'🌿',name:'Botanical',bg:'#0a1f0a'}],
+    cap:    [{icon:'🧢',name:'Street Style',bg:'#111'},{icon:'🏆',name:'Sports Cap',bg:'#0a1628'},{icon:'✨',name:'Minimal',bg:'#1f1f1f'},{icon:'🔥',name:'Flame',bg:'#1a0800'}],
+    tshirt: [{icon:'🅰',name:'Bold Logo',bg:'#111'},{icon:'✏',name:'Graffiti',bg:'#0d0d1a'},{icon:'◻',name:'Minimal',bg:'#fff'},{icon:'𝒮',name:'Script',bg:'#fafaf5'},{icon:'🛸',name:'Orbitron',bg:'#0a0a1a'},{icon:'🏅',name:'Classic',bg:'#111'}],
+    hoodie: [{icon:'🧥',name:'Urban',bg:'#111'},{icon:'🌙',name:'Night Vibe',bg:'#0a0a1a'},{icon:'⚡',name:'Electric',bg:'#001a1a'},{icon:'🎭',name:'Art Drop',bg:'#1a001a'}],
+    papers: [{icon:'📄',name:'Clean Layout',bg:'#fff'},{icon:'📐',name:'Grid Style',bg:'#f8f8ff'},{icon:'🎨',name:'Colorful',bg:'#fff0f5'},{icon:'🖋',name:'Letterhead',bg:'#fffff0'}],
+    packs:  [{icon:'📦',name:'Minimal Box',bg:'#fff'},{icon:'🌈',name:'Vibrant',bg:'#fff'},{icon:'🤍',name:'Clean White',bg:'#f5f5f5'}],
+    accessories:[{icon:'🔑',name:'Chain Classic',bg:'#111'},{icon:'🌟',name:'Star Shape',bg:'#0a0a1a'},{icon:'💎',name:'Premium',bg:'#0a1628'}],
+    stamps: [{icon:'🔖',name:'Business',bg:'#fff'},{icon:'🎨',name:'Creative',bg:'#fffff0'},{icon:'📮',name:'Postal Style',bg:'#fff5e0'},{icon:'💼',name:'Corporate',bg:'#f0f4ff'}],
+  };
+
+  let psMode = null, psCat = null, psSubcat = null, psStampSize = null;
+  let psHistory = [];
+
+  function psShowScreen(id) {
+    document.querySelectorAll('.ps-screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    psBuildBreadcrumb();
+  }
+
+  function psBuildBreadcrumb() {
+    const bc = document.getElementById('psBreadcrumb');
+    if(!bc) return;
+    const items = [];
+    if(psMode) items.push({label: psMode==='scratch'?'من الصفر':'قوالب جاهزة'});
+    if(psCat) { const c=CATS.find(x=>x.id===psCat); items.push({label:c?c.ar:psCat}); }
+    if(psSubcat) items.push({label:psSubcat.toUpperCase()});
+    if(psStampSize) items.push({label:psStampSize});
+    bc.innerHTML = items.map((it,i)=>`${i>0?'<span class="ps-bc-sep">›</span>':''}<span class="ps-bc-item active">${it.label}</span>`).join('');
+  }
+
+  window.openProductSelector = function() {
+    psMode=null; psCat=null; psSubcat=null; psStampSize=null; psHistory=[];
+    psShowScreen('ps-s0');
+    document.getElementById('psOverlay').classList.add('open');
+    // close old modePicker if present
+    const mp = document.getElementById('modePicker');
+    if(mp) mp.style.display='none';
+  };
+
+  window.closeProductSelector = function() {
+    document.getElementById('psOverlay').classList.remove('open');
+  };
+
+  window.psPickMode = function(mode) {
+    psMode = mode;
+    psHistory.push('ps-s0');
+    // Build category screen
+    const s1sub = document.getElementById('ps-s1-sub');
+    if(s1sub) s1sub.textContent = mode==='scratch' ? 'اختر نوع المنتج — ستبدأ بلوحة فارغة تتحكم بأبعادها' : 'اختر نوع المنتج الذي تريد تصميمه';
+
+    const grid = document.getElementById('psCatGrid');
+    grid.innerHTML = CATS.map(c => {
+      const isSoon = mode==='scratch' && c.scratchSoon;
+      return `<div class="ps-cat-card ${isSoon?'cs':''}" onclick="${isSoon?'':(`psPickCat('${c.id}')`)}">
+        ${isSoon?'<span class="ps-cs-badge">قريبًا</span>':''}
+        <span class="ps-cc-icon">${c.icon}</span>
+        <div class="ps-cc-title">${c.ar}</div>
+        <div class="ps-cc-en">${c.en}</div>
+      </div>`;
+    }).join('');
+    psShowScreen('ps-s1');
+  };
+
+  window.psPickCat = function(catId) {
+    psCat = catId;
+    psHistory.push('ps-s1');
+    const cat = CATS.find(c=>c.id===catId);
+
+    if(cat.hasSub === 'size') {
+      // Stamps: go to size picker
+      psBuildStampSizes();
+      psShowScreen('ps-s3');
+    } else if(cat.hasSub && SUBCATS[catId]) {
+      // Has sub-categories
+      const s2title = document.getElementById('ps-s2-title');
+      const s2sub   = document.getElementById('ps-s2-sub');
+      if(s2title) s2title.innerHTML = `اختر <span>${cat.ar}</span>`;
+      if(s2sub)   s2sub.textContent = '';
+      const grid = document.getElementById('psSubGrid');
+      grid.innerHTML = SUBCATS[catId].map(item=>`
+        <div class="ps-sub-card" onclick="psPickSubcat('${item.id}')">
+          <span class="ps-sub-icon">${item.icon}</span>
+          <div class="ps-sub-label">${item.label}</div>
+          <div class="ps-sub-desc">${item.desc}</div>
+        </div>
+      `).join('');
+      psShowScreen('ps-s2');
+    } else {
+      // Go directly to templates or designer
+      if(psMode==='template') { psBuildTemplates(catId); psShowScreen('ps-s4'); }
+      else { psLaunchScratch(catId); }
+    }
+  };
+
+  window.psPickSubcat = function(subId) {
+    psSubcat = subId;
+    psHistory.push('ps-s2');
+    if(psMode==='template') { psBuildTemplates(psCat); psShowScreen('ps-s4'); }
+    else { psLaunchScratch(psCat); }
+  };
+
+  function psBuildStampSizes() {
+    const grid = document.getElementById('psStampGrid');
+    grid.innerHTML = STAMP_SIZES.map(sz=>{
+      let svg='';
+      if(sz.shape==='circle')
+        svg=`<svg width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" fill="none" stroke="#c9a84c" stroke-width="2" stroke-dasharray="5,3"/></svg>`;
+      else if(sz.shape==='square')
+        svg=`<svg width="48" height="48" viewBox="0 0 48 48"><rect x="4" y="4" width="40" height="40" rx="3" fill="none" stroke="#c9a84c" stroke-width="2" stroke-dasharray="5,3"/></svg>`;
+      else
+        svg=`<svg width="60" height="40" viewBox="0 0 60 40"><rect x="3" y="3" width="54" height="34" rx="3" fill="none" stroke="#c9a84c" stroke-width="2" stroke-dasharray="5,3"/></svg>`;
+      return `<div class="ps-sz-card" onclick="psPickStampSize('${sz.id}','${sz.label}')">
+        <div class="ps-sz-shape">${svg}</div>
+        <div class="ps-sz-label">${sz.label}</div>
+        <div class="ps-sz-type">${sz.shape==='circle'?'دائري':sz.w===sz.h?'مربع':'مستطيل'}</div>
+      </div>`;
+    }).join('');
+  }
+
+  window.psPickStampSize = function(sizeId, label) {
+    psStampSize = label;
+    psHistory.push('ps-s3');
+    if(psMode==='template') { psBuildTemplates('stamps'); psShowScreen('ps-s4'); }
+    else { psLaunchScratch('stamps'); }
+  };
+
+  function psBuildTemplates(catId) {
+    const tmpls = TEMPLATES[catId] || TEMPLATES.tshirt;
+    const grid = document.getElementById('psTmplGrid');
+    grid.innerHTML = tmpls.map((t,i)=>`
+      <div class="ps-tmpl-card" onclick="psPickTemplate('${catId}',${i},'${t.name}')">
+        <div class="ps-tmpl-thumb" style="background:${t.bg||'#111'}">
+          <span style="font-size:2.4rem">${t.icon}</span>
+        </div>
+        <div class="ps-tmpl-name">${t.name}</div>
+      </div>
+    `).join('');
+  }
+
+  window.psPickTemplate = function(catId, idx, name) {
+    closeProductSelector();
+    // Launch designer in template mode
+    psLaunchDesigner(catId, name, false);
+  };
+
+  function psLaunchScratch(catId) {
+    closeProductSelector();
+    psLaunchDesigner(catId, null, true);
+  }
+
+  function psLaunchDesigner(catId, templateName, isScratch) {
+    var cat = CATS.find(function(c){ return c.id===catId; });
+
+    // Set designer title/tag
+    var dsTitle   = document.getElementById('dsTitle');
+    var dsTag     = document.getElementById('dsTag');
+    var dsModeTag = document.getElementById('dsModeTag');
+    if(dsTitle)   dsTitle.textContent   = 'Design Studio \u00b7 '+(cat?cat.ar:catId);
+    if(dsTag)     dsTag.textContent     = isScratch ? '\u0645\u0646 \u0627\u0644\u0635\u0641\u0631' : (templateName||'\u0642\u0627\u0644\u0628');
+    if(dsModeTag) dsModeTag.textContent = (cat?cat.ar:catId)+(psSubcat?' \u00b7 '+psSubcat.toUpperCase():'')+(psStampSize?' \u00b7 '+psStampSize:'');
+
+    // Scratch size picker
+    var sizePicker = document.getElementById('dsSizePicker');
+    if(sizePicker) sizePicker.classList.toggle('show', !!isScratch);
+
+    function _launch() {
+      // openDesigner() in designer.js handles: modal open, canvas init, event bind
+      if(typeof window.openDesigner === 'function') {
+        window.openDesigner(isScratch ? 'scratch' : 'template');
+      } else {
+        var dm = document.getElementById('designerModal');
+        if(dm) dm.classList.add('open');
+      }
+      // Apply template after canvas is ready (openDesigner has 80ms internal delay)
+      setTimeout(function(){
+        if(!isScratch && templateName && window.TEMPLATES) {
+          var t = window.TEMPLATES.find(function(x){ return x.name===templateName; });
+          if(t && typeof t.fn==='function') { if(typeof saveHist==='function') saveHist(); t.fn(); }
+        }
+        dsBuildTmplMini(catId);
+        if(typeof translateDesignerUI==='function') translateDesignerUI();
+      }, 250);
+    }
+
+    // If modules ready: launch now. Otherwise wait.
+    if(window._a3mModulesReady) {
+      _launch();
+    } else {
+      window.addEventListener('a3m-ready', _launch, { once: true });
+    }
+  }
+
+  function dsBuildTmplMini(catId) {
+    const grid = document.getElementById('dsTmplMini');
+    if(!grid) return;
+    const tmpls = TEMPLATES[catId] || TEMPLATES.tshirt;
+    grid.innerHTML = tmpls.map((t,i)=>`
+      <div class="ds-tmpl-mini-item" onclick="dsApplyTmpl(${i},'${catId}')" title="${t.name}">
+        <span style="font-size:1.4rem">${t.icon}</span>
+        <span class="ds-tmpl-mini-name">${t.name}</span>
+      </div>
+    `).join('');
+  }
+
+  window.dsApplyTmpl = function(idx, catId) {
+    const tmpls = TEMPLATES[catId] || TEMPLATES.tshirt;
+    const t = tmpls[idx];
+    if(!t) return;
+    // Try to match with designer.js TEMPLATES
+    if(window.TEMPLATES) {
+      const dt = window.TEMPLATES.find(x=>x.name===t.name);
+      if(dt && typeof dt.fn==='function') { if(typeof saveHist==='function') saveHist(); dt.fn(); showToast('✦ '+t.name); return; }
+    }
+    showToast('✦ '+t.name);
+  };
+
+  window.psGoBack = function() {
+    if(!psHistory.length) return;
+    const prev = psHistory.pop();
+    if(prev==='ps-s0') { psMode=null; }
+    else if(prev==='ps-s1') { psCat=null; }
+    else if(prev==='ps-s2') { psSubcat=null; }
+    else if(prev==='ps-s3') { psStampSize=null; }
+    psShowScreen(prev);
+  };
+
+  window.closeDesignerModal = function() {
+    const dm = document.getElementById('designerModal');
+    if(dm) dm.classList.remove('open');
+  };
+
+  // ── Bridge old openDesigner calls ──
+  window.openModePicker = window.openProductSelector;
+  window.closeModePicker = window.closeProductSelector;
+  // window.openDesigner is set by designer.js — do not override here
+
+})();
+</script>
+
+<!-- ══════════════════════════════════════════════
+     DESIGNER ENHANCEMENTS (canvas UX upgrades)
+══════════════════════════════════════════════ -->
+<script>
+(function(){
+
+  // Zoom
+  let _zoom = 1;
+  window.dsZoom = function(delta) {
+    _zoom = Math.min(3, Math.max(0.2, _zoom + delta));
+    const wrap = document.getElementById('dsCanvasWrap');
+    if(wrap) wrap.style.transform = `scale(${_zoom})`;
+    document.getElementById('dsZoomVal').textContent = Math.round(_zoom*100)+'%';
+  };
+  window.dsFitCanvas = function() {
+    const area = document.getElementById('dsCanvasArea');
+    const canvas = document.getElementById('designCanvas');
+    if(!area||!canvas) return;
+    const scaleW = (area.clientWidth - 80) / canvas.width;
+    const scaleH = (area.clientHeight - 80) / canvas.height;
+    _zoom = Math.min(scaleW, scaleH, 1);
+    const wrap = document.getElementById('dsCanvasWrap');
+    if(wrap) wrap.style.transform = `scale(${_zoom})`;
+    document.getElementById('dsZoomVal').textContent = Math.round(_zoom*100)+'%';
+  };
+
+  // Canvas size (scratch)
+  window.dsApplyPreset = function(w,h) {
+    document.getElementById('dsCanvasW').value = w;
+    document.getElementById('dsCanvasH').value = h;
+    dsApplyCanvasSize();
+  };
+  window.dsApplyCanvasSize = function() {
+    const w = parseInt(document.getElementById('dsCanvasW').value)||500;
+    const h = parseInt(document.getElementById('dsCanvasH').value)||500;
+    const canvas = document.getElementById('designCanvas');
+    if(!canvas) return;
+    canvas.width  = Math.min(w,4000);
+    canvas.height = Math.min(h,4000);
+    document.getElementById('dsSizeInfo').textContent = canvas.width+' × '+canvas.height+' px';
+    if(typeof drawAll==='function') drawAll();
+    dsFitCanvas();
+    showToast('📐 '+canvas.width+' × '+canvas.height);
+  };
+
+  // Cursor position tracking
+  document.addEventListener('DOMContentLoaded',()=>{
+    const canvas = document.getElementById('designCanvas');
+    if(canvas){
+      canvas.addEventListener('mousemove', e=>{
+        const r=canvas.getBoundingClientRect(), scale=canvas.width/r.width;
+        const x=Math.round((e.clientX-r.left)*scale);
+        const y=Math.round((e.clientY-r.top)*scale);
+        const el=document.getElementById('dsCursorPos');
+        if(el) el.textContent=x+', '+y;
+      });
+    }
+  });
+
+  // Tool setter bridging
+  window.dsTool = function(t) {
+    if(typeof setTool==='function') setTool(t);
+    // Update toolbar UI
+    document.querySelectorAll('.ds-tool').forEach(b=>b.classList.remove('active'));
+    const btn = document.getElementById('dt-'+t);
+    if(btn) btn.classList.add('active');
+    // Status bar
+    const tools={select:'تحديد',text:'نص',rect:'مستطيل',circle:'دائرة',triangle:'مثلث',pen:'قلم'};
+    const el=document.getElementById('dsStatusTool');
+    if(el) el.textContent='أداة: '+(tools[t]||t);
+  };
+
+  // Align helpers
+  window.dsAlignLayer = function(dir) {
+    const canvas = document.getElementById('designCanvas');
+    if(!canvas||typeof layers==='undefined'||!selectedId) return;
+    const l = layers.find(x=>x.id===selectedId);
+    if(!l) return;
+    if(typeof saveHist==='function') saveHist();
+    if(dir==='hcenter') l.x = canvas.width/2 - l.w/2;
+    if(dir==='vcenter') l.y = canvas.height/2 - l.h/2;
+    if(typeof drawAll==='function') drawAll();
+  };
+
+  // Lock ratio
+  let _locked = false;
+  window.dsToggleLock = function() {
+    _locked = !_locked;
+    const btn = document.getElementById('lockBtn');
+    if(btn) btn.textContent = _locked ? '🔒' : '🔓';
+  };
+
+  // Text style toggles
+  window.dsToggleTxtStyle = function(style) {
+    if(typeof layers==='undefined'||!selectedId) return;
+    const l = layers.find(x=>x.id===selectedId);
+    if(!l||l.type!=='text') return;
+    if(typeof saveHist==='function') saveHist();
+    if(style==='bold')      l.bold      = !l.bold;
+    if(style==='italic')    l.italic    = !l.italic;
+    if(style==='underline') l.underline = !l.underline;
+    if(typeof drawAll==='function') drawAll();
+    ['bold','italic','underline'].forEach(s=>{
+      const btn=document.getElementById('tb'+s.charAt(0).toUpperCase()+s.slice(1));
+      if(btn) btn.classList.toggle('active-btn', l[s]);
+    });
+  };
+
+  // Bg color direct setter
+  window.dsSetBg = function(c) {
+    if(typeof bgColorVal!=='undefined') window.bgColorVal=c;
+    if(typeof drawAll==='function') drawAll();
+  };
+
+  // Download
+  window.dsDownload = function() { if(typeof downloadDesign==='function') downloadDesign(); };
+  window.dsSaveCart = function() { if(typeof saveToCart==='function') saveToCart(); };
+  window.dsUndo = function()     { if(typeof undoAction==='function') undoAction(); };
+  window.dsClearCanvas = function() {
+    if(typeof clearCanvas==='function'){ if(typeof saveHist==='function') saveHist(); clearCanvas(); }
+  };
+  window.dsBringForward = function()  { if(typeof bringForward==='function') bringForward(); };
+  window.dsSendBackward = function()  { if(typeof sendBackward==='function') sendBackward(); };
+  window.dsFlipH = function()         { if(typeof flipH==='function') flipH(); };
+  window.dsFlipV = function()         { if(typeof flipV==='function') flipV(); };
+  window.dsUploadImage = function(e)  { if(typeof uploadImage==='function') uploadImage(e); };
+
+  // Opacity slider sync (shapeOpacity is now a range, but designer.js reads the hidden number input)
+  document.addEventListener('input', e=>{
+    if(e.target.id==='shapeOpacity'){
+      const h = document.getElementById('shapeOpacityHidden');
+      if(h) h.value = e.target.value;
+    }
+  });
+
+  // Layer count updater — patch drawAll
+  const _orig_notifyChange = window.notifyChange;
+  window.notifyChange = function(){
+    if(_orig_notifyChange) _orig_notifyChange.apply(this,arguments);
+    try {
+      const cnt = (typeof layers!=='undefined') ? layers.length : 0;
+      ['dsLayerCount','dsLayerCountStatus'].forEach(id=>{
+        const el=document.getElementById(id); if(el) el.textContent=cnt;
+      });
+    } catch(e){}
+  };
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', e=>{
+    const dm=document.getElementById('designerModal');
+    if(!dm||!dm.classList.contains('open')) return;
+    if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT') return;
+    if(e.key==='v'||e.key==='V') dsTool('select');
+    if(e.key==='t'||e.key==='T') dsTool('text');
+    if(e.key==='r'||e.key==='R') dsTool('rect');
+    if(e.key==='c'||e.key==='C') dsTool('circle');
+    if(e.key==='Delete'||e.key==='Backspace') { if(typeof deleteSelected==='function') deleteSelected(); }
+    if((e.ctrlKey||e.metaKey)&&e.key==='z') { e.preventDefault(); if(typeof undoAction==='function') undoAction(); }
+    if((e.ctrlKey||e.metaKey)&&e.key==='d') { e.preventDefault(); if(typeof duplicateSelected==='function') duplicateSelected(); }
+    if(e.key==='+'||e.key==='=') dsZoom(0.1);
+    if(e.key==='-') dsZoom(-0.1);
+    if(e.key==='0') { _zoom=1; const w=document.getElementById('dsCanvasWrap'); if(w) w.style.transform='scale(1)'; document.getElementById('dsZoomVal').textContent='100%'; }
+    if(e.key==='Escape') closeDesignerModal();
+  });
+
+})();
+</script>
+
+<!-- ══════════════════════════════════════════════
+     EXISTING INLINE HELPERS (theme, lang, etc.) — moved to bottom script block
+══════════════════════════════════════════════ -->
+
+<!-- ===== SIDEBAR ===== -->
+<div class="sidebar sidebar-left" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">A<span class="r">3</span><span class="g">M</span></div>
+    <button class="sidebar-close" onclick="closeSidebar()">✕</button>
+  </div>
+  <div class="sidebar-menu">
+
+    <div class="sidebar-item" onclick="toggleSB(this,'tkhfid')">
+      <div class="sidebar-item-header">
+        <span>🏷️ <span id="sb-disc">Discounts</span></span>
+        <span class="sidebar-arrow">›</span>
+      </div>
+      <div class="sidebar-sub" id="sub-tkhfid">
+        <div class="sidebar-sub-item" onclick="filterAndClose('all')">🔥 <span class="sb-t" data-ar="كل العروض" data-en="All Deals" data-fr="Toutes les offres">All Deals</span></div>
+        <div class="sidebar-sub-item" onclick="filterAndClose('tshirt')">👕 <span class="sb-t" data-ar="تيشرتات" data-en="T-Shirts" data-fr="T-Shirts">T-Shirts</span></div>
+        <div class="sidebar-sub-item" onclick="filterAndClose('mug')">☕ <span class="sb-t" data-ar="أكواب" data-en="Mugs" data-fr="Tasses">Mugs</span></div>
+        <div class="sidebar-sub-item" onclick="filterAndClose('hat')">🧢 <span class="sb-t" data-ar="قبعات" data-en="Caps" data-fr="Casquettes">Caps</span></div>
+      </div>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-item" onclick="toggleSB(this,'excl')">
+      <div class="sidebar-item-header">
+        <span>⭐ <span class="sb-t" data-ar="حصري" data-en="Exclusive" data-fr="Exclusif">Exclusive</span></span>
+        <span class="sidebar-arrow">›</span>
+      </div>
+      <div class="sidebar-sub" id="sub-excl">
+        <div class="sidebar-sub-item" onclick="filterAndClose('hat')">🧢 <span class="sb-t" data-ar="قبعات ذهبية" data-en="Gold Caps" data-fr="Casquettes Or">Gold Caps</span></div>
+        <div class="sidebar-sub-item" onclick="filterAndClose('laser')">🔆 <span class="sb-t" data-ar="نقش ليزر" data-en="Laser Engraving" data-fr="Gravure Laser">Laser Engraving</span></div>
+        <div class="sidebar-sub-item" onclick="filterAndClose('bag')">👜 <span class="sb-t" data-ar="حقائب بريميوم" data-en="Premium Bags" data-fr="Sacs Premium">Premium Bags</span></div>
+      </div>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-item" onclick="toggleSB(this,'trending')">
+      <div class="sidebar-item-header">
+        <span>🔥 <span class="sb-t" data-ar="الأكثر مبيعاً" data-en="Trending" data-fr="Tendances">Trending</span></span>
+        <span class="sidebar-arrow">›</span>
+      </div>
+      <div class="sidebar-sub" id="sub-trending">
+        <div class="sidebar-sub-item" onclick="filterAndClose('tshirt')">👕 <span class="sb-t" data-ar="تيشرتات رائجة" data-en="Trending T-Shirts" data-fr="T-Shirts Tendance">Trending T-Shirts</span></div>
+        <div class="sidebar-sub-item" onclick="filterAndClose('mug')">☕ <span class="sb-t" data-ar="أكواب شهيرة" data-en="Popular Mugs" data-fr="Tasses Populaires">Popular Mugs</span></div>
+        <div class="sidebar-sub-item" onclick="filterAndClose('hat')">🧢 <span class="sb-t" data-ar="قبعات موسمية" data-en="Seasonal Caps" data-fr="Casquettes Saisonnières">Seasonal Caps</span></div>
+      </div>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-item" onclick="toggleSB(this,'community')">
+      <div class="sidebar-item-header">
+        <span>👥 <span class="sb-t" data-ar="المجتمع" data-en="Community" data-fr="Communauté">Community</span></span>
+        <span class="sidebar-arrow">›</span>
+      </div>
+      <div class="sidebar-sub" id="sub-community">
+        <div class="sidebar-sub-item" onclick="openAccount()">🎨 <span class="sb-t" data-ar="تصاميمي" data-en="My Designs" data-fr="Mes Créations">My Designs</span></div>
+        <div class="sidebar-sub-item" onclick="openAccount()">⭐ <span class="sb-t" data-ar="المصممون المميزون" data-en="Top Designers" data-fr="Top Designers">Top Designers</span></div>
+        <div class="sidebar-sub-item" onclick="openAccount()">🏆 <span class="sb-t" data-ar="لوحة المتصدرين" data-en="Leaderboard" data-fr="Classement">Leaderboard</span></div>
+      </div>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-item" onclick="toggleSB(this,'print')">
+      <div class="sidebar-item-header">
+        <span>🖨️ <span class="sb-t" data-ar="أنواع الطباعة" data-en="Print Types" data-fr="Types d'impression">Print Types</span></span>
+        <span class="sidebar-arrow">›</span>
+      </div>
+      <div class="sidebar-sub" id="sub-print">
+        <div class="sidebar-sub-item" onclick="window.location.href='pages/print-types.html'">🌡️ <span class="sb-t" data-ar="طباعة حرارية" data-en="Thermal Transfer" data-fr="Transfert Thermique">Thermal Transfer</span></div>
+        <div class="sidebar-sub-item" onclick="window.location.href='pages/print-types.html'">🧵 <span class="sb-t" data-ar="تطريز" data-en="Embroidery" data-fr="Broderie">Embroidery</span></div>
+        <div class="sidebar-sub-item" onclick="window.location.href='pages/print-types.html'">🎨 <span class="sb-t" data-ar="صباغة حرارية" data-en="Dye Sublimation" data-fr="Sublimation">Dye Sublimation</span></div>
+        <div class="sidebar-sub-item" onclick="window.location.href='pages/print-types.html'">💧 <span class="sb-t" data-ar="DTG" data-en="DTG Direct" data-fr="DTG Direct">DTG Direct</span></div>
+        <div class="sidebar-sub-item" onclick="window.location.href='pages/print-types.html'">🖼️ <span class="sb-t" data-ar="سيلك سكرين" data-en="Screen Print" data-fr="Sérigraphie">Screen Print</span></div>
+        <div class="sidebar-sub-item" onclick="window.location.href='pages/print-types.html'">🔵 <span class="sb-t" data-ar="UV" data-en="UV Print" data-fr="Impression UV">UV Print</span></div>
+        <div class="sidebar-sub-item" onclick="window.location.href='pages/print-types.html'">🔆 <span class="sb-t" data-ar="ليزر" data-en="Laser Engraving" data-fr="Gravure Laser">Laser Engraving</span></div>
+        <div class="sidebar-sub-item" onclick="window.location.href='pages/print-types.html'">✂️ <span class="sb-t" data-ar="فينيل" data-en="Vinyl Cut" data-fr="Découpe Vinyle">Vinyl Cut</span></div>
+        <div class="sidebar-sub-item" onclick="window.location.href='pages/print-types.html'">📄 <span class="sb-t" data-ar="أوفست" data-en="Offset Print" data-fr="Impression Offset">Offset Print</span></div>
+      </div>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-item" onclick="openOrderForm();closeSidebar()">
+      <div class="sidebar-item-header">
+        <span>📋 <span id="sb-order">Order Form</span></span>
+      </div>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <!-- Theme Picker in sidebar -->
+    <div class="sidebar-item" onclick="toggleSB(this,'theme')">
+      <div class="sidebar-item-header">
+        <span>🎨 <span class="sb-t" data-ar="الثيم" data-en="Theme" data-fr="Thème">Theme</span></span>
+        <span class="sidebar-arrow">›</span>
+      </div>
+      <div class="sidebar-sub" id="sub-theme" style="padding:.8rem 1.3rem">
+        <div style="font-size:11px;color:var(--txt3);margin-bottom:.5rem;font-weight:700">Color</div>
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.7rem">
+          <button class="theme-color-btn" style="background:linear-gradient(135deg,#0b0f19,#2563eb)" title="Blue"   onclick="setThemeColor('blue');event.stopPropagation()"></button>
+          <button class="theme-color-btn" style="background:linear-gradient(135deg,#1a1510,#b5832a)" title="Beige"  onclick="setThemeColor('beige');event.stopPropagation()"></button>
+          <button class="theme-color-btn" style="background:linear-gradient(135deg,#0d0b1a,#7c3aed)" title="Purple" onclick="setThemeColor('purple');event.stopPropagation()"></button>
+          <button class="theme-color-btn" style="background:linear-gradient(135deg,#18181b,#c0c0c0)" title="White"  onclick="setThemeColor('white');event.stopPropagation()"></button>
+        </div>
+        <div style="font-size:11px;color:var(--txt3);margin-bottom:.4rem;font-weight:700">Mode</div>
+        <div style="display:flex;gap:.4rem">
+          <button class="theme-mode-btn" onclick="setThemeMode('dark');event.stopPropagation()">🌙 Dark</button>
+          <button class="theme-mode-btn" onclick="setThemeMode('light');event.stopPropagation()">☀️ Light</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== CART PANEL ===== -->
+<div class="cart-panel" id="cartPanel">
+  <div class="cart-header">
+    <h3 id="cartTitle">🛒 Cart</h3>
+    <button class="close-btn" onclick="closeCart()">✕</button>
+  </div>
+
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty">Cart is empty</div>
+  </div>
+
+  <!-- Discount code -->
+  <div id="discountSection" style="padding:.8rem 1.2rem;border-top:1px solid var(--border);display:none">
+    <div style="font-size:10px;font-weight:700;color:var(--gold);margin-bottom:.5rem;letter-spacing:1px">كود الخصم</div>
+    <div class="discount-row">
+      <input class="discount-input" id="discountInput" placeholder="ENTER CODE" maxlength="20"/>
+      <button class="discount-apply-btn" onclick="applyDiscount()">تطبيق</button>
+    </div>
+    <div id="discountMsg" style="margin-top:.4rem;font-size:12px"></div>
+  </div>
+
+  <div class="cart-footer" id="cartFooter" style="display:none">
+    <div class="cart-total">
+      <span class="cart-total-label" id="cartTotalLabel">Total</span>
+      <span class="cart-total-val"   id="cartTotalVal">0</span>
+    </div>
+    <button class="checkout-btn" id="checkoutBtn" onclick="goToCheckout()">Checkout →</button>
+  </div>
+</div>
+
+<!-- ===== NAV ===== -->
+<nav class="nav a3m-nav">
+  <div class="nav-left">
+    <button class="hamburger" onclick="openSidebar()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <a class="logo a3m-logo" onclick="scrollToTop()" style="cursor:pointer">
+      A<span class="r">3</span><span class="g">M</span>
+      <small class="logo-sub">PRINT</small>
+    </a>
+  </div>
+
+  <div class="nav-links">
+    <a href="#" id="n-home" onclick="scrollToTop()">Home</a>
+    <a href="#products" id="n-products">Products</a>
+    <a href="#" onclick="openModePicker()" id="n-design">Design</a>
+    <a href="#" onclick="openOrderForm()" id="n-contact">Contact</a>
+  </div>
+
+  <div class="nav-right">
+    <div class="currency-wrap">
+      <button class="currency-btn active" id="btnDZD" onclick="setCurrency('DZD')">DZD</button>
+      <button class="currency-btn"        id="btnUSD" onclick="setCurrency('USD')">USD</button>
+    </div>
+
+    <div class="lang-wrapper">
+      <button class="lang-btn" onclick="toggleLangMenu()" id="langBtn">🇩🇿 AR ▾</button>
+      <div class="lang-dropdown" id="langDropdown">
+        <div class="lang-option" onclick="setLang('en')">🇬🇧 English</div>
+        <div class="lang-option" onclick="setLang('fr')">🇫🇷 Français</div>
+        <div class="lang-option active" onclick="setLang('ar')">🇩🇿 العربية</div>
+      </div>
+    </div>
+
+    <div class="theme-wrapper" id="themeWrapper">
+      <button class="theme-toggle a3m-theme-btn" onclick="toggleThemeMenu()" id="themeToggleBtn" title="Theme">
+        <span id="themeIcon">🌙</span>
+      </button>
+      <div class="theme-dropdown" id="themeDropdown">
+        <div class="theme-drop-title">Color</div>
+        <div class="theme-colors">
+          <button class="theme-color-btn" style="background:linear-gradient(135deg,#0b0f19,#2563eb)" title="Blue"   onclick="setThemeColor('blue')"></button>
+          <button class="theme-color-btn" style="background:linear-gradient(135deg,#1a1510,#b5832a)" title="Beige"  onclick="setThemeColor('beige')"></button>
+          <button class="theme-color-btn" style="background:linear-gradient(135deg,#0d0b1a,#7c3aed)" title="Purple" onclick="setThemeColor('purple')"></button>
+          <button class="theme-color-btn" style="background:linear-gradient(135deg,#18181b,#c0c0c0)" title="Grey"   onclick="setThemeColor('white')"></button>
+        </div>
+        <div class="theme-modes" style="margin-top:.5rem">
+          <button class="theme-mode-btn" id="modeDarkBtn"  onclick="setThemeMode('dark')">🌙 Dark</button>
+          <button class="theme-mode-btn" id="modeLightBtn" onclick="setThemeMode('light')">☀️ Light</button>
+        </div>
+      </div>
+    </div>
+
+    <button class="a3m-cart-btn" onclick="openCart()" title="Cart">
+      🛒<span class="cart-count" id="cartCount" style="display:none">0</span>
+    </button>
+
+    <button class="acc-btn" id="accountNavBtn" onclick="openAccount()" title="Account">👤</button>
+
+    <button class="a3m-design-btn" onclick="openModePicker()" id="designNowBtn">
+      ✦ Design
+    </button>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="heroSection">
+  <div class="hero-eyebrow" id="heroEyebrow">✦ Premium Print Studio — Algeria ✦</div>
+  <h1 class="hero-h1">A<span class="r">3</span><span class="g">M</span><br>PRINT</h1>
+  <div class="hero-tagline-wrap a3m-tagline-wrap">
+    <p class="hero-tagline-animated" id="heroTaglineAnimated" style="display:none">
+      <span class="tagline-word">اطبع</span>
+      <span class="tagline-word accent-word">أفكارك</span>
+      <span class="tagline-sep">—</span>
+      <span class="tagline-word">اصنع</span>
+      <span class="tagline-word gold-word">واقعك</span>
+    </p>
+    <!-- Rotating taglines for EN/FR -->
+    <div class="hero-rotating-taglines" id="heroTaglineEn">
+      <span class="rotating-line active" id="rt-0">
+        <span class="tagline-char">I</span><span class="tagline-char">n</span><span class="tagline-char">k</span><span class="tagline-char"> </span><span class="tagline-char">y</span><span class="tagline-char">o</span><span class="tagline-char">u</span><span class="tagline-char">r</span><span class="tagline-char"> </span><span class="tagline-char accent-char">v</span><span class="tagline-char accent-char">i</span><span class="tagline-char accent-char">s</span><span class="tagline-char accent-char">i</span><span class="tagline-char accent-char">o</span><span class="tagline-char accent-char">n</span><span class="tagline-sep"> — </span><span class="tagline-char gold-char">w</span><span class="tagline-char gold-char">e</span><span class="tagline-char gold-char">a</span><span class="tagline-char gold-char">r</span><span class="tagline-char gold-char"> </span><span class="tagline-char gold-char">y</span><span class="tagline-char gold-char">o</span><span class="tagline-char gold-char">u</span><span class="tagline-char gold-char">r</span><span class="tagline-char gold-char"> </span><span class="tagline-char gold-char">s</span><span class="tagline-char gold-char">t</span><span class="tagline-char gold-char">o</span><span class="tagline-char gold-char">r</span><span class="tagline-char gold-char">y</span>
+      </span>
+      <span class="rotating-line" id="rt-1">
+        <span class="tagline-char">P</span><span class="tagline-char">r</span><span class="tagline-char">i</span><span class="tagline-char">n</span><span class="tagline-char">t</span><span class="tagline-char"> </span><span class="tagline-char accent-char">y</span><span class="tagline-char accent-char">o</span><span class="tagline-char accent-char">u</span><span class="tagline-char accent-char">r</span><span class="tagline-char accent-char"> </span><span class="tagline-char accent-char">i</span><span class="tagline-char accent-char">d</span><span class="tagline-char accent-char">e</span><span class="tagline-char accent-char">a</span><span class="tagline-char accent-char">s</span><span class="tagline-sep"> — </span><span class="tagline-char gold-char">m</span><span class="tagline-char gold-char">a</span><span class="tagline-char gold-char">k</span><span class="tagline-char gold-char">e</span><span class="tagline-char gold-char"> </span><span class="tagline-char gold-char">t</span><span class="tagline-char gold-char">h</span><span class="tagline-char gold-char">e</span><span class="tagline-char gold-char">m</span><span class="tagline-char gold-char"> </span><span class="tagline-char gold-char">r</span><span class="tagline-char gold-char">e</span><span class="tagline-char gold-char">a</span><span class="tagline-char gold-char">l</span>
+      </span>
+      <span class="rotating-line" id="rt-2">
+        <span class="tagline-char">P</span><span class="tagline-char">r</span><span class="tagline-char">i</span><span class="tagline-char">n</span><span class="tagline-char">t</span><span class="tagline-char"> </span><span class="tagline-char accent-char">u</span><span class="tagline-char accent-char">r</span><span class="tagline-char accent-char"> </span><span class="tagline-char accent-char">b</span><span class="tagline-char accent-char">r</span><span class="tagline-char accent-char">a</span><span class="tagline-char accent-char">n</span><span class="tagline-char accent-char">d</span><span class="tagline-sep"> — </span><span class="tagline-char gold-char">o</span><span class="tagline-char gold-char">w</span><span class="tagline-char gold-char">n</span><span class="tagline-char gold-char"> </span><span class="tagline-char gold-char">y</span><span class="tagline-char gold-char">o</span><span class="tagline-char gold-char">u</span><span class="tagline-char gold-char">r</span><span class="tagline-char gold-char"> </span><span class="tagline-char gold-char">s</span><span class="tagline-char gold-char">t</span><span class="tagline-char gold-char">y</span><span class="tagline-char gold-char">l</span><span class="tagline-char gold-char">e</span>
+      </span>
+      <span class="rotating-line" id="rt-3">
+        <span class="tagline-char">W</span><span class="tagline-char">e</span><span class="tagline-char">a</span><span class="tagline-char">r</span><span class="tagline-char"> </span><span class="tagline-char accent-char">y</span><span class="tagline-char accent-char">o</span><span class="tagline-char accent-char">u</span><span class="tagline-char accent-char">r</span><span class="tagline-char accent-char"> </span><span class="tagline-char accent-char">s</span><span class="tagline-char accent-char">t</span><span class="tagline-char accent-char">o</span><span class="tagline-char accent-char">r</span><span class="tagline-char accent-char">y</span><span class="tagline-sep"> — </span><span class="tagline-char gold-char">b</span><span class="tagline-char gold-char">o</span><span class="tagline-char gold-char">l</span><span class="tagline-char gold-char">d</span><span class="tagline-char gold-char"> </span><span class="tagline-char gold-char">&</span><span class="tagline-char gold-char"> </span><span class="tagline-char gold-char">u</span><span class="tagline-char gold-char">n</span><span class="tagline-char gold-char">s</span><span class="tagline-char gold-char">t</span><span class="tagline-char gold-char">o</span><span class="tagline-char gold-char">p</span><span class="tagline-char gold-char">p</span><span class="tagline-char gold-char">a</span><span class="tagline-char gold-char">b</span><span class="tagline-char gold-char">l</span><span class="tagline-char gold-char">e</span>
+      </span>
+    </div>
+  </div>
+  <p class="hero-sub a3m-hero-sub" id="heroSub">Professional printing on T-Shirts, Mugs, Caps, Bags and more.</p>
+  <div class="hero-btns">
+    <button class="btn-primary" id="shopNowBtn"
+      onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+      Shop Now
+    </button>
+    <button class="btn-gold" id="startDesignBtn" onclick="openModePicker()">
+      🎨 Start Designing
+    </button>
+  </div>
+</section>
+
+<!-- Design Banner -->
+<div class="design-banner">
+  <div class="design-banner-text" id="bannerMain">
+    🖨️ <span id="bannerTitle">Design your own piece — completely custom</span>
+    <span id="bannerSub">Upload your design or type your text — we print &amp; deliver professionally</span>
+  </div>
+  <button class="design-btn" id="startDesignBtn2" onclick="openModePicker()">Start Designing →</button>
+</div>
+
+<!-- ===== PRODUCTS SECTION ===== -->
+<section class="section" id="products">
+  <div class="section-title" id="sectionTitle">
+    Our <span class="r">Premium</span> <span class="g">Collection ✦</span>
+  </div>
+  <div class="section-sub" id="sectionSub">The Premium Collection</div>
+
+  <!-- Category filter -->
+  <div class="categories">
+    <button class="cat-btn active" id="c-all"    onclick="filterCat('all',this)">✦ All</button>
+    <button class="cat-btn"        id="c-tshirt" onclick="filterCat('tshirt',this)">👕 T-Shirts</button>
+    <button class="cat-btn"        id="c-hoodie" onclick="filterCat('hoodie',this)">🧥 Hoodies</button>
+    <button class="cat-btn"        id="c-hat"    onclick="filterCat('hat',this)">🧢 Caps</button>
+    <button class="cat-btn"        id="c-mug"    onclick="filterCat('mug',this)">☕ Mugs</button>
+    <button class="cat-btn"        id="c-bag"    onclick="filterCat('bag',this)">👜 Bags</button>
+    <button class="cat-btn"        id="c-laser"  onclick="filterCat('laser',this)">🔑 Accessories</button>
+    <button class="cat-btn"        id="c-paper"  onclick="filterCat('paper',this)">📄 Paper</button>
+  </div>
+
+  <!-- Products grid (filled by cart.js) -->
+  <div class="products-grid" id="grid"></div>
+
+  <!-- Paper section -->
+  <div id="paperSection" style="display:none">
+    <p id="paperSub" style="font-size:13px;color:var(--txt3);margin-bottom:1rem">
+      Choose Print Size
+    </p>
+    <div class="paper-grid" id="paperGrid"></div>
+  </div>
+</section>
+
+<!-- ===== CAPS SHOWCASE ===== -->
+<section class="showcase-section" id="capsShowcase">
+  <div class="showcase-header">
+    <div class="showcase-label" id="capsLabel">🧢 CAPS COLLECTION</div>
+    <div class="showcase-title" id="capsSTitle">Custom <span class="r">Caps</span> <span class="g">& Hats</span></div>
+    <div class="showcase-sub" id="capsSSub">Baseball caps, bucket hats, and more — all fully customizable with your brand or design</div>
+  </div>
+  <div class="caps-gallery">
+    <div class="cap-card" onclick="filterCat('hat', document.getElementById('c-hat')); document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+      <div class="cap-img-wrap"><img src="./images/caps/white_cap_model1.jpg" alt="White Cap" onerror="this.parentNode.innerHTML='🧢'"/></div>
+      <div class="cap-info"><span class="cap-name">Classic White</span><span class="cap-tag">Baseball Cap</span></div>
+    </div>
+    <div class="cap-card" onclick="filterCat('hat', document.getElementById('c-hat')); document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+      <div class="cap-img-wrap"><img src="./images/caps/black_cap_model3.jpg" alt="Black Cap" onerror="this.parentNode.innerHTML='🧢'"/></div>
+      <div class="cap-info"><span class="cap-name">Midnight Black</span><span class="cap-tag">Baseball Cap</span></div>
+    </div>
+    <div class="cap-card" onclick="filterCat('hat', document.getElementById('c-hat')); document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+      <div class="cap-img-wrap"><img src="./images/caps/blue_cap_model3.jpg" alt="Blue Cap" onerror="this.parentNode.innerHTML='🧢'"/></div>
+      <div class="cap-info"><span class="cap-name">Navy Blue</span><span class="cap-tag">Baseball Cap</span></div>
+    </div>
+    <div class="cap-card" onclick="filterCat('hat', document.getElementById('c-hat')); document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+      <div class="cap-img-wrap"><img src="./images/caps/red_cap_model3.jpg" alt="Red Cap" onerror="this.parentNode.innerHTML='🧢'"/></div>
+      <div class="cap-info"><span class="cap-name">Bold Red</span><span class="cap-tag">Baseball Cap</span></div>
+    </div>
+    <div class="cap-card" onclick="filterCat('hat', document.getElementById('c-hat')); document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+      <div class="cap-img-wrap"><img src="./images/caps/gray_cap_model4.jpg" alt="Gray Cap" onerror="this.parentNode.innerHTML='🧢'"/></div>
+      <div class="cap-info"><span class="cap-name">Slate Gray</span><span class="cap-tag">Baseball Cap</span></div>
+    </div>
+    <div class="cap-card" onclick="filterCat('hat', document.getElementById('c-hat')); document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+      <div class="cap-img-wrap"><img src="./images/caps/bage_cap_model4.jpg" alt="Beige Cap" onerror="this.parentNode.innerHTML='🧢'"/></div>
+      <div class="cap-info"><span class="cap-name">Warm Beige</span><span class="cap-tag">Baseball Cap</span></div>
+    </div>
+    <div class="cap-card" onclick="filterCat('hat', document.getElementById('c-hat')); document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+      <div class="cap-img-wrap"><img src="./images/caps/black__cap_model2.jpg" alt="Charcoal Cap" onerror="this.parentNode.innerHTML='🧢'"/></div>
+      <div class="cap-info"><span class="cap-name">Charcoal Wool</span><span class="cap-tag">Winter Cap</span></div>
+    </div>
+    <div class="cap-card" onclick="filterCat('hat', document.getElementById('c-hat')); document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+      <div class="cap-img-wrap"><img src="./images/caps/black_cap_model5.jpg" alt="Bucket Hat" onerror="this.parentNode.innerHTML='🧢'"/></div>
+      <div class="cap-info"><span class="cap-name">Black Bucket</span><span class="cap-tag">Bucket Hat</span></div>
+    </div>
+    <div class="cap-card" onclick="filterCat('hat', document.getElementById('c-hat')); document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+      <div class="cap-img-wrap"><img src="./images/caps/white_cap_model5.jpg" alt="White Bucket" onerror="this.parentNode.innerHTML='🧢'"/></div>
+      <div class="cap-info"><span class="cap-name">White Bucket</span><span class="cap-tag">Bucket Hat</span></div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:2rem">
+    <button class="btn-primary" onclick="filterCat('hat', document.getElementById('c-hat')); document.getElementById('products').scrollIntoView({behavior:'smooth'})">View All Caps →</button>
+  </div>
+</section>
+
+<!-- ===== MUGS SHOWCASE ===== -->
+<section class="showcase-section showcase-alt" id="mugsShowcase">
+  <div class="showcase-header">
+    <div class="showcase-label" id="mugsLabel">☕ MUGS COLLECTION</div>
+    <div class="showcase-title" id="mugsSTitle">Custom <span class="r">Mugs</span> <span class="g">& Cups</span></div>
+    <div class="showcase-sub" id="mugsSSub">Ceramic mugs, travel cups, and Starbucks-style — print your logo, photo or design on any surface</div>
+  </div>
+  <div class="mugs-gallery">
+    <div class="mug-card" onclick="filterCat('mug', document.getElementById('c-mug')); document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+      <div class="mug-img-wrap"><img src="./images/mugs/white_mug.jpg" alt="White Mug" onerror="this.parentNode.innerHTML='☕'"/></div>
+      <div class="mug-info">
+        <span class="mug-name">Classic White</span>
+        <span class="mug-tag">Ceramic Mug · 325ml</span>
+        <span class="mug-desc">Perfect for logos, photos &amp; custom text</span>
+      </div>
+    </div>
+    <div class="mug-card" onclick="filterCat('mug', document.getElementById('c-mug')); document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+      <div class="mug-img-wrap"><img src="./images/mugs/black_mug.jpg" alt="Black Mug" onerror="this.parentNode.innerHTML='☕'"/></div>
+      <div class="mug-info">
+        <span class="mug-name">Matte Black</span>
+        <span class="mug-tag">Ceramic Mug · 325ml</span>
+        <span class="mug-desc">Bold &amp; premium — great for corporate gifts</span>
+      </div>
+    </div>
+    <div class="mug-card" onclick="filterCat('mug', document.getElementById('c-mug')); document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+      <div class="mug-img-wrap"><img src="./images/mugs/white_starbucks_mug.jpg" alt="White Starbucks Cup" onerror="this.parentNode.innerHTML='🥤'"/></div>
+      <div class="mug-info">
+        <span class="mug-name">Travel Cup — White</span>
+        <span class="mug-tag">Paper Cup · 400ml</span>
+        <span class="mug-desc">Starbucks-style with lid, ideal for cafés</span>
+      </div>
+    </div>
+    <div class="mug-card" onclick="filterCat('mug', document.getElementById('c-mug')); document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+      <div class="mug-img-wrap"><img src="./images/mugs/black_starbucks_mug.jpg" alt="Black Starbucks Cup" onerror="this.parentNode.innerHTML='🥤'"/></div>
+      <div class="mug-info">
+        <span class="mug-name">Travel Cup — Black</span>
+        <span class="mug-tag">Paper Cup · 400ml</span>
+        <span class="mug-desc">Sleek dark finish for modern branding</span>
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:2rem">
+    <button class="btn-primary" onclick="filterCat('mug', document.getElementById('c-mug')); document.getElementById('products').scrollIntoView({behavior:'smooth'})">View All Mugs →</button>
+  </div>
+</section>
+
+<!-- ===== STAMPS SHOWCASE ===== -->
+<section class="showcase-section" id="stampsShowcase">
+  <div class="showcase-header">
+    <div class="showcase-label" id="stampsLabel">🔏 STAMPS & SEALS</div>
+    <div class="showcase-title" id="stampsSTitle">Custom <span class="r">Stamps</span> <span class="g">& Seals</span></div>
+    <div class="showcase-sub" id="stampsSSub">Self-inking stamps, wax seals, rubber stamps — personalized with your logo, signature or text for professional branding</div>
+  </div>
+  <div class="stamps-grid">
+    <div class="stamp-card">
+      <div class="stamp-icon">🔏</div>
+      <div class="stamp-name" id="st1n">Self-Inking Stamp</div>
+      <div class="stamp-desc" id="st1d">Business address, logo or signature. Re-inkable. Available in multiple sizes.</div>
+      <button class="stamp-btn stamp-btn-i18n" onclick="openOrderForm()">Order Now</button>
+    </div>
+    <div class="stamp-card">
+      <div class="stamp-icon">⭕</div>
+      <div class="stamp-name" id="st2n">Round Seal Stamp</div>
+      <div class="stamp-desc" id="st2d">Official round stamp for documents, certificates and company seals.</div>
+      <button class="stamp-btn" onclick="openOrderForm()">Order Now</button>
+    </div>
+    <div class="stamp-card">
+      <div class="stamp-icon">🕯️</div>
+      <div class="stamp-name" id="st3n">Wax Seal Stamp</div>
+      <div class="stamp-desc" id="st3d">Elegant wax seals for invitations, packaging and premium gifts.</div>
+      <button class="stamp-btn" onclick="openOrderForm()">Order Now</button>
+    </div>
+    <div class="stamp-card">
+      <div class="stamp-icon">📐</div>
+      <div class="stamp-name" id="st4n">Custom Rubber Stamp</div>
+      <div class="stamp-desc" id="st4d">Any shape, any size. Perfect for craft projects, invoices and packaging.</div>
+      <button class="stamp-btn" onclick="openOrderForm()">Order Now</button>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:2rem">
+    <button class="btn-primary" onclick="openOrderForm()">Request a Custom Stamp →</button>
+  </div>
+</section>
+
+<!-- ===== HOODIES SHOWCASE ===== -->
+<section class="showcase-section showcase-alt" id="hoodiesShowcase">
+  <div class="showcase-header">
+    <div class="showcase-label" id="hoodiesLabel">🧥 HOODIES COLLECTION</div>
+    <div class="showcase-title" id="hoodiesSTitle">Custom <span class="r">Hoodies</span> <span class="g">& Sweats</span></div>
+    <div class="showcase-sub" id="hoodiesSSub">Premium hoodies with full-front, back or sleeve print — perfect for teams, events and street fashion</div>
+  </div>
+  <div class="caps-gallery">
+    <div class="cap-card" onclick="filterCat('hoodie', document.getElementById('c-hoodie')); document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+      <div class="cap-img-wrap" style="background:#111;display:flex;align-items:center;justify-content:center;font-size:4rem">🧥</div>
+      <div class="cap-info"><span class="cap-name" id="h1n">Urban Black</span><span class="cap-tag" id="h1t">Unisex Hoodie</span></div>
+    </div>
+    <div class="cap-card" onclick="filterCat('hoodie', document.getElementById('c-hoodie')); document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+      <div class="cap-img-wrap" style="background:#1a1a2e;display:flex;align-items:center;justify-content:center;font-size:4rem">🧥</div>
+      <div class="cap-info"><span class="cap-name" id="h2n">Night Vibe</span><span class="cap-tag" id="h2t">Oversized Hoodie</span></div>
+    </div>
+    <div class="cap-card" onclick="filterCat('hoodie', document.getElementById('c-hoodie')); document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+      <div class="cap-img-wrap" style="background:#001a1a;display:flex;align-items:center;justify-content:center;font-size:4rem">🧥</div>
+      <div class="cap-info"><span class="cap-name" id="h3n">Electric Teal</span><span class="cap-tag" id="h3t">Zip-Up Hoodie</span></div>
+    </div>
+    <div class="cap-card" onclick="filterCat('hoodie', document.getElementById('c-hoodie')); document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+      <div class="cap-img-wrap" style="background:#1a001a;display:flex;align-items:center;justify-content:center;font-size:4rem">🧥</div>
+      <div class="cap-info"><span class="cap-name" id="h4n">Art Drop</span><span class="cap-tag" id="h4t">Limited Edition</span></div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:2rem">
+    <button class="btn-primary" id="hoodiesViewAll" onclick="filterCat('hoodie', document.getElementById('c-hoodie')); document.getElementById('products').scrollIntoView({behavior:'smooth'})">View All Hoodies →</button>
+  </div>
+</section>
+
+<!-- ===== BAGS SHOWCASE ===== -->
+<section class="showcase-section" id="bagsShowcase">
+  <div class="showcase-header">
+    <div class="showcase-label" id="bagsLabel">👜 BAGS COLLECTION</div>
+    <div class="showcase-title" id="bagsSTitle">Custom <span class="r">Bags</span> <span class="g">& Packs</span></div>
+    <div class="showcase-sub" id="bagsSSub">Tote bags, backpacks, and packaging — print your brand, logo or artwork on every surface</div>
+  </div>
+  <div class="mugs-gallery">
+    <div class="mug-card" onclick="filterCat('bag', document.getElementById('c-bag')); document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+      <div class="mug-img-wrap" style="background:#0d1117;display:flex;align-items:center;justify-content:center;font-size:3.5rem">👜</div>
+      <div class="mug-info">
+        <span class="mug-name" id="b1n">Tote Bag</span>
+        <span class="mug-tag" id="b1t">Cotton Canvas · Natural</span>
+        <span class="mug-desc" id="b1d">Perfect for everyday use — print any design or logo</span>
+      </div>
+    </div>
+    <div class="mug-card" onclick="filterCat('bag', document.getElementById('c-bag')); document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+      <div class="mug-img-wrap" style="background:#111827;display:flex;align-items:center;justify-content:center;font-size:3.5rem">🎒</div>
+      <div class="mug-info">
+        <span class="mug-name" id="b2n">Backpack</span>
+        <span class="mug-tag" id="b2t">Sublimation Print</span>
+        <span class="mug-desc" id="b2d">Full-coverage print — ideal for schools and events</span>
+      </div>
+    </div>
+    <div class="mug-card" onclick="filterCat('bag', document.getElementById('c-bag')); document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+      <div class="mug-img-wrap" style="background:#0a0a1a;display:flex;align-items:center;justify-content:center;font-size:3.5rem">📦</div>
+      <div class="mug-info">
+        <span class="mug-name" id="b3n">Gift Box</span>
+        <span class="mug-tag" id="b3t">Custom Packaging</span>
+        <span class="mug-desc" id="b3d">Branded packaging for products and corporate gifts</span>
+      </div>
+    </div>
+    <div class="mug-card" onclick="filterCat('bag', document.getElementById('c-bag')); document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+      <div class="mug-img-wrap" style="background:#141d2e;display:flex;align-items:center;justify-content:center;font-size:3.5rem">🛍️</div>
+      <div class="mug-info">
+        <span class="mug-name" id="b4n">Shopping Bag</span>
+        <span class="mug-tag" id="b4t">Non-Woven · Eco</span>
+        <span class="mug-desc" id="b4d">Eco-friendly bags for retail, cafés and events</span>
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:2rem">
+    <button class="btn-primary" id="bagsViewAll" onclick="filterCat('bag', document.getElementById('c-bag')); document.getElementById('products').scrollIntoView({behavior:'smooth'})">View All Bags →</button>
+  </div>
+</section>
+
+<!-- ===== PRODUCT MODAL (full page) ===== -->
+<div class="prod-modal" id="prodModal">
+  <div class="prod-page-box">
+    <div class="prod-page-header">
+      <button class="prod-page-back" onclick="closeProdModal()">← رجوع</button>
+      <div class="prod-page-brand" id="modalHeadTitle">تفاصيل المنتج</div>
+      <div></div>
+    </div>
+    <div class="prod-page-body">
+      <!-- Gallery -->
+      <div class="prod-gallery">
+        <div class="prod-main-img-wrap">
+          <div class="prod-main-img" id="modalImg" style="font-size:6rem">👕</div>
+        </div>
+        <div class="prod-thumbs" id="modalThumbs"></div>
+      </div>
+      <!-- Info -->
+      <div class="prod-info-col">
+        <div class="prod-page-title" id="modalTitle">Product</div>
+        <div class="prod-page-sub"   id="modalSub"></div>
+        <div class="prod-stars-row">
+          <span class="prod-stars">★★★★★</span>
+          <span class="prod-review-count">(24 تقييم)</span>
+        </div>
+        <div class="prod-price-box">
+          <span class="prod-page-price" id="modalPrice">0 دج</span>
+          <span class="prod-page-old"   id="modalOld"></span>
+          <span class="prod-page-disc"  id="modalDisc"></span>
+        </div>
+        <div class="prod-page-desc" id="modalDesc"></div>
+
+        <!-- Sizes -->
+        <div id="sizesWrap" style="display:none">
+          <div class="prod-option-label" id="sizeLabel">المقاس</div>
+          <div class="sizes-row" id="sizesRow"></div>
+        </div>
+
+        <!-- Qty -->
+        <div>
+          <div class="prod-option-label" id="qtyLabelM">الكمية</div>
+          <div class="prod-qty-row">
+            <button class="modal-qty-btn" onclick="changeModalQty(-1)">−</button>
+            <span class="modal-qty-val" id="modalQty">1</span>
+            <button class="modal-qty-btn" onclick="changeModalQty(1)">+</button>
+          </div>
+        </div>
+
+        <!-- Total -->
+        <div class="prod-total-box">
+          <span class="prod-total-lbl" id="totalLabel">المجموع</span>
+          <span class="prod-total-val" id="modalTotalVal">0 دج</span>
+        </div>
+
+        <button class="prod-cart-btn" id="modalAddBtn" onclick="addToCartFromModal()">
+          🛒 أضف للسلة
+        </button>
+        <button class="prod-design-btn" onclick="closeProdModal();openModePicker()">
+          🎨 صمّم هذا المنتج
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODE PICKER ===== -->
+div>
+
+<!-- ===== CANVAS DESIGNER ===== -->
+<div class="designer-modal" id="designerModal">
+  <div class="designer-topbar">
+    <div class="designer-topbar-left">
+      <span class="designer-topbar-logo">A<span class="r">3</span><span class="g">M</span></span>
+      <span class="designer-topbar-title" id="topbarTitle">Design Studio</span>
+    </div>
+    <div class="designer-topbar-right">
+      <select class="d-select" id="canvasProduct" onchange="changeProduct()" style="width:auto;padding:5px 8px">
+        <option value="tshirt">👕 تيشرت</option>
+        <option value="mug">☕ كوب</option>
+        <option value="hat">🧢 قبعة</option>
+        <option value="bag">🎒 حقيبة</option>
+        <option value="paper">📄 ورقة</option>
+      </select>
+      <button class="d-btn d-btn-outline" onclick="undoAction()">↩ تراجع</button>
+      <button class="d-btn d-btn-outline" onclick="clearCanvas()">🗑 مسح</button>
+      <button class="d-btn d-btn-gold"   onclick="downloadDesign()">⬇ تحميل</button>
+      <button class="d-btn d-btn-accent" onclick="saveToCart()">🛒 أضف للسلة</button>
+      <button class="d-btn d-btn-outline" onclick="openOrderFromDesign()">📋 اطلب</button>
+      <button class="d-btn d-btn-outline" onclick="closeDesigner()">✕</button>
+    </div>
+  </div>
+
+  <div class="designer-workspace">
+    <!-- Tools -->
+    <div class="d-tools">
+      <button class="d-tool-btn active" id="tool-select" onclick="setTool('select')" title="تحديد">
+        <span class="icon">↖</span><span class="lbl">Select</span>
+      </button>
+      <button class="d-tool-btn" id="tool-text" onclick="setTool('text')" title="نص">
+        <span class="icon">T</span><span class="lbl">Text</span>
+      </button>
+      <button class="d-tool-btn" id="tool-rect" onclick="setTool('rect')" title="مستطيل">
+        <span class="icon">▭</span><span class="lbl">Rect</span>
+      </button>
+      <button class="d-tool-btn" id="tool-circle" onclick="setTool('circle')" title="دائرة">
+        <span class="icon">○</span><span class="lbl">Circle</span>
+      </button>
+      <button class="d-tool-btn" id="tool-triangle" onclick="setTool('triangle')" title="مثلث">
+        <span class="icon">△</span><span class="lbl">Tri</span>
+      </button>
+    </div>
+
+    <!-- Canvas -->
+    <div class="d-canvas-wrap">
+      <canvas id="designCanvas" width="500" height="500"></canvas>
+    </div>
+
+    <!-- Right panel -->
+    <div class="d-panel">
+      <!-- Text Options -->
+      <div class="d-panel-section">
+        <div class="d-panel-title">نص</div>
+        <div class="d-row">
+          <input class="d-input" id="txtContent" placeholder="اكتب هنا..." oninput="syncSelected()"/>
+        </div>
+        <div class="d-row">
+          <span class="d-label">حجم</span>
+          <input class="d-input" id="txtSize" type="number" value="40" min="8" max="200" style="width:60px" oninput="document.getElementById('txtSzVal').textContent=this.value;syncSelected()"/>
+          <span id="txtSzVal" style="font-size:11px;color:#666;min-width:26px">40</span>
+        </div>
+        <div class="d-row">
+          <span class="d-label">خط</span>
+          <select class="d-select" id="txtFont" onchange="syncSelected()">
+            <option value="Inter">Inter</option>
+            <option value="Permanent Marker">Permanent Marker</option>
+            <option value="Bebas Neue">Bebas Neue</option>
+            <option value="Pacifico">Pacifico</option>
+            <option value="Dancing Script">Dancing Script</option>
+            <option value="Orbitron">Orbitron</option>
+          </select>
+        </div>
+        <div class="d-row">
+          <span class="d-label">لون</span>
+          <input class="d-color" id="txtColor" type="color" value="#ffffff" oninput="syncSelected()"/>
+          <div style="display:flex;gap:2px;flex:1">
+            <button class="d-small-btn" onclick="setTxtAlign('left')">←</button>
+            <button class="d-small-btn" onclick="setTxtAlign('center')">≡</button>
+            <button class="d-small-btn" onclick="setTxtAlign('right')">→</button>
+          </div>
+        </div>
+        <button class="d-btn d-btn-accent" style="width:100%;margin-top:.3rem" onclick="addText()">+ إضافة نص</button>
+      </div>
+
+      <!-- Shapes -->
+      <div class="d-panel-section">
+        <div class="d-panel-title">أشكال</div>
+        <div class="d-row">
+          <span class="d-label">تعبئة</span>
+          <input class="d-color" id="shapeFill"   type="color" value="#7c3aed" oninput="syncSelected()"/>
+          <span class="d-label">حدود</span>
+          <input class="d-color" id="shapeStroke" type="color" value="#c9a84c" oninput="syncSelected()"/>
+        </div>
+        <div class="d-row">
+          <span class="d-label">سُمك</span>
+          <input class="d-input" id="strokeW" type="number" value="2" min="0" max="20" style="width:55px" oninput="syncSelected()"/>
+          <span class="d-label">شفافية</span>
+          <input class="d-input" id="shapeOpacity" type="number" value="100" min="0" max="100" style="width:55px" oninput="document.getElementById('opVal').textContent=this.value;syncSelected()"/>
+          <span id="opVal" style="font-size:11px;color:#666;min-width:24px">100</span>
+        </div>
+        <div class="d-row">
+          <button class="d-small-btn" onclick="addShape('rect')">▭ مستطيل</button>
+          <button class="d-small-btn" onclick="addShape('circle')">○ دائرة</button>
+          <button class="d-small-btn" onclick="addShape('triangle')">△ مثلث</button>
+        </div>
+      </div>
+
+      <!-- Transform -->
+      <div class="d-panel-section">
+        <div class="d-panel-title">تحويل</div>
+        <div class="d-row">
+          <span class="d-label">X</span>
+          <input class="d-input" id="objX" type="number" value="250" style="width:60px" onchange="applyTransform()"/>
+          <span class="d-label">Y</span>
+          <input class="d-input" id="objY" type="number" value="250" style="width:60px" onchange="applyTransform()"/>
+        </div>
+        <div class="d-row">
+          <span class="d-label">عرض</span>
+          <input class="d-input" id="objW" type="number" value="150" style="width:60px" onchange="applyTransform()"/>
+          <span class="d-label">ارتفاع</span>
+          <input class="d-input" id="objH" type="number" value="80"  style="width:60px" onchange="applyTransform()"/>
+        </div>
+        <div class="d-row">
+          <span class="d-label">دوران</span>
+          <input class="d-input" id="objRot" type="number" value="0" min="-180" max="180" style="width:60px" onchange="applyTransform()"/>
+          <span id="rotVal" style="font-size:11px;color:#666;min-width:32px">0°</span>
+        </div>
+        <div class="d-row">
+          <button class="d-small-btn" onclick="flipH()">↔ قلب أفقي</button>
+          <button class="d-small-btn" onclick="flipV()">↕ قلب رأسي</button>
+        </div>
+        <div class="d-row" style="margin-top:.3rem">
+          <button class="d-small-btn" onclick="bringForward()">⬆ للأمام</button>
+          <button class="d-small-btn" onclick="sendBackward()">⬇ للخلف</button>
+        </div>
+        <div class="d-row" style="margin-top:.3rem">
+          <button class="d-small-btn" onclick="duplicateSelected()">⊕ نسخ</button>
+          <button class="d-small-btn red" onclick="deleteSelected()">✕ حذف</button>
+        </div>
+      </div>
+
+      <!-- Background -->
+      <div class="d-panel-section">
+        <div class="d-panel-title">الخلفية</div>
+        <div class="d-row">
+          <span class="d-label">لون</span>
+          <input class="d-color" id="bgColor" type="color" value="#ffffff"/>
+        </div>
+      </div>
+
+      <!-- Upload -->
+      <div class="d-panel-section">
+        <div class="d-panel-title">صورة</div>
+        <div class="upload-zone" onclick="document.getElementById('imgUpload').click()">
+          <p>📁 اضغط لرفع صورة</p>
+          <input type="file" id="imgUpload" accept="image/*" style="display:none" onchange="uploadImage(event)"/>
+        </div>
+      </div>
+
+      <!-- Templates -->
+      <div class="d-panel-section">
+        <div class="d-panel-title">القوالب</div>
+        <div class="templates-grid" id="templatesGrid"></div>
+      </div>
+
+      <!-- Layers -->
+      <div class="d-panel-section" style="border-bottom:none">
+        <div class="d-panel-title">الطبقات</div>
+        <div id="layersList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ORDER FORM MODAL ===== -->
+<div class="order-modal" id="orderModal">
+  <div class="order-box">
+    <div class="order-header">
+      <h2 id="orderTitle">📋 نموذج الطلب</h2>
+      <button class="close-btn" onclick="closeOrderForm()">✕</button>
+    </div>
+    <div class="order-body">
+      <div id="formContent">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" id="fName">الاسم الكامل *</label>
+            <input class="form-input" id="inp-name" placeholder="أحمد بن علي"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label" id="fPhone">الهاتف *</label>
+            <input class="form-input" id="inp-phone" placeholder="0555 123 456" type="tel"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" id="fProduct">المنتج *</label>
+            <select class="form-input" id="inp-product">
+              <option value="">اختر...</option>
+              <option value="tshirt">👕 تيشرت</option>
+              <option value="mug">☕ كوب</option>
+              <option value="hat">🧢 قبعة</option>
+              <option value="bag">👜 حقيبة</option>
+              <option value="laser">🔆 ليزر</option>
+              <option value="paper">📄 طباعة ورقية</option>
+              <option value="other">أخرى</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" id="fQty">الكمية *</label>
+            <input class="form-input" id="inp-qty" type="number" placeholder="1" min="1"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" id="fEmail">البريد الإلكتروني</label>
+            <input class="form-input" id="inp-email" type="email" placeholder="your@email.com"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label" id="fCity">المدينة / الولاية</label>
+            <input class="form-input" id="inp-city" placeholder="الجزائر"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" id="fNotes">ملاحظات / وصف التصميم</label>
+          <textarea class="form-textarea" id="inp-notes" rows="3"
+            placeholder="صِف تصميمك أو أضف تفاصيل إضافية..."></textarea>
+        </div>
+        <button class="submit-btn" id="submitBtn" onclick="submitOrder()">
+          ✦ إرسال الطلب
+        </button>
+      </div>
+      <div class="form-success" id="formSuccess">
+        <div class="success-icon">✅</div>
+        <h3 id="successTitle">تم الإرسال!</h3>
+        <p id="successMsg">شكراً! سيتواصل معك فريق A3M خلال 24 ساعة.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ACCOUNT MODAL (enhanced) ===== -->
+<div class="account-modal" id="accountModal">
+  <div class="account-box">
+    <div class="acc-header">
+      <h2>👤 حسابي</h2>
+      <button class="close-btn" onclick="closeAccount()">✕</button>
+    </div>
+
+    <!-- AUTH PANE -->
+    <div id="authPane" style="padding:1.4rem">
+      <!-- Login -->
+      <div id="loginForm">
+        <div class="auth-form-header">
+          <div class="auth-logo">A<span class="r">3</span><span class="g">M</span> Account</div>
+          <div class="auth-subtitle" id="authSubtitle">تسجيل الدخول للوصول لتصاميمك وطلباتك</div>
+        </div>
+        <div class="auth-form">
+          <div class="form-group">
+            <label class="form-label">البريد الإلكتروني</label>
+            <input class="form-input" id="loginEmail" placeholder="your@email.com" type="email"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">كلمة المرور</label>
+            <input class="form-input" id="loginPass" placeholder="••••••••" type="password"/>
+          </div>
+          <button class="submit-btn" onclick="doLogin()" id="loginBtn">تسجيل الدخول</button>
+          <div class="auth-divider">— أو —</div>
+          <div class="auth-switch">ليس لديك حساب؟ <a onclick="showRegister()">إنشاء حساب</a></div>
+        </div>
+      </div>
+      <!-- Register -->
+      <div id="registerForm" style="display:none">
+        <div class="auth-form-header">
+          <div class="auth-logo">إنشاء حساب</div>
+          <div class="auth-subtitle">انضم لمجتمع A3M</div>
+        </div>
+        <div class="auth-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">الاسم الكامل</label>
+              <input class="form-input" id="regName" placeholder="أحمد بن علي"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">اسم المستخدم</label>
+              <input class="form-input" id="regUser" placeholder="@ahmed"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">البريد الإلكتروني</label>
+            <input class="form-input" id="regEmail" placeholder="your@email.com" type="email"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">كلمة المرور (6 أحرف على الأقل)</label>
+            <input class="form-input" id="regPass" placeholder="••••••••" type="password"/>
+          </div>
+          <button class="submit-btn" onclick="doRegister()">إنشاء الحساب</button>
+          <div class="auth-switch">لديك حساب؟ <a onclick="showLogin()">تسجيل الدخول</a></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFILE PANE -->
+    <div id="profilePane" style="display:none">
+      <div class="acc-tabs">
+        <div class="acc-tab active" onclick="switchAccTab('profile')">👤 الملف</div>
+        <div class="acc-tab" onclick="switchAccTab('designs')">🎨 تصاميمي</div>
+        <div class="acc-tab" onclick="switchAccTab('orders')">📦 طلباتي</div>
+        <div class="acc-tab" onclick="switchAccTab('follow')">👥 اجتماعي</div>
+      </div>
+
+      <!-- Profile tab -->
+      <div class="acc-pane active" id="tab-profile">
+        <div class="acc-profile-row">
+          <div class="acc-avatar" id="accAvatar" onclick="changeAvatar()">
+            <span id="accAvatarLetter">A</span>
+            <div class="acc-avatar-edit">✏</div>
+          </div>
+          <div>
+            <div class="acc-name" id="accName">Ahmed</div>
+            <div class="acc-username" id="accUsername">@ahmed</div>
+            <button style="margin-top:.5rem;background:none;border:1px solid var(--border2);border-radius:6px;padding:4px 12px;cursor:pointer;font-size:11px;color:var(--accent);font-family:inherit;transition:.2s" onclick="doLogout()" onmouseover="this.style.background='var(--accent)';this.style.color='#fff'" onmouseout="this.style.background='none';this.style.color='var(--accent)'">تسجيل الخروج</button>
+          </div>
+        </div>
+        <!-- XP -->
+        <div class="xp-section">
+          <div class="xp-header">
+            <span class="xp-rank" id="xpRankLabel">🪨 Iron</span>
+            <span class="xp-pts" id="xpPtsLabel">0 / 100 XP</span>
+          </div>
+          <div class="xp-bar-wrap">
+            <div class="xp-bar-fill" id="xpBarFill" style="width:0%"></div>
+          </div>
+          <div class="xp-milestones">
+            <span class="xp-milestone">🪨</span>
+            <span class="xp-milestone">🥉</span>
+            <span class="xp-milestone">🥇</span>
+            <span class="xp-milestone">💎</span>
+            <span class="xp-milestone">⭐</span>
+          </div>
+        </div>
+        <!-- Stats -->
+        <div class="acc-stats">
+          <div class="acc-stat"><div class="acc-stat-num" id="statFollowers">0</div><div class="acc-stat-label">متابعون</div></div>
+          <div class="acc-stat"><div class="acc-stat-num" id="statFollowing">0</div><div class="acc-stat-label">متابَعون</div></div>
+          <div class="acc-stat"><div class="acc-stat-num" id="statDesigns">0</div><div class="acc-stat-label">تصاميم</div></div>
+          <div class="acc-stat"><div class="acc-stat-num" id="statSold">0</div><div class="acc-stat-label">مُباع</div></div>
+        </div>
+      </div>
+
+      <!-- Designs tab -->
+      <div class="acc-pane" id="tab-designs">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.9rem">
+          <div style="font-weight:700;font-size:14px;color:var(--txt)">تصاميمي المنشورة</div>
+          <button class="d-btn d-btn-accent" style="font-size:11px;padding:5px 12px" onclick="closeAccount();openProductSelector()">+ تصميم جديد</button>
+        </div>
+        <div class="designs-grid" id="designsGrid">
+          <div class="design-thumb" onclick="closeAccount();openProductSelector()" title="جديد">+</div>
+        </div>
+      </div>
+
+      <!-- Orders tab -->
+      <div class="acc-pane" id="tab-orders">
+        <div id="ordersList" style="font-size:13px;color:var(--txt3);text-align:center;padding:2rem">لا توجد طلبات بعد</div>
+      </div>
+
+      <!-- Social tab -->
+      <div class="acc-pane" id="tab-follow">
+        <div class="acc-stats" style="grid-template-columns:1fr 1fr;margin-bottom:1rem">
+          <div class="acc-stat"><div class="acc-stat-num" id="statFollowers2">0</div><div class="acc-stat-label">متابعون</div></div>
+          <div class="acc-stat"><div class="acc-stat-num" id="statFollowing2">0</div><div class="acc-stat-label">متابَعون</div></div>
+        </div>
+        <div style="font-size:13px;color:var(--txt3);text-align:center;padding:1rem">ميزات المجتمع قادمة قريباً 🚀</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="footer-top">
+
+    <!-- Brand column -->
+    <div class="footer-brand">
+      <div class="footer-logo">A<span class="r">3</span><span class="g">M</span></div>
+      <div class="gold-line"></div>
+      <p class="footer-tagline-text" id="footerTagline">Premium Print Studio — نطبع أحلامك على الواقع</p>
+      <!-- Social icons (injected by JS) -->
+      <div class="footer-social" id="footerSocialMain"></div>
+    </div>
+
+    <!-- Quick links column -->
+    <div class="footer-col">
+      <div class="footer-col-title" id="ft-links-title">روابط سريعة</div>
+      <nav class="footer-links">
+        <a onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">🛍️ <span class="ft-t" data-ar="المنتجات" data-en="Products" data-fr="Produits">المنتجات</span></a>
+        <a onclick="openProductSelector()">🎨 <span class="ft-t" data-ar="تصميم" data-en="Design" data-fr="Créer">تصميم</span></a>
+        <a onclick="openOrderForm()">📋 <span class="ft-t" data-ar="طلب مخصص" data-en="Custom Order" data-fr="Commande">طلب مخصص</span></a>
+        <a onclick="openAccount()">👤 <span class="ft-t" data-ar="حسابي" data-en="My Account" data-fr="Mon Compte">حسابي</span></a>
+      </nav>
+    </div>
+
+    <!-- Contact column -->
+    <div class="footer-col">
+      <div class="footer-col-title" id="ft-contact-title">تواصل معنا</div>
+
+      <!-- Social media links -->
+      <div class="footer-contact-socials">
+        <a href="https://www.instagram.com/a3m_stor?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener" class="footer-social-link instagram">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          Instagram
+        </a>
+        <a href="https://wa.me/213550901872" target="_blank" rel="noopener" class="footer-social-link whatsapp">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          WhatsApp
+        </a>
+        <a href="https://t.me/+213550901872" target="_blank" rel="noopener" class="footer-social-link telegram">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+          Telegram
+        </a>
+        <a href="viber://chat?number=%2B213550901872" class="footer-social-link viber">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M11.398.002C8.4.086 2.7 1.73 1.07 7.836c-.762 2.845-.848 6.676-.093 9.64 1.049 4.07 5.46 5.65 5.605 5.696l.003.003V24h.005c0 .002 3.066-3.03 3.066-3.03 6.5.28 11.448-1.87 12.022-3.783.947-3.2.818-9.037-.044-12.26C20.358 1.62 14.397-.082 11.4.002Zm.01 1.898c2.56-.065 7.93 1.062 9.293 5.984.762 2.82.877 8.166.047 11.04-.305 1.03-3.897 2.698-9.338 2.442l-.003-.003s-2.26 2.247-2.75 2.735v-2.963l-.001-.002-.003-.001c-.01-.002-3.845-1.162-4.76-4.72-.673-2.607-.587-6.135.075-8.719C5.24 2.87 9.963 1.965 11.408 1.9Zm-.056 2.773-.001.001c-1.58.023-2.894.48-3.851 1.363-1.193 1.102-1.747 2.685-1.688 4.51.073 2.237 1.18 3.865 2.68 4.493v1.607c0 .088.107.133.174.07l1.37-1.368c.14.004.276.012.416.012 3.354 0 5.64-1.714 5.856-5.035.153-2.314-.578-4.044-2.015-5.038-.84-.58-1.87-.614-2.94-.615zm-.017 1.064c.895.004 1.732.032 2.404.518 1.125.797 1.718 2.25 1.59 4.235-.175 2.677-1.882 4.024-4.794 4.024a7.2 7.2 0 0 1-.646-.032l-.183-.018-1.025 1.025v-1.286l-.212-.078C7.41 13.622 6.5 12.2 6.44 10.27c-.053-1.564.397-2.842 1.33-3.706.818-.756 2.01-1.13 3.565-1.127zm-.77 1.76c-.167 0-.302.13-.307.297l-.018.6c-.117.034-.23.079-.338.133l-.416-.434a.305.305 0 0 0-.45.01l-.366.394a.306.306 0 0 0 .01.431l.416.43a3.246 3.246 0 0 0-.15.353l-.578.025a.306.306 0 0 0-.29.316l.02.54a.306.306 0 0 0 .316.29l.58-.025c.04.12.089.234.147.343l-.418.436a.306.306 0 0 0 .01.432l.398.38a.306.306 0 0 0 .432-.01l.417-.435c.107.058.22.107.337.146l.025.58a.306.306 0 0 0 .316.291l.54-.02a.306.306 0 0 0 .29-.316l-.024-.578c.12-.04.234-.09.343-.148l.436.418a.306.306 0 0 0 .432-.01l.38-.397a.306.306 0 0 0-.01-.432l-.434-.416c.058-.108.107-.22.146-.337l.58-.026a.306.306 0 0 0 .29-.315l-.02-.54a.306.306 0 0 0-.315-.29l-.579.024a3.28 3.28 0 0 0-.148-.343l.418-.436a.306.306 0 0 0-.01-.432l-.397-.38a.306.306 0 0 0-.432.01l-.435.434a3.257 3.257 0 0 0-.337-.147l-.025-.58a.306.306 0 0 0-.306-.291l-.002-.001zm.49 1.684a1.166 1.166 0 1 1 0 2.332 1.166 1.166 0 0 1 0-2.332z"/></svg>
+          Viber
+        </a>
+        <a href="/cdn-cgi/l/email-protection#accfc3c2d8cdcfd8eccd9fc182c8d6" class="footer-social-link gmail">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/></svg>
+          Email
+        </a>
+      </div>
+
+      <!-- Address / phone -->
+      <div class="footer-contact-info">
+        <div class="footer-contact-item">
+          <span class="fc-icon">📍</span>
+          <span id="fc-loc">الجزائر</span>
+        </div>
+        <div class="footer-contact-item">
+          <span class="fc-icon">📞</span>
+          <a href="tel:+213550901872" class="footer-contact-link">+213 550 901 872</a>
+        </div>
+        <div class="footer-contact-item">
+          <span class="fc-icon">✉️</span>
+          <a href="/cdn-cgi/l/email-protection#dfbcb0b1abbebcab9fbeecb2f1bba5" class="footer-contact-link"><span class="__cf_email__" data-cfemail="c3a0acadb7a2a0b783a2f0aeeda7b9">[email&#160;protected]</span></a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    <p>© 2025 A3M Print — <span id="ft-rights">جميع الحقوق محفوظة</span></p>
+    <p>Made with ❤️ in Algeria 🇩🇿</p>
+  </div>
+</footer>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- ===== SCRIPTS ===== -->
+<!-- Restore theme instantly before anything renders -->
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  (function(){
+    var t = localStorage.getItem("a3m_theme") || "blue-dark";
+    document.body.className = t;
+  })();
+</script>
+
+
+<!-- ===== PRODUCT SELECTOR LOGIC ===== -->
+
+<!-- ===== DESIGNER EXTRAS (zoom, canvas resize) ===== -->
+
+<!-- A3M Bot — AI Chatbot v2.0 (scripts already loaded above) -->
+
+<!-- Inline helpers for HTML onclick (work after modules load) -->
+<script>
+  // Theme color/mode picker
+  let _themeColor = (localStorage.getItem("a3m_theme") || "blue-dark").replace(/-dark$|-light$/,"");
+  let _themeMode  = (localStorage.getItem("a3m_theme") || "blue-dark").includes("light") ? "light" : "dark";
+
+  // ── Hero rotating taglines ──
+  const ROTATING_LINES_DATA = {
+    en: [
+      { main: "Ink your vision", gold: "wear your story" },
+      { main: "Print your ideas", gold: "make them real" },
+      { main: "Print ur brand", gold: "own your style" },
+      { main: "Wear your story", gold: "bold & unstoppable" }
+    ],
+    ar: [
+      { main: "اطبع أفكارك", gold: "اصنع واقعك" },
+      { main: "صمّم بحرية", gold: "اطبع بجودة" },
+      { main: "علامتك التجارية", gold: "تستحق الأفضل" },
+      { main: "ابدأ تصميمك", gold: "نطبع لك الآن" }
+    ],
+    fr: [
+      { main: "Imprime tes idées", gold: "vis ton histoire" },
+      { main: "Crée ta marque", gold: "porte ton style" },
+      { main: "Exprime-toi", gold: "imprime ta vision" },
+      { main: "Personnalise tout", gold: "sois unique" }
+    ]
+  };
+
+  let _currentRotIdx = 0;
+  let _rotInterval = null;
+
+  function buildRotLineHTML(lang, lineIdx) {
+    const lines = ROTATING_LINES_DATA[lang] || ROTATING_LINES_DATA["en"];
+    const line = lines[lineIdx % lines.length];
+    const mainChars = line.main.split("").map(c =>
+      c === " " ? `<span class="tagline-char"> </span>` : `<span class="tagline-char accent-char">${c}</span>`
+    ).join("");
+    const goldChars = line.gold.split("").map(c =>
+      c === " " ? `<span class="tagline-char"> </span>` : `<span class="tagline-char gold-char">${c}</span>`
+    ).join("");
+    return mainChars + `<span class="tagline-sep"> — </span>` + goldChars;
+  }
+
+  function animateTagChars(container) {
+    container.querySelectorAll(".tagline-char").forEach((el, i) => {
+      el.style.animation = "none";
+      void el.offsetWidth;
+      el.style.animationDelay = (0.03 + i * 0.032) + "s";
+      el.style.animation = "";
+    });
+  }
+
+  function startRotatingTaglines(lang) {
+    clearInterval(_rotInterval);
+    const enEl = document.getElementById("heroTaglineEn");
+    const arEl = document.getElementById("heroTaglineAnimated");
+    if (!enEl || !arEl) return;
+    arEl.style.display = "none";
+    enEl.style.display = "flex";
+    const lines = ROTATING_LINES_DATA[lang] || ROTATING_LINES_DATA["en"];
+    _currentRotIdx = 0;
+    enEl.innerHTML = `<span class="rotating-line active">${buildRotLineHTML(lang, 0)}</span>`;
+    animateTagChars(enEl);
+    _rotInterval = setInterval(() => {
+      _currentRotIdx = (_currentRotIdx + 1) % lines.length;
+      const cur = enEl.querySelector(".rotating-line");
+      if (cur) cur.classList.add("rt-fade-out");
+      setTimeout(() => {
+        enEl.innerHTML = `<span class="rotating-line active">${buildRotLineHTML(lang, _currentRotIdx)}</span>`;
+        animateTagChars(enEl);
+      }, 500);
+    }, 4000);
+  }
+
+  function updateHeroTagline(lang) { startRotatingTaglines(lang); }
+
+  // ── Sidebar translation ──
+  function translateSidebar(lang) {
+    document.querySelectorAll(".sb-t").forEach(el => {
+      const val = el.getAttribute("data-" + lang) || el.getAttribute("data-en");
+      if (val) el.textContent = val;
+    });
+    const disc = document.getElementById("sb-disc");
+    if (disc) disc.textContent = lang==="ar"?"الخصومات":lang==="fr"?"Réductions":"Discounts";
+    const order = document.getElementById("sb-order");
+    if (order) order.textContent = lang==="ar"?"نموذج الطلب":lang==="fr"?"Formulaire":"Order Form";
+  }
+
+  // ── Complete i18n translation table ──
+  const NAV_EXTRAS = {
+    ar: {
+      account:"👤 حساب", design:"🎨 صمّم", cart:"🛒 السلة", empty:"السلة فارغة",
+      checkout:"إتمام الطلب →", total:"المجموع",
+      home:"الرئيسية", products:"المنتجات", contact:"تواصل",
+      shopNow:"تسوّق الآن", startDesign:"🎨 ابدأ التصميم",
+      sectionSub:"المجموعة البريميوم",
+      bannerTitle:"صمّم قطعتك الخاصة", bannerSub:"ارفع تصميمك — نطبع ونوصّل", bannerBtn:"ابدأ التصميم →",
+      heroSub:"طباعة احترافية على التيشرتات والأكواب والقبعات والحقائب وأكثر.",
+      footerTagline:"Premium Print Studio — نطبع أحلامك على الواقع",
+      ftLinks:"روابط سريعة", ftContact:"تواصل معنا", ftRights:"جميع الحقوق محفوظة", ftLoc:"الجزائر",
+      // Showcase sections
+      capsLabel:"🧢 تشكيلة الكابات", capsSTitle:`كابات <span class="r">مخصصة</span> <span class="g">& قبعات</span>`,
+      capsSSub:"كابات بيسبول، باكيت هات وأكثر — كلها قابلة للتخصيص بعلامتك أو تصميمك",
+      capsViewAll:"عرض كل الكابات →",
+      mugsLabel:"☕ تشكيلة الأكواب", mugsSTitle:`أكواب <span class="r">مخصصة</span> <span class="g">& كوبايات</span>`,
+      mugsLabel:"☕ تشكيلة الأكواب", mugsSSub:"أكواب سيراميك، ترمو، ستاربكس — اطبع شعارك أو صورتك أو تصميمك على أي سطح",
+      mugsViewAll:"عرض كل الأكواب →",
+      stampsLabel:"🔏 الأختام & الأكتاب", stampsSTitle:`أختام <span class="r">مخصصة</span> <span class="g">& أكتاب</span>`,
+      stampsLabel:"🔏 الأختام & الأكتاب", stampsSSub:"أختام ذاتية الحبر، أختام شمع، أختام مطاطية — مخصصة بشعارك أو توقيعك",
+      stampsViewAll:"اطلب ختمًا مخصصًا →", stampsOrderNow:"اطلب الآن",
+      hoodiesLabel:"🧥 تشكيلة الهوديات", hoodiesSTitle:`هوديات <span class="r">مخصصة</span> <span class="g">& سويتشيرت</span>`,
+      hoodiesSSub:"هوديات بريميوم بطباعة أمامية أو خلفية — مثالية للفرق والمناسبات",
+      hoodiesViewAll:"عرض كل الهوديات →",
+      bagsLabel:"👜 تشكيلة الحقائب", bagsSTitle:`حقائب <span class="r">مخصصة</span> <span class="g">& باكات</span>`,
+      bagsSSub:"توت باغ، باك باك، حقائب هدايا — اطبع علامتك على كل سطح",
+      bagsViewAll:"عرض كل الحقائب →",
+      // Bag items
+      b1n:"توت باغ", b1t:"قماش قطني · طبيعي", b1d:"مثالية للاستخدام اليومي — اطبع أي تصميم أو شعار",
+      b2n:"باك باك", b2t:"طباعة سابليميشن", b2d:"طباعة شاملة — مثالية للمدارس والمناسبات",
+      b3n:"صندوق هدايا", b3t:"تغليف مخصص", b3d:"تغليف احترافي للمنتجات والهدايا الشركاتية",
+      b4n:"كيس تسوق", b4t:"بولي · صديق للبيئة", b4d:"أكياس صديقة للبيئة للمحلات والمقاهي",
+      // Hoodie items
+      h1n:"أسود أوربان", h1t:"هودي يونيسكس", h2n:"نايت فايب", h2t:"هودي أوفرسايز",
+      h3n:"تيل إلكتريك", h3t:"هودي زيبر", h4n:"آرت دروب", h4t:"إصدار محدود",
+      // PS overlay
+      psMode1Title:"قوالب جاهزة", psMode1Desc:"ابدأ من تصميم احترافي جاهز وخصّصه كيف تريد بسهولة",
+      psMode2Title:"من الصفر", psMode2Desc:"تحكم كامل بأبعاد اللوحة وكل تفاصيلها",
+    },
+    en: {
+      account:"👤 Account", design:"🎨 Design", cart:"🛒 Cart", empty:"Cart is empty",
+      checkout:"Checkout →", total:"Total",
+      home:"Home", products:"Products", contact:"Contact",
+      shopNow:"Shop Now", startDesign:"🎨 Start Designing",
+      sectionSub:"The Premium Collection",
+      bannerTitle:"Design your own piece — completely custom", bannerSub:"Upload your design or type your text — we print & deliver professionally", bannerBtn:"Start Designing →",
+      heroSub:"Professional printing on T-Shirts, Mugs, Caps, Bags and more.",
+      footerTagline:"Premium Print Studio — We ink your vision into reality",
+      ftLinks:"Quick Links", ftContact:"Contact Us", ftRights:"All rights reserved", ftLoc:"Algeria, DZ",
+      capsLabel:"🧢 CAPS COLLECTION", capsSTitle:`Custom <span class="r">Caps</span> <span class="g">& Hats</span>`,
+      capsSSub:"Baseball caps, bucket hats, and more — all fully customizable with your brand or design",
+      capsViewAll:"View All Caps →",
+      mugsLabel:"☕ MUGS COLLECTION", mugsSTitle:`Custom <span class="r">Mugs</span> <span class="g">& Cups</span>`,
+      mugsLabel:"☕ MUGS COLLECTION", mugsSSub:"Ceramic mugs, travel cups, and Starbucks-style — print your logo, photo or design on any surface",
+      mugsViewAll:"View All Mugs →",
+      stampsLabel:"🔏 STAMPS & SEALS", stampsSTitle:`Custom <span class="r">Stamps</span> <span class="g">& Seals</span>`,
+      stampsLabel:"🔏 STAMPS & SEALS", stampsSSub:"Self-inking stamps, wax seals, rubber stamps — personalized with your logo or signature",
+      stampsViewAll:"Request a Custom Stamp →", stampsOrderNow:"Order Now",
+      hoodiesLabel:"🧥 HOODIES COLLECTION", hoodiesSTitle:`Custom <span class="r">Hoodies</span> <span class="g">& Sweats</span>`,
+      hoodiesSSub:"Premium hoodies with full-front, back or sleeve print — perfect for teams and street fashion",
+      hoodiesViewAll:"View All Hoodies →",
+      bagsLabel:"👜 BAGS COLLECTION", bagsSTitle:`Custom <span class="r">Bags</span> <span class="g">& Packs</span>`,
+      bagsSSub:"Tote bags, backpacks, and packaging — print your brand, logo or artwork on every surface",
+      bagsViewAll:"View All Bags →",
+      b1n:"Tote Bag", b1t:"Cotton Canvas · Natural", b1d:"Perfect for everyday use — print any design or logo",
+      b2n:"Backpack", b2t:"Sublimation Print", b2d:"Full-coverage print — ideal for schools and events",
+      b3n:"Gift Box", b3t:"Custom Packaging", b3d:"Branded packaging for products and corporate gifts",
+      b4n:"Shopping Bag", b4t:"Non-Woven · Eco", b4d:"Eco-friendly bags for retail, cafés and events",
+      h1n:"Urban Black", h1t:"Unisex Hoodie", h2n:"Night Vibe", h2t:"Oversized Hoodie",
+      h3n:"Electric Teal", h3t:"Zip-Up Hoodie", h4n:"Art Drop", h4t:"Limited Edition",
+      psMode1Title:"Ready Templates", psMode1Desc:"Start from a professional design and customize it easily",
+      psMode2Title:"From Scratch", psMode2Desc:"Full control over canvas dimensions and every detail",
+    },
+    fr: {
+      account:"👤 Compte", design:"🎨 Créer", cart:"🛒 Panier", empty:"Panier vide",
+      checkout:"Commander →", total:"Total",
+      home:"Accueil", products:"Produits", contact:"Contact",
+      shopNow:"Acheter", startDesign:"🎨 Créer",
+      sectionSub:"La Collection Premium",
+      bannerTitle:"Créez votre pièce personnalisée", bannerSub:"Importez votre design — on imprime et livre", bannerBtn:"Commencer →",
+      heroSub:"Impression professionnelle sur T-Shirts, Tasses, Casquettes et plus.",
+      footerTagline:"Studio d'impression premium — Vos rêves imprimés",
+      ftLinks:"Liens Rapides", ftContact:"Contactez-nous", ftRights:"Tous droits réservés", ftLoc:"Algérie",
+      capsLabel:"🧢 COLLECTION CASQUETTES", capsSTitle:`<span class="r">Casquettes</span> <span class="g">Personnalisées</span>`,
+      capsSSub:"Casquettes baseball, chapeaux et plus — tous personnalisables avec votre marque",
+      capsViewAll:"Voir toutes les casquettes →",
+      mugsLabel:"☕ COLLECTION TASSES", mugsSTitle:`<span class="r">Tasses</span> <span class="g">Personnalisées</span>`,
+      mugsLabel:"☕ COLLECTION TASSES", mugsSSub:"Tasses céramique, thermos, style Starbucks — imprimez votre logo sur toute surface",
+      mugsViewAll:"Voir toutes les tasses →",
+      stampsLabel:"🔏 TAMPONS & SCEAUX", stampsSTitle:`<span class="r">Tampons</span> <span class="g">Personnalisés</span>`,
+      stampsLabel:"🔏 TAMPONS & SCEAUX", stampsSSub:"Tampons encreurs, sceaux de cire, tampons caoutchouc — personnalisés avec votre logo",
+      stampsViewAll:"Demander un tampon →", stampsOrderNow:"Commander",
+      hoodiesLabel:"🧥 COLLECTION HOODIES", hoodiesSTitle:`<span class="r">Hoodies</span> <span class="g">Personnalisés</span>`,
+      hoodiesSSub:"Hoodies premium avec impression totale — parfaits pour équipes et mode streetwear",
+      hoodiesViewAll:"Voir tous les hoodies →",
+      bagsLabel:"👜 COLLECTION SACS", bagsSTitle:`<span class="r">Sacs</span> <span class="g">Personnalisés</span>`,
+      bagsSSub:"Tote bags, sacs à dos, emballages — imprimez votre marque sur chaque surface",
+      bagsViewAll:"Voir tous les sacs →",
+      b1n:"Tote Bag", b1t:"Coton Canvas · Naturel", b1d:"Parfait pour le quotidien — imprimez tout design",
+      b2n:"Sac à Dos", b2t:"Impression Sublimation", b2d:"Impression totale — idéal pour écoles et événements",
+      b3n:"Boîte Cadeau", b3t:"Emballage Personnalisé", b3d:"Emballage de marque pour cadeaux corporate",
+      b4n:"Sac Shopping", b4t:"Non-Tissé · Éco", b4d:"Sacs écologiques pour commerces et cafés",
+      h1n:"Noir Urbain", h1t:"Hoodie Unisexe", h2n:"Night Vibe", h2t:"Hoodie Oversize",
+      h3n:"Teal Électrique", h3t:"Hoodie Zippé", h4n:"Art Drop", h4t:"Édition Limitée",
+      psMode1Title:"Modèles Prêts", psMode1Desc:"Commencez avec un design professionnel et personnalisez-le",
+      psMode2Title:"De Zéro", psMode2Desc:"Contrôle total sur les dimensions et les détails",
+    },
+  };
+
+  function applyNavExtras(lang) {
+    const t = NAV_EXTRAS[lang] || NAV_EXTRAS["en"];
+    const safe    = (id, val) => { if(!val) return; const el = document.getElementById(id); if (el) el.textContent = val; };
+    const safeHtml= (id, val) => { if(!val) return; const el = document.getElementById(id); if (el) el.innerHTML = val; };
+
+    // Nav & cart
+    safe("accountNavBtn", t.account); safe("designNowBtn", t.design);
+    safe("cartTitle", t.cart);
+    const emptyEl = document.querySelector(".cart-empty");
+    if (emptyEl) emptyEl.textContent = t.empty;
+    const checkoutBtn = document.getElementById("checkoutBtn");
+    if (checkoutBtn) checkoutBtn.textContent = t.checkout;
+    const totalLabel = document.getElementById("cartTotalLabel");
+    if (totalLabel) totalLabel.textContent = t.total;
+
+    // Nav links
+    safe("n-home", t.home); safe("n-products", t.products); safe("n-contact", t.contact);
+
+    // Hero & banner
+    safe("shopNowBtn", t.shopNow); safe("startDesignBtn", t.startDesign); safe("startDesignBtn2", t.bannerBtn);
+    safe("heroSub", t.heroSub); safe("bannerTitle", t.bannerTitle); safe("bannerSub", t.bannerSub);
+
+    // Section titles
+    safe("sectionSub", t.sectionSub);
+    safeHtml("sectionTitle", lang==="ar"
+      ? `منتجاتنا <span class="r">المميزة</span> <span class="g">✦</span>`
+      : lang==="fr"
+      ? `Notre <span class="r">Collection</span> <span class="g">Premium ✦</span>`
+      : `Our <span class="r">Premium</span> <span class="g">Collection ✦</span>`);
+
+    // Footer
+    safe("footerTagline", t.footerTagline);
+    safe("ft-links-title", t.ftLinks); safe("ft-contact-title", t.ftContact);
+    safe("ft-rights", t.ftRights); safe("fc-loc", t.ftLoc);
+    document.querySelectorAll(".ft-t").forEach(el => {
+      const val = el.getAttribute("data-" + lang) || el.getAttribute("data-en");
+      if (val) el.textContent = val;
+    });
+
+    // Showcase sections
+    safe("capsLabel", t.capsLabel); safeHtml("capsSTitle", t.capsSTitle); safe("capsSSub", t.capsSSub);
+    const capsViewAll = document.querySelector("#capsShowcase .btn-primary");
+    if (capsViewAll) capsViewAll.textContent = t.capsViewAll;
+    safe("mugsLabel", t.mugsLabel); safeHtml("mugsSTitle", t.mugsSTitle); safe("mugsSSub", t.mugsSSub);
+    const mugsViewAll = document.querySelector("#mugsShowcase .btn-primary");
+    if (mugsViewAll) mugsViewAll.textContent = t.mugsViewAll;
+    safe("stampsLabel", t.stampsLabel); safeHtml("stampsSTitle", t.stampsSTitle); safe("stampsSSub", t.stampsSSub);
+    const stampsViewAll = document.querySelector("#stampsShowcase > div:last-child .btn-primary");
+    if (stampsViewAll) stampsViewAll.textContent = t.stampsViewAll;
+    document.querySelectorAll(".stamp-btn").forEach(b => b.textContent = t.stampsOrderNow);
+    safe("hoodiesLabel", t.hoodiesLabel); safeHtml("hoodiesSTitle", t.hoodiesSTitle); safe("hoodiesSSub", t.hoodiesSSub);
+    safe("hoodiesViewAll", t.hoodiesViewAll);
+    safe("bagsLabel", t.bagsLabel); safeHtml("bagsSTitle", t.bagsSTitle); safe("bagsSSub", t.bagsSSub);
+    safe("bagsViewAll", t.bagsViewAll);
+    // Bag & hoodie item names
+    ["b1n","b1t","b1d","b2n","b2t","b2d","b3n","b3t","b3d","b4n","b4t","b4d",
+     "h1n","h1t","h2n","h2t","h3n","h3t","h4n","h4t"].forEach(id => safe(id, t[id]));
+    // Stamp names
+    safe("st1n", lang==="ar"?"ختم ذاتي الحبر":lang==="fr"?"Tampon Encreur":"Self-Inking Stamp");
+    safe("st2n", lang==="ar"?"ختم دائري":lang==="fr"?"Sceau Rond":"Round Seal Stamp");
+    safe("st3n", lang==="ar"?"ختم شمع":lang==="fr"?"Sceau de Cire":"Wax Seal Stamp");
+    safe("st4n", lang==="ar"?"ختم مطاطي مخصص":lang==="fr"?"Tampon Caoutchouc":"Custom Rubber Stamp");
+
+    // Category filter buttons
+    const catMap = {
+      "c-all":    {ar:"✦ الكل",      en:"✦ All",        fr:"✦ Tout"},
+      "c-tshirt": {ar:"👕 تيشرتات",  en:"👕 T-Shirts",   fr:"👕 T-Shirts"},
+      "c-hoodie": {ar:"🧥 هوديات",   en:"🧥 Hoodies",    fr:"🧥 Hoodies"},
+      "c-hat":    {ar:"🧢 كابات",    en:"🧢 Caps",       fr:"🧢 Casquettes"},
+      "c-mug":    {ar:"☕ أكواب",    en:"☕ Mugs",       fr:"☕ Tasses"},
+      "c-bag":    {ar:"👜 حقائب",   en:"👜 Bags",       fr:"👜 Sacs"},
+      "c-laser":  {ar:"🔑 إكسسوارات",en:"🔑 Accessories",fr:"🔑 Accessoires"},
+      "c-paper":  {ar:"📄 أوراق",   en:"📄 Paper",      fr:"📄 Papier"},
+    };
+    Object.entries(catMap).forEach(([id, vals]) => safe(id, vals[lang] || vals.en));
+
+    // html dir
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang==="ar" ? "rtl" : "ltr";
+    translateSidebar(lang);
+  }
+
+  // ── Missing: openOrderFromDesign (called from designer topbar "اطلب" button) ──
+  window.openOrderFromDesign = function() {
+    if (typeof closeDesignerModal === 'function') closeDesignerModal();
+    if (typeof openOrderForm === 'function') openOrderForm();
+  };
+
+  // Patch setLang
+  document.addEventListener("DOMContentLoaded", function() {
+    if (!localStorage.getItem('a3m_lang')) localStorage.setItem('a3m_lang', 'ar');
+    const storedLang = localStorage.getItem("a3m_lang") || "ar";
+    setTimeout(() => { updateHeroTagline(storedLang); applyNavExtras(storedLang); }, 350);
+    const _origSetLang = window.setLang;
+    window.setLang = function(lang) {
+      localStorage.setItem('a3m_lang', lang);
+      if (_origSetLang) _origSetLang(lang);
+      updateHeroTagline(lang);
+      applyNavExtras(lang);
+      if (typeof window.translateDesignerUI === "function") window.translateDesignerUI();
+    };
+  });
+
+  function setThemeColor(color) {
+    _themeColor = color;
+    if (typeof setTheme === "function") setTheme(_themeColor + "-" + _themeMode);
+    _updateThemeButtons();
+    document.getElementById("themeDropdown").classList.remove("open");
+  }
+  function setThemeMode(mode) {
+    _themeMode = mode;
+    if (typeof setTheme === "function") setTheme(_themeColor + "-" + _themeMode);
+    _updateThemeButtons();
+  }
+  function toggleThemeMenu() {
+    document.getElementById("themeDropdown").classList.toggle("open");
+  }
+  function _updateThemeButtons() {
+    const dark = document.getElementById("modeDarkBtn");
+    const light = document.getElementById("modeLightBtn");
+    if (dark)  dark.classList.toggle("active",  _themeMode === "dark");
+    if (light) light.classList.toggle("active", _themeMode === "light");
+    const icon = document.getElementById("themeIcon");
+    if (icon) icon.textContent = _themeMode === "dark" ? "🌙" : "☀️";
+  }
+  // Close theme dropdown on outside click
+  document.addEventListener("click", function(e) {
+    const wrapper = document.getElementById("themeWrapper");
+    if (wrapper && !wrapper.contains(e.target)) {
+      const dd = document.getElementById("themeDropdown");
+      if (dd) dd.classList.remove("open");
+    }
+  });
+  // Init theme buttons state
+  document.addEventListener("DOMContentLoaded", function() {
+    _updateThemeButtons();
+    // Inject social icons from SOCIAL_ICONS (defined in data.js)
+    function injectSocials() {
+      if (!window.SOCIAL_ICONS) { setTimeout(injectSocials, 200); return; }
+      const socials = [
+        {key:"instagram", href:"#", title:"Instagram"},
+        {key:"facebook",  href:"#", title:"Facebook"},
+        {key:"whatsapp",  href:"#", title:"WhatsApp"},
+        {key:"telegram",  href:"#", title:"Telegram"},
+        {key:"viber",     href:"#", title:"Viber"},
+        {key:"gmail",     href:"#", title:"Gmail"},
+      ];
+      const makeBtn = (s) => {
+        const a = document.createElement("a");
+        a.className = "social-btn-img"; a.href = s.href; a.title = s.title;
+        a.target = "_blank"; a.rel = "noopener";
+        if (window.SOCIAL_ICONS[s.key]) {
+          const img = document.createElement("img");
+          img.src = window.SOCIAL_ICONS[s.key];
+          img.alt = s.title; img.style.cssText = "width:100%;height:100%;object-fit:contain;border-radius:10px";
+          a.appendChild(img);
+        } else {
+          a.textContent = s.title[0];
+        }
+        return a;
+      };
+      const containers = ["footerSocialMain"];
+      containers.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { el.innerHTML = ""; socials.forEach(s => el.appendChild(makeBtn(s))); }
+      });
+    }
+    injectSocials();
+  });
+</script>
+
+<!-- ═══════════════════════════════════════════════════════
+     3D PREVIEW MODAL
+════════════════════════════════════════════════════════ -->
+<div class="preview3d-modal" id="preview3dModal">
+  <div class="p3d-shell">
+    <div class="p3d-header">
+      <div class="p3d-title">
+        <span class="p3d-logo">A<span>3</span>M</span>
+        معاينة ثلاثية الأبعاد
+        <span class="p3d-badge">3D</span>
+      </div>
+      <div class="p3d-actions">
+        <div class="p3d-prod-tabs">
+          <button class="p3d-prod-tab active" data-prod="tshirt" onclick="loadProduct3D('tshirt')" title="تيشرت">👕</button>
+          <button class="p3d-prod-tab" data-prod="mug"    onclick="loadProduct3D('mug')"    title="كوب">☕</button>
+          <button class="p3d-prod-tab" data-prod="hat"    onclick="loadProduct3D('hat')"     title="قبعة">🧢</button>
+          <button class="p3d-prod-tab" data-prod="bag"    onclick="loadProduct3D('bag')"     title="حقيبة">🎒</button>
+          <button class="p3d-prod-tab" data-prod="paper"  onclick="loadProduct3D('paper')"   title="ورقة">📄</button>
+        </div>
+        <div class="p3d-divider"></div>
+        <label class="p3d-color-wrap" title="لون المنتج">
+          <span>🎨</span>
+          <input type="color" id="p3dColorPicker" value="#f0f0f0"/>
+        </label>
+        <button class="p3d-ctrl-btn active" id="p3dAutoRotBtn" onclick="toggleAutoRotate3D()" title="دوران تلقائي">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+        </button>
+        <button class="p3d-ctrl-btn" onclick="resetView3D()" title="إعادة ضبط الكاميرا">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 109-9 9 9 0 00-9 9z"/><path d="M12 8v4l3 3"/></svg>
+        </button>
+        <button class="p3d-ctrl-btn" onclick="screenshot3D()" title="تصوير">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </button>
+        <label class="p3d-ctrl-btn p3d-upload-btn" title="رفع ملف 3D">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+          STL / OBJ
+          <input type="file" id="preview3dFileInput" accept=".stl,.obj" style="display:none"/>
+        </label>
+        <button class="p3d-ctrl-btn p3d-close-btn" onclick="close3DViewer()">✕</button>
+      </div>
+    </div>
+    <div class="p3d-progress-wrap">
+      <div class="p3d-progress-bar" id="preview3dProgress"></div>
+    </div>
+    <div class="p3d-canvas-wrap" id="preview3dCanvas"></div>
+    <div class="p3d-footer">
+      <span id="preview3dStatus">التصميم الحالي من الـ Designer</span>
+      <div class="p3d-hint-row">
+        <span class="p3d-hint-chip">🖱 سحب = دوران</span>
+        <span class="p3d-hint-chip">⚙ عجلة = تكبير</span>
+        <span class="p3d-hint-chip">🖱 يمين = تحريك</span>
+        <span class="p3d-hint-chip">📱 قرصة = زوم</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Three.js r128 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+
+<!-- STLLoader + OBJLoader inline -->
+<script>
+(function(){
+  // ── STLLoader ──
+  THREE.STLLoader = function(m){this.manager=m||THREE.DefaultLoadingManager;};
+  THREE.STLLoader.prototype={
+    constructor:THREE.STLLoader,
+    load:function(url,onLoad,onProg,onErr){
+      var s=this,l=new THREE.FileLoader(this.manager);
+      l.setResponseType('arraybuffer');
+      l.load(url,function(b){onLoad(s.parse(b));},onProg,onErr);
+    },
+    parse:function(data){var b=this.ensureBinary(data);return this.isBinary(b)?this.parseBinary(b):this.parseASCII(this.ensureString(data));},
+    isBinary:function(d){var r=new DataView(d),n=r.getUint32(80,true);return d.byteLength===(84+n*50);},
+    ensureBinary:function(b){if(typeof b==='string'){var a=new ArrayBuffer(b.length),v=new Uint8Array(a);for(var i=0;i<b.length;i++)v[i]=b.charCodeAt(i)&0xff;return a;}return b;},
+    ensureString:function(b){return typeof b==='string'?b:new TextDecoder().decode(new Uint8Array(b));},
+    parseBinary:function(data){
+      var r=new DataView(data),n=r.getUint32(80,true),g=new THREE.BufferGeometry(),v=[],nm=[];
+      for(var f=0;f<n;f++){var s=84+f*50,nx=r.getFloat32(s,true),ny=r.getFloat32(s+4,true),nz=r.getFloat32(s+8,true);for(var x=0;x<3;x++){var q=s+12+x*12;v.push(r.getFloat32(q,true),r.getFloat32(q+4,true),r.getFloat32(q+8,true));nm.push(nx,ny,nz);}}
+      g.setAttribute('position',new THREE.BufferAttribute(new Float32Array(v),3));
+      g.setAttribute('normal',new THREE.BufferAttribute(new Float32Array(nm),3));
+      return g;
+    },
+    parseASCII:function(data){
+      var g=new THREE.BufferGeometry(),v=[],nm=[],pV=/vertex\s+([\d.+\-eE]+)\s+([\d.+\-eE]+)\s+([\d.+\-eE]+)/g,pN=/normal\s+([\d.+\-eE]+)\s+([\d.+\-eE]+)\s+([\d.+\-eE]+)/g,r,nb=[0,0,1];
+      while((r=pN.exec(data))!==null){nb=[+r[1],+r[2],+r[3]];for(var k=0;k<3;k++)nm.push(nb[0],nb[1],nb[2]);}
+      while((r=pV.exec(data))!==null)v.push(+r[1],+r[2],+r[3]);
+      g.setAttribute('position',new THREE.BufferAttribute(new Float32Array(v),3));
+      if(nm.length===v.length)g.setAttribute('normal',new THREE.BufferAttribute(new Float32Array(nm),3));
+      else g.computeVertexNormals();
+      return g;
+    }
+  };
+
+  // ── OBJLoader ──
+  THREE.OBJLoader=function(m){this.manager=m||THREE.DefaultLoadingManager;};
+  THREE.OBJLoader.prototype={
+    constructor:THREE.OBJLoader,
+    load:function(url,onLoad,onProg,onErr){
+      var s=this,l=new THREE.FileLoader(this.manager);
+      l.load(url,function(t){onLoad(s.parse(t));},onProg,onErr);
+    },
+    parse:function(text){
+      var lines=text.split('\n'),v=[],nm=[],pos=[],nor=[];
+      lines.forEach(function(ln){
+        var p=ln.trim().split(/\s+/);
+        if(p[0]==='v')v.push(+p[1],+p[2],+p[3]);
+        else if(p[0]==='vn')nm.push(+p[1],+p[2],+p[3]);
+        else if(p[0]==='f'){
+          var fv=p.slice(1);
+          for(var t=1;t<fv.length-1;t++){
+            [fv[0],fv[t],fv[t+1]].forEach(function(fvi){
+              var sp=fvi.split('/'),vi=(parseInt(sp[0])-1)*3;
+              pos.push(v[vi],v[vi+1],v[vi+2]);
+              var ni=sp[2]?(parseInt(sp[2])-1)*3:-1;
+              nor.push(ni>=0?nm[ni]:0,ni>=0?nm[ni+1]:1,ni>=0?nm[ni+2]:0);
+            });
+          }
+        }
+      });
+      var g=new THREE.BufferGeometry();
+      g.setAttribute('position',new THREE.BufferAttribute(new Float32Array(pos),3));
+      g.setAttribute('normal',new THREE.BufferAttribute(new Float32Array(nor),3));
+      g.computeVertexNormals();
+      var mesh=new THREE.Mesh(g,new THREE.MeshStandardMaterial({color:0xd4d4d4}));
+      var group=new THREE.Group();group.add(mesh);return group;
+    }
+  };
+})();
+</script>
+
+<!-- A3M 3D Preview module -->
+<script src="./js/preview3d.js" defer></script>
+
+
+<script>
+// ── Nav scrolled effect ──
+(function(){
+  var nav = document.querySelector('.nav');
+  if(!nav) return;
+  var onScroll = function(){
+    nav.classList.toggle('scrolled', window.scrollY > 10);
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+</script>
+</body>
+</html>
