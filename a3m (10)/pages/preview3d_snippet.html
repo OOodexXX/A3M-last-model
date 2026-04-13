@@ -1,0 +1,355 @@
+<!--
+  ╔══════════════════════════════════════════════════════════════╗
+  ║   A3M Print — 3D Preview v2  •  Integration Snippet         ║
+  ║                                                              ║
+  ║   STEP 1: CDN Scripts  →  paste before </body>              ║
+  ║   STEP 2: Modal HTML   →  paste inside <body>               ║
+  ║   STEP 3: CSS          →  paste inside <style> in <head>    ║
+  ║   STEP 4: Trigger btn  →  paste wherever in Designer UI     ║
+  ╚══════════════════════════════════════════════════════════════╝
+-->
+
+
+<!-- ═══ STEP 1 — Scripts (before </body>) ═══════════════════════ -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<script>
+/* ── STLLoader (r128 compatible, inline) ── */
+THREE.STLLoader = function (manager) { this.manager = manager || THREE.DefaultLoadingManager; };
+THREE.STLLoader.prototype = {
+  constructor: THREE.STLLoader,
+  load: function (url, onLoad, onProgress, onError) {
+    var scope = this, loader = new THREE.FileLoader(this.manager);
+    loader.setResponseType('arraybuffer');
+    loader.load(url, function (buf) { onLoad(scope.parse(buf)); }, onProgress, onError);
+  },
+  parse: function (data) {
+    var bin = this.ensureBinary(data);
+    return this.isBinary(bin) ? this.parseBinary(bin) : this.parseASCII(this.ensureString(data));
+  },
+  isBinary: function (d) { var r = new DataView(d), n = r.getUint32(80, true); return d.byteLength === (84 + n * 50); },
+  ensureBinary: function (b) { if (typeof b === 'string') { var a = new ArrayBuffer(b.length), v = new Uint8Array(a); for (var i = 0; i < b.length; i++) v[i] = b.charCodeAt(i) & 0xff; return a; } return b; },
+  ensureString: function (b) { return typeof b === 'string' ? b : new TextDecoder().decode(new Uint8Array(b)); },
+  parseBinary: function (data) {
+    var reader = new DataView(data), numFaces = reader.getUint32(80, true);
+    var geo = new THREE.BufferGeometry(), verts = [], norms = [];
+    for (var face = 0; face < numFaces; face++) {
+      var s = 84 + face * 50, nx = reader.getFloat32(s, true), ny = reader.getFloat32(s + 4, true), nz = reader.getFloat32(s + 8, true);
+      for (var v = 0; v < 3; v++) { var q = s + 12 + v * 12; verts.push(reader.getFloat32(q, true), reader.getFloat32(q + 4, true), reader.getFloat32(q + 8, true)); norms.push(nx, ny, nz); }
+    }
+    geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(verts), 3));
+    geo.setAttribute('normal', new THREE.BufferAttribute(new Float32Array(norms), 3));
+    return geo;
+  },
+  parseASCII: function (data) {
+    var geo = new THREE.BufferGeometry(), verts = [], norms = [], pV = /vertex\s+([\d.+\-eE]+)\s+([\d.+\-eE]+)\s+([\d.+\-eE]+)/g, pN = /normal\s+([\d.+\-eE]+)\s+([\d.+\-eE]+)\s+([\d.+\-eE]+)/g, r, nb = [0, 0, 1];
+    while ((r = pN.exec(data)) !== null) { nb = [+r[1], +r[2], +r[3]]; for (var k = 0; k < 3; k++) norms.push(nb[0], nb[1], nb[2]); }
+    while ((r = pV.exec(data)) !== null) verts.push(+r[1], +r[2], +r[3]);
+    geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(verts), 3));
+    if (norms.length === verts.length) geo.setAttribute('normal', new THREE.BufferAttribute(new Float32Array(norms), 3));
+    else geo.computeVertexNormals();
+    return geo;
+  }
+};
+
+/* ── OBJLoader (minimal, inline) ── */
+THREE.OBJLoader = function (manager) { this.manager = manager || THREE.DefaultLoadingManager; };
+THREE.OBJLoader.prototype = {
+  constructor: THREE.OBJLoader,
+  load: function (url, onLoad, onProgress, onError) {
+    var scope = this, loader = new THREE.FileLoader(this.manager);
+    loader.load(url, function (text) { onLoad(scope.parse(text)); }, onProgress, onError);
+  },
+  parse: function (text) {
+    var lines = text.split('\n'), verts = [], normals = [], positions = [], normArr = [];
+    lines.forEach(function (line) {
+      var p = line.trim().split(/\s+/);
+      if (p[0] === 'v') verts.push(+p[1], +p[2], +p[3]);
+      else if (p[0] === 'vn') normals.push(+p[1], +p[2], +p[3]);
+      else if (p[0] === 'f') {
+        var fv = p.slice(1);
+        for (var t = 1; t < fv.length - 1; t++) {
+          [fv[0], fv[t], fv[t + 1]].forEach(function (fvi) {
+            var sp = fvi.split('/'), vi = (parseInt(sp[0]) - 1) * 3;
+            positions.push(verts[vi], verts[vi + 1], verts[vi + 2]);
+            var ni = sp[2] ? (parseInt(sp[2]) - 1) * 3 : -1;
+            normArr.push(ni >= 0 ? normals[ni] : 0, ni >= 0 ? normals[ni + 1] : 1, ni >= 0 ? normals[ni + 2] : 0);
+          });
+        }
+      }
+    });
+    var geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
+    geo.setAttribute('normal', new THREE.BufferAttribute(new Float32Array(normArr), 3));
+    geo.computeVertexNormals();
+    var mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: 0xd4d4d4 }));
+    var group = new THREE.Group(); group.add(mesh);
+    return group;
+  }
+};
+</script>
+
+<script src="./js/preview3d.js"></script>
+
+
+<!-- ═══ STEP 2 — Modal HTML (inside <body>) ══════════════════════ -->
+
+<div class="preview3d-modal" id="preview3dModal">
+  <div class="p3d-shell">
+
+    <!-- ── Header ── -->
+    <div class="p3d-header">
+      <div class="p3d-title">
+        <span class="p3d-logo">A<span>3</span>M</span>
+        معاينة ثلاثية الأبعاد
+        <span class="p3d-badge">3D</span>
+      </div>
+
+      <div class="p3d-actions">
+        <!-- Product selector tabs -->
+        <div class="p3d-prod-tabs">
+          <button class="p3d-prod-tab active" data-prod="tshirt" onclick="loadProduct3D('tshirt')" title="تيشرت">👕</button>
+          <button class="p3d-prod-tab" data-prod="mug"    onclick="loadProduct3D('mug')"    title="كوب">☕</button>
+          <button class="p3d-prod-tab" data-prod="hat"    onclick="loadProduct3D('hat')"     title="قبعة">🧢</button>
+          <button class="p3d-prod-tab" data-prod="bag"    onclick="loadProduct3D('bag')"     title="حقيبة">🎒</button>
+          <button class="p3d-prod-tab" data-prod="paper"  onclick="loadProduct3D('paper')"   title="ورقة">📄</button>
+        </div>
+
+        <div class="p3d-divider"></div>
+
+        <!-- Color picker for product -->
+        <label class="p3d-color-wrap" title="لون المنتج">
+          <span>🎨</span>
+          <input type="color" id="p3dColorPicker" value="#f0f0f0"/>
+        </label>
+
+        <!-- Auto-rotate toggle -->
+        <button class="p3d-ctrl-btn active" id="p3dAutoRotBtn" onclick="toggleAutoRotate3D()" title="دوران تلقائي">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+        </button>
+
+        <!-- Reset view -->
+        <button class="p3d-ctrl-btn" onclick="resetView3D()" title="إعادة ضبط الكاميرا">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 109-9 9 9 0 00-9 9z"/><path d="M12 8v4l3 3"/></svg>
+        </button>
+
+        <!-- Screenshot -->
+        <button class="p3d-ctrl-btn" onclick="screenshot3D()" title="تصوير">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </button>
+
+        <!-- Upload custom model -->
+        <label class="p3d-ctrl-btn p3d-upload-btn" title="رفع ملف 3D">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+          STL / OBJ
+          <input type="file" id="preview3dFileInput" accept=".stl,.obj" style="display:none"/>
+        </label>
+
+        <!-- Close -->
+        <button class="p3d-ctrl-btn p3d-close-btn" onclick="close3DViewer()" title="إغلاق">✕</button>
+      </div>
+    </div>
+
+    <!-- ── Progress bar ── -->
+    <div class="p3d-progress-wrap">
+      <div class="p3d-progress-bar" id="preview3dProgress"></div>
+    </div>
+
+    <!-- ── 3D Canvas ── -->
+    <div class="p3d-canvas-wrap" id="preview3dCanvas">
+      <!-- Three.js renderer mounts here -->
+    </div>
+
+    <!-- ── Footer ── -->
+    <div class="p3d-footer">
+      <span id="preview3dStatus">التصميم الحالي من الـ Designer</span>
+      <div class="p3d-hint-row">
+        <span class="p3d-hint-chip">🖱 سحب = دوران</span>
+        <span class="p3d-hint-chip">⚙ عجلة = تكبير</span>
+        <span class="p3d-hint-chip">🖱 يمين = تحريك</span>
+        <span class="p3d-hint-chip">📱 قرصة = زوم</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══ STEP 3 — CSS (in <style> inside <head>) ═══════════════════ -->
+<style id="preview3d-css">
+
+/* ── Modal overlay ── */
+.preview3d-modal {
+  display: none;
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(0,0,0,.82);
+  backdrop-filter: blur(8px);
+  align-items: center; justify-content: center;
+  padding: 12px;
+}
+.preview3d-modal.active { display: flex; animation: p3dIn .22s cubic-bezier(.2,.8,.3,1); }
+@keyframes p3dIn { from { opacity:0; transform:scale(.94) translateY(10px); } to { opacity:1; transform:none; } }
+
+/* ── Shell ── */
+.p3d-shell {
+  width: min(96vw, 980px);
+  height: min(92vh, 660px);
+  background: #0d0f1a;
+  border: 1px solid #252540;
+  border-radius: 18px;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,.8), 0 0 0 1px rgba(124,58,237,.15);
+}
+
+/* ── Header ── */
+.p3d-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .55rem .85rem;
+  background: #10121e;
+  border-bottom: 1px solid #1e1e32;
+  flex-shrink: 0; gap: .6rem;
+  flex-wrap: wrap;
+}
+.p3d-title {
+  display: flex; align-items: center; gap: .5rem;
+  font-family: 'Cairo', sans-serif; font-weight: 800;
+  font-size: 15px; color: #f0f0f0;
+  white-space: nowrap;
+}
+.p3d-logo { font-family: 'Permanent Marker', cursive; font-size: 16px; color: #c9a84c; }
+.p3d-logo span { color: #7c3aed; }
+.p3d-badge {
+  font-size: 9px; font-weight: 900; letter-spacing: 1.5px;
+  background: linear-gradient(135deg, #7c3aed, #c9a84c);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; border: 1px solid #7c3aed55;
+  padding: 1px 7px; border-radius: 20px;
+}
+
+/* ── Actions row ── */
+.p3d-actions { display: flex; align-items: center; gap: .35rem; flex-wrap: wrap; }
+
+/* Product tabs */
+.p3d-prod-tabs { display: flex; gap: 2px; background: #1a1a2e; padding: 3px; border-radius: 10px; }
+.p3d-prod-tab {
+  background: transparent; border: none; cursor: pointer;
+  font-size: 15px; padding: 4px 7px; border-radius: 7px;
+  transition: background .15s, transform .12s;
+  line-height: 1;
+}
+.p3d-prod-tab:hover  { background: #252540; transform: scale(1.12); }
+.p3d-prod-tab.active { background: #7c3aed33; box-shadow: 0 0 0 1px #7c3aed66; }
+
+.p3d-divider { width: 1px; height: 22px; background: #252540; }
+
+/* Color picker */
+.p3d-color-wrap {
+  display: flex; align-items: center; gap: .3rem; cursor: pointer;
+  background: #1a1a2e; border: 1px solid #252540; border-radius: 8px;
+  padding: .28rem .55rem; font-size: 13px;
+  transition: border-color .15s;
+}
+.p3d-color-wrap:hover { border-color: #7c3aed; }
+.p3d-color-wrap input[type="color"] {
+  width: 22px; height: 22px; border: none; background: none;
+  cursor: pointer; padding: 0; border-radius: 4px;
+}
+
+/* Control buttons */
+.p3d-ctrl-btn {
+  display: inline-flex; align-items: center; gap: .3rem;
+  background: #1a1a2e; border: 1px solid #252540;
+  color: #9090b0; border-radius: 8px;
+  padding: .32rem .65rem; font-size: 12px; font-weight: 600;
+  cursor: pointer; transition: all .15s; white-space: nowrap;
+  font-family: 'Cairo', sans-serif;
+}
+.p3d-ctrl-btn:hover { background: #252540; color: #fff; border-color: #7c3aed66; }
+.p3d-ctrl-btn.active { color: #c9a84c; border-color: #c9a84c55; background: #c9a84c11; }
+.p3d-upload-btn { color: #7c3aed; border-color: #7c3aed44; }
+.p3d-upload-btn:hover { background: #7c3aed22; border-color: #7c3aed; }
+.p3d-close-btn { color: #ff6b6b66; }
+.p3d-close-btn:hover { color: #ff6b6b; background: #ff6b6b15; border-color: #ff6b6b44; }
+
+/* Progress */
+.p3d-progress-wrap { height: 2px; background: #151525; flex-shrink: 0; }
+.p3d-progress-bar {
+  height: 100%; width: 0; opacity: 0;
+  background: linear-gradient(90deg, #7c3aed, #c9a84c, #7c3aed);
+  background-size: 200% 100%;
+  animation: p3dProg 1.5s linear infinite;
+  transition: width .25s ease, opacity .3s;
+  border-radius: 2px;
+}
+@keyframes p3dProg { 0% { background-position:100% 0; } 100% { background-position:-100% 0; } }
+
+/* Canvas */
+.p3d-canvas-wrap {
+  flex: 1; position: relative; overflow: hidden;
+  cursor: grab; background: #0e1018;
+}
+.p3d-canvas-wrap:active { cursor: grabbing; }
+.p3d-canvas-wrap.drag-over {
+  outline: 2px dashed #c9a84c88;
+  outline-offset: -6px;
+  background: #c9a84c08;
+}
+.p3d-canvas-wrap canvas { display: block; width: 100% !important; height: 100% !important; }
+
+/* Footer */
+.p3d-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .42rem .85rem;
+  background: #0c0e18;
+  border-top: 1px solid #1a1a2c;
+  flex-shrink: 0;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+#preview3dStatus { font-size: 12px; color: #c9a84caa; font-family: 'Cairo', sans-serif; min-width: 0; }
+.p3d-hint-row { display: flex; gap: .4rem; flex-wrap: wrap; }
+.p3d-hint-chip {
+  font-size: 10px; color: #3a3a55;
+  background: #13131f; border: 1px solid #1e1e2e;
+  padding: 2px 8px; border-radius: 20px;
+  white-space: nowrap;
+}
+
+/* ── Mobile ── */
+@media (max-width: 600px) {
+  .p3d-hint-row  { display: none; }
+  .p3d-prod-tabs .p3d-prod-tab { font-size: 13px; padding: 3px 5px; }
+  .p3d-ctrl-btn  { padding: .28rem .45rem; font-size: 11px; }
+  .p3d-shell { border-radius: 14px; }
+}
+
+/* ── Designer trigger button ── */
+.btn-open-3d {
+  display: inline-flex; align-items: center; gap: .4rem;
+  padding: .4rem .9rem; border-radius: 10px; cursor: pointer;
+  border: 1px solid #7c3aed55;
+  background: linear-gradient(135deg, #7c3aed18, #c9a84c0d);
+  color: #c9a84c; font-size: 12px; font-weight: 700;
+  font-family: 'Cairo', sans-serif; transition: all .18s;
+  white-space: nowrap;
+}
+.btn-open-3d:hover {
+  background: linear-gradient(135deg, #7c3aed30, #c9a84c18);
+  border-color: #7c3aed99;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px #7c3aed28;
+}
+</style>
+
+
+<!-- ═══ STEP 4 — Trigger button (paste in Designer toolbar) ══════ -->
+<!--
+  أضف هذا الزر في شريط الأدوات في الـ Designer
+  مثلاً بعد زر الـ Download في topbar أو في شريط الأدوات
+-->
+<button class="btn-open-3d" onclick="open3DViewer()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+  معاينة 3D
+</button>
