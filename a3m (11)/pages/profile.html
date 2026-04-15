@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profile — A3M Print</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Cairo:wght@400;600;700;900&family=Inter:wght@400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:#0b0f19; --bg2:#111827; --card:#141d2e; --card2:#1a2438;
+      --accent:#2563eb; --gold:#c9a84c; --red:#e63946; --purple:#7c3aed;
+      --txt:#f1f5f9; --txt2:#94a3b8; --txt3:#4b5563;
+      --border:rgba(255,255,255,.07); --border2:rgba(255,255,255,.13);
+      --radius:16px; --shadow:0 8px 32px rgba(0,0,0,.4);
+    }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { font-family:'Cairo','Inter',sans-serif; background:var(--bg); color:var(--txt); min-height:100vh; }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      position:sticky; top:0; z-index:200;
+      height:56px; padding:0 1.2rem;
+      display:flex; align-items:center; justify-content:space-between; gap:.8rem;
+      background:rgba(11,15,25,.92);
+      backdrop-filter:blur(20px) saturate(1.5);
+      border-bottom:1px solid var(--border);
+    }
+    .topbar-logo { font-family:'Permanent Marker',cursive; font-size:1.4rem; color:#fff; text-decoration:none; letter-spacing:-1px; }
+    .topbar-logo .r{color:var(--red)} .topbar-logo .g{color:var(--gold)}
+    .topbar-actions { display:flex; align-items:center; gap:.5rem; }
+    .icon-btn {
+      width:36px; height:36px; border-radius:10px;
+      background:var(--card); border:1px solid var(--border2);
+      color:var(--txt2); cursor:pointer; font-size:15px;
+      display:flex; align-items:center; justify-content:center;
+      transition:.18s; text-decoration:none;
+    }
+    .icon-btn:hover { border-color:var(--accent); color:var(--txt); background:var(--card2); }
+    .settings-icon-btn { background:var(--card); }
+
+    /* ── COVER + AVATAR (Instagram-style) ── */
+    .profile-cover {
+      height:200px; position:relative;
+      background:linear-gradient(135deg, #0d1423 0%, #1a0530 50%, #0d1423 100%);
+      overflow:hidden;
+    }
+    .cover-art {
+      position:absolute; inset:0;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(124,58,237,.35) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 30%, rgba(201,168,76,.25) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 80%, rgba(37,99,235,.2) 0%, transparent 50%);
+    }
+    .cover-pattern {
+      position:absolute; inset:0; opacity:.08;
+      background-image: repeating-linear-gradient(45deg, #fff 0, #fff 1px, transparent 0, transparent 50%);
+      background-size:20px 20px;
+    }
+    .cover-edit-btn {
+      position:absolute; top:12px; left:12px;
+      background:rgba(0,0,0,.5); border:1px solid rgba(255,255,255,.2);
+      color:#fff; border-radius:8px; padding:5px 12px;
+      font-size:11px; font-weight:700; cursor:pointer;
+      font-family:inherit; transition:.18s; backdrop-filter:blur(8px);
+    }
+    .cover-edit-btn:hover { background:rgba(0,0,0,.7); border-color:var(--gold); }
+
+    /* ── PROFILE HEADER ── */
+    .profile-header {
+      max-width:935px; margin:0 auto;
+      padding:0 1.5rem;
+    }
+    .avatar-row {
+      display:flex; align-items:flex-end; justify-content:space-between;
+      margin-top:-44px; margin-bottom:1.2rem; flex-wrap:wrap; gap:.8rem;
+    }
+    .avatar-outer {
+      width:96px; height:96px; border-radius:50%;
+      border:4px solid var(--bg);
+      background:linear-gradient(135deg, var(--accent), var(--purple), var(--gold));
+      padding:3px; flex-shrink:0; cursor:pointer; position:relative;
+    }
+    .avatar-outer::after {
+      content:'✏'; position:absolute; bottom:2px; right:2px;
+      background:var(--gold); color:#111; font-size:10px;
+      width:22px; height:22px; border-radius:50%; border:2px solid var(--bg);
+      display:flex; align-items:center; justify-content:center;
+    }
+    .avatar-inner {
+      width:100%; height:100%; border-radius:50%;
+      background:linear-gradient(135deg, var(--accent), var(--purple));
+      display:flex; align-items:center; justify-content:center;
+      font-size:2.2rem; font-weight:900; font-family:'Bebas Neue',sans-serif;
+      color:#fff; overflow:hidden;
+    }
+    .avatar-inner img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+    .header-btns { display:flex; gap:.5rem; align-items:center; flex-wrap:wrap; }
+    .btn-edit-profile {
+      background:var(--card2); border:1px solid var(--border2);
+      color:var(--txt); padding:7px 18px; border-radius:9px;
+      font-size:13px; font-weight:700; cursor:pointer;
+      font-family:inherit; transition:.18s;
+    }
+    .btn-edit-profile:hover { border-color:var(--accent); background:var(--card); }
+    .btn-settings-profile {
+      width:36px; height:36px; border-radius:9px;
+      background:var(--card2); border:1px solid var(--border2);
+      color:var(--txt2); cursor:pointer; font-size:16px;
+      display:flex; align-items:center; justify-content:center;
+      transition:.18s;
+    }
+    .btn-settings-profile:hover { border-color:var(--accent); color:var(--txt); background:var(--card); }
+
+    /* ── USER INFO ── */
+    .user-info { margin-bottom:1rem; }
+    .user-name { font-family:'Bebas Neue',sans-serif; font-size:1.6rem; letter-spacing:1px; line-height:1; }
+    .user-handle { font-size:13px; color:var(--txt3); margin-top:.2rem; }
+    .user-bio {
+      font-size:13px; color:var(--txt2); margin-top:.55rem; line-height:1.55;
+      max-width:460px;
+    }
+    .user-meta { display:flex; gap:.9rem; flex-wrap:wrap; margin-top:.5rem; }
+    .user-meta-item { display:flex; align-items:center; gap:.3rem; font-size:12px; color:var(--txt3); }
+
+    /* ── RANK BADGE ── */
+    .rank-badge {
+      display:inline-flex; align-items:center; gap:.4rem;
+      background:linear-gradient(135deg, rgba(201,168,76,.15), rgba(201,168,76,.05));
+      border:1px solid rgba(201,168,76,.35); border-radius:20px;
+      padding:4px 12px; font-size:12px; font-weight:700; color:var(--gold);
+      margin-top:.6rem;
+    }
+
+    /* ── XP BAR ── */
+    .xp-container {
+      background:var(--card); border:1px solid var(--border);
+      border-radius:14px; padding:1rem 1.2rem; margin-bottom:1.2rem;
+    }
+    .xp-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:.6rem; }
+    .xp-rank-lbl { font-size:13px; font-weight:700; color:var(--gold); }
+    .xp-pts-lbl { font-size:11px; color:var(--txt3); }
+    .xp-bar-bg { height:7px; background:rgba(255,255,255,.06); border-radius:10px; overflow:hidden; }
+    .xp-bar-fill { height:100%; background:linear-gradient(90deg, var(--accent), var(--gold)); border-radius:10px; transition:width 1.2s cubic-bezier(.22,1,.36,1); }
+    .xp-milestones { display:flex; justify-content:space-between; margin-top:.45rem; font-size:14px; }
+
+    /* ── STATS ROW ── */
+    .stats-row {
+      display:flex; border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+      padding:.9rem 0; margin-bottom:1.2rem; gap:0;
+    }
+    .stat-item { flex:1; text-align:center; border-right:1px solid var(--border); cursor:pointer; }
+    .stat-item:last-child { border-right:none; }
+    [dir="ltr"] .stat-item { border-right:none; border-left:1px solid var(--border); }
+    [dir="ltr"] .stat-item:last-child { border-left:none; }
+    .stat-num { font-family:'Bebas Neue',sans-serif; font-size:1.6rem; color:var(--txt); line-height:1; }
+    .stat-lbl { font-size:10px; color:var(--txt3); letter-spacing:.5px; text-transform:uppercase; margin-top:.2rem; }
+
+    /* ── TABS ── */
+    .profile-tabs {
+      display:flex; border-top:1px solid var(--border);
+      max-width:935px; margin:0 auto;
+      position:sticky; top:56px; background:var(--bg); z-index:100;
+    }
+    .profile-tab {
+      flex:1; padding:.85rem .5rem; text-align:center;
+      font-size:11px; font-weight:800; letter-spacing:.8px; text-transform:uppercase;
+      color:var(--txt3); cursor:pointer; border-top:2px solid transparent;
+      transition:.18s; display:flex; align-items:center; justify-content:center; gap:.35rem;
+    }
+    .profile-tab:hover { color:var(--txt2); }
+    .profile-tab.active { color:var(--txt); border-top-color:var(--txt); }
+    [dir="rtl"] .profile-tab.active { color:var(--txt); border-top-color:var(--txt); }
+
+    /* ── PANES ── */
+    .pane { display:none; max-width:935px; margin:0 auto; padding:1.5rem; }
+    .pane.active { display:block; }
+
+    /* ── DESIGNS GRID (Instagram grid) ── */
+    .designs-grid {
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:3px;
+    }
+    @media (max-width:600px) { .designs-grid { grid-template-columns:repeat(3,1fr); gap:2px; } }
+    .design-card {
+      aspect-ratio:1; background:var(--card);
+      overflow:hidden; position:relative; cursor:pointer;
+      transition:.2s;
+    }
+    .design-card:hover .design-overlay { opacity:1; }
+    .design-overlay {
+      position:absolute; inset:0;
+      background:rgba(0,0,0,.55);
+      display:flex; align-items:center; justify-content:center;
+      gap:1.2rem; opacity:0; transition:.18s;
+    }
+    .design-overlay-stat { color:#fff; font-size:12px; font-weight:700; display:flex; align-items:center; gap:.3rem; }
+    .design-card-new {
+      aspect-ratio:1; background:var(--card);
+      border:2px dashed var(--border2); cursor:pointer;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      gap:.4rem; color:var(--txt3); font-size:12px; transition:.18s;
+    }
+    .design-card-new:hover { border-color:var(--accent); color:var(--accent); }
+    .design-card-new .plus { font-size:2rem; font-weight:300; }
+    .design-thumb-canvas {
+      width:100%; height:100%; object-fit:cover;
+      background:linear-gradient(135deg, var(--card) 0%, var(--card2) 100%);
+      display:flex; align-items:center; justify-content:center;
+      font-size:3rem;
+    }
+
+    /* ── COMMUNITY PUBLISH MODAL ── */
+    .publish-modal {
+      display:none; position:fixed; inset:0; z-index:3000;
+      background:rgba(0,0,0,.7); backdrop-filter:blur(8px);
+      align-items:center; justify-content:center; padding:1rem;
+    }
+    .publish-modal.open { display:flex; animation:fadeIn .2s ease; }
+    @keyframes fadeIn { from{opacity:0;transform:scale(.97)} to{opacity:1;transform:none} }
+    .publish-box {
+      width:min(94vw,480px);
+      background:var(--bg2); border:1px solid var(--border2);
+      border-radius:20px; overflow:hidden;
+      box-shadow:0 24px 80px rgba(0,0,0,.6);
+    }
+    .publish-header {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:1rem 1.3rem; border-bottom:1px solid var(--border);
+    }
+    .publish-title { font-size:15px; font-weight:800; }
+    .publish-close { background:none; border:none; color:var(--txt3); font-size:18px; cursor:pointer; width:28px; height:28px; display:flex; align-items:center; justify-content:center; border-radius:6px; transition:.15s; }
+    .publish-close:hover { color:var(--txt); background:var(--border); }
+    .publish-body { padding:1.3rem; }
+    .publish-preview {
+      width:100%; aspect-ratio:1; background:var(--card);
+      border-radius:14px; margin-bottom:1rem; overflow:hidden;
+      display:flex; align-items:center; justify-content:center;
+      font-size:5rem; border:1px solid var(--border);
+    }
+    .publish-preview canvas { width:100%!important; height:100%!important; }
+    .publish-field { margin-bottom:.9rem; }
+    .publish-field label { display:block; font-size:11px; font-weight:700; color:var(--gold); letter-spacing:1px; text-transform:uppercase; margin-bottom:.4rem; }
+    .publish-input {
+      width:100%; background:var(--card); border:1px solid var(--border2);
+      border-radius:10px; padding:.65rem 1rem; color:var(--txt);
+      font-size:13px; font-family:inherit; outline:none; transition:.18s;
+    }
+    .publish-input:focus { border-color:var(--accent); }
+    .publish-tags { display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.5rem; }
+    .publish-tag {
+      background:rgba(37,99,235,.12); border:1px solid rgba(37,99,235,.3);
+      color:var(--accent); border-radius:20px; padding:3px 10px;
+      font-size:11px; font-weight:700; cursor:pointer; transition:.15s;
+    }
+    .publish-tag:hover { background:rgba(37,99,235,.25); }
+    .publish-tag.selected { background:var(--accent); color:#fff; border-color:var(--accent); }
+    .publish-footer { display:flex; gap:.6rem; padding:1rem 1.3rem; border-top:1px solid var(--border); }
+    .btn-publish {
+      flex:1; background:linear-gradient(135deg, var(--accent), var(--purple));
+      color:#fff; border:none; border-radius:10px; padding:.75rem;
+      font-size:14px; font-weight:800; cursor:pointer; font-family:inherit; transition:.18s;
+    }
+    .btn-publish:hover { filter:brightness(1.1); transform:translateY(-1px); }
+    .btn-cancel-publish {
+      background:var(--card); border:1px solid var(--border2); color:var(--txt2);
+      border-radius:10px; padding:.75rem 1.2rem; font-size:13px; font-weight:700;
+      cursor:pointer; font-family:inherit; transition:.18s;
+    }
+    .btn-cancel-publish:hover { border-color:var(--txt3); color:var(--txt); }
+
+    /* ── SETTINGS PANEL (slide-in) ── */
+    .settings-panel {
+      position:fixed; top:0; left:-100%; width:min(100vw,420px); height:100vh;
+      background:var(--bg2); border-right:1px solid var(--border2);
+      z-index:2000; transition:left .3s cubic-bezier(.22,1,.36,1);
+      display:flex; flex-direction:column; overflow:hidden;
+      box-shadow:8px 0 40px rgba(0,0,0,.5);
+    }
+    [dir="rtl"] .settings-panel {
+      left:auto; right:-100%; border-right:none; border-left:1px solid var(--border2);
+      box-shadow:-8px 0 40px rgba(0,0,0,.5);
+      transition:right .3s cubic-bezier(.22,1,.36,1);
+    }
+    .settings-panel.open { left:0; }
+    [dir="rtl"] .settings-panel.open { right:0; left:auto; }
+    .settings-overlay {
+      display:none; position:fixed; inset:0; background:rgba(0,0,0,.5);
+      z-index:1999; backdrop-filter:blur(3px);
+    }
+    .settings-overlay.open { display:block; }
+    .settings-header {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:1rem 1.3rem; border-bottom:1px solid var(--border); flex-shrink:0;
+    }
+    .settings-header-title { font-size:16px; font-weight:800; display:flex; align-items:center; gap:.5rem; }
+    .settings-close { background:none; border:none; color:var(--txt3); font-size:20px; cursor:pointer; line-height:1; transition:.15s; }
+    .settings-close:hover { color:var(--red); }
+    .settings-scroll { flex:1; overflow-y:auto; padding:1.2rem; }
+    .settings-scroll::-webkit-scrollbar { width:4px; }
+    .settings-scroll::-webkit-scrollbar-thumb { background:var(--border2); border-radius:4px; }
+
+    .settings-section { margin-bottom:1.8rem; }
+    .settings-section-title {
+      font-size:10px; font-weight:800; color:var(--gold);
+      letter-spacing:1.5px; text-transform:uppercase;
+      margin-bottom:.8rem; padding-bottom:.5rem;
+      border-bottom:1px solid var(--border);
+    }
+    .setting-row {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:.85rem 1rem; background:var(--card); border:1px solid var(--border);
+      border-radius:12px; margin-bottom:.5rem; gap:.8rem; transition:.15s;
+    }
+    .setting-row:hover { border-color:var(--border2); background:var(--card2); }
+    .setting-info { min-width:0; }
+    .setting-lbl { font-size:13px; font-weight:700; color:var(--txt); }
+    .setting-sub { font-size:11px; color:var(--txt3); margin-top:.15rem; }
+    .setting-value { font-size:12px; font-weight:700; color:var(--accent); white-space:nowrap; }
+
+    /* Toggle */
+    .toggle-wrap { position:relative; width:44px; height:24px; flex-shrink:0; }
+    .toggle-input { position:absolute; opacity:0; width:0; height:0; }
+    .toggle-track {
+      position:absolute; inset:0; border-radius:12px;
+      background:var(--border2); cursor:pointer; transition:.2s;
+    }
+    .toggle-input:checked + .toggle-track { background:var(--accent); }
+    .toggle-track::after {
+      content:''; position:absolute; top:3px; left:3px;
+      width:18px; height:18px; border-radius:50%;
+      background:#fff; transition:.2s;
+    }
+    .toggle-input:checked + .toggle-track::after { left:23px; }
+
+    /* Segmented control */
+    .seg-ctrl { display:flex; background:var(--card); border-radius:10px; padding:3px; gap:2px; }
+    .seg-btn {
+      flex:1; padding:5px 8px; border-radius:7px; border:none;
+      background:transparent; color:var(--txt3); font-size:11px; font-weight:700;
+      cursor:pointer; transition:.15s; font-family:inherit; white-space:nowrap;
+    }
+    .seg-btn.active { background:var(--bg2); color:var(--txt); box-shadow:0 1px 4px rgba(0,0,0,.3); }
+    .seg-btn:hover:not(.active) { color:var(--txt2); }
+
+    /* Color theme selector */
+    .theme-colors { display:flex; gap:.5rem; flex-wrap:wrap; }
+    .theme-color-dot {
+      width:30px; height:30px; border-radius:50%; cursor:pointer;
+      transition:.18s; border:3px solid transparent; position:relative;
+    }
+    .theme-color-dot:hover { transform:scale(1.15); }
+    .theme-color-dot.active { border-color:#fff; }
+    .theme-color-dot.active::after { content:'✓'; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#fff; font-size:12px; font-weight:900; }
+
+    /* Language options */
+    .lang-options { display:flex; flex-direction:column; gap:.4rem; }
+    .lang-opt {
+      display:flex; align-items:center; gap:.8rem; padding:.7rem 1rem;
+      background:var(--card); border:1px solid var(--border); border-radius:10px;
+      cursor:pointer; transition:.15s;
+    }
+    .lang-opt:hover { border-color:var(--border2); background:var(--card2); }
+    .lang-opt.active { border-color:var(--accent); background:rgba(37,99,235,.08); }
+    .lang-opt .flag { font-size:1.3rem; }
+    .lang-opt .lname { font-size:13px; font-weight:700; flex:1; }
+    .lang-opt .check { color:var(--accent); font-size:14px; font-weight:900; opacity:0; }
+    .lang-opt.active .check { opacity:1; }
+
+    /* Currency options */
+    .currency-grid { display:grid; grid-template-columns:1fr 1fr; gap:.4rem; }
+    .currency-opt {
+      padding:.65rem 1rem; background:var(--card); border:1px solid var(--border);
+      border-radius:10px; cursor:pointer; transition:.15s; text-align:center;
+    }
+    .currency-opt:hover { border-color:var(--border2); background:var(--card2); }
+    .currency-opt.active { border-color:var(--gold); background:rgba(201,168,76,.08); }
+    .currency-opt .c-symbol { font-size:1.2rem; font-weight:900; color:var(--gold); }
+    .currency-opt .c-name { font-size:11px; color:var(--txt3); margin-top:.15rem; }
+
+    /* ── SAVE BUTTON ── */
+    .settings-footer { padding:1rem 1.3rem; border-top:1px solid var(--border); flex-shrink:0; }
+    .btn-save-settings {
+      width:100%; background:linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
+      color:#fff; border:none; border-radius:12px; padding:12px;
+      font-size:14px; font-weight:800; cursor:pointer; font-family:inherit;
+      transition:.18s; display:flex; align-items:center; justify-content:center; gap:.5rem;
+    }
+    .btn-save-settings:hover { filter:brightness(1.1); transform:translateY(-1px); }
+    .btn-save-settings.saved { background:linear-gradient(135deg,#22c55e,#16a34a); }
+    .logout-row { margin-top:.6rem; }
+    .btn-logout {
+      width:100%; background:rgba(230,57,70,.08); border:1px solid rgba(230,57,70,.25);
+      color:var(--red); border-radius:12px; padding:11px;
+      font-size:13px; font-weight:700; cursor:pointer; font-family:inherit;
+      transition:.18s; display:flex; align-items:center; justify-content:center; gap:.4rem;
+    }
+    .btn-logout:hover { background:var(--red); color:#fff; border-color:var(--red); }
+
+    /* ── BADGES ── */
+    .badges-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:.8rem; }
+    .badge {
+      background:var(--card); border:1px solid var(--border);
+      border-radius:14px; padding:1.2rem .8rem; text-align:center;
+      transition:.18s; cursor:default;
+    }
+    .badge.earned { border-color:var(--gold); box-shadow:0 0 20px rgba(201,168,76,.12); }
+    .badge-icon { font-size:2.2rem; display:block; margin-bottom:.5rem; }
+    .badge-name { font-size:11px; font-weight:700; color:var(--txt2); }
+    .badge.earned .badge-name { color:var(--gold); }
+    .badge-locked { opacity:.28; filter:grayscale(.5); }
+
+    /* ── ORDERS ── */
+    .orders-list { display:flex; flex-direction:column; gap:.7rem; }
+    .order-card {
+      background:var(--card); border:1px solid var(--border); border-radius:14px;
+      padding:1rem 1.2rem; display:flex; align-items:center; justify-content:space-between;
+      gap:1rem; flex-wrap:wrap; transition:.15s;
+    }
+    .order-card:hover { border-color:var(--border2); }
+    .order-id { font-family:'Bebas Neue',sans-serif; font-size:1.1rem; color:var(--gold); }
+    .order-date { font-size:11px; color:var(--txt3); margin-top:.15rem; }
+    .order-status { padding:3px 12px; border-radius:20px; font-size:11px; font-weight:700; }
+    .status-pending { background:rgba(201,168,76,.12); color:var(--gold); }
+    .status-done { background:rgba(34,197,94,.12); color:#22c55e; }
+
+    /* Empty state */
+    .empty-state { text-align:center; padding:3rem 1rem; color:var(--txt3); }
+    .empty-icon { font-size:3.5rem; margin-bottom:1rem; }
+    .empty-txt { font-size:13px; margin-bottom:1rem; line-height:1.6; }
+    .btn-primary {
+      display:inline-flex; align-items:center; gap:.4rem;
+      background:var(--accent); color:#fff; border:none;
+      border-radius:24px; padding:9px 22px;
+      font-size:13px; font-weight:700; cursor:pointer;
+      font-family:inherit; text-decoration:none; transition:.18s;
+    }
+    .btn-primary:hover { background:#1d4ed8; transform:translateY(-1px); }
+
+    /* Responsive */
+    @media (max-width:600px) {
+      .profile-cover { height:140px; }
+      .avatar-outer { width:78px; height:78px; }
+      .profile-tab .tab-lbl { display:none; }
+      .pane { padding:1rem .8rem; }
+    }
+
+    /* Toast */
+    .toast {
+      position:fixed; bottom:1.5rem; left:50%; transform:translateX(-50%) translateY(20px);
+      background:#1e2a3a; border:1px solid var(--border2); color:var(--txt);
+      padding:.7rem 1.4rem; border-radius:30px; font-size:13px; font-weight:600;
+      opacity:0; transition:.3s; z-index:9999; white-space:nowrap;
+      box-shadow:0 8px 24px rgba(0,0,0,.4);
+    }
+    .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+    .toast.success { border-color:rgba(34,197,94,.4); background:rgba(34,197,94,.12); color:#22c55e; }
+  </style>
+</head>
+<body>
+
+<!-- ── TOPBAR ── -->
+<nav class="topbar">
+  <a class="topbar-logo" href="../index.html">A<span class="r">3</span><span class="g">M</span> Print</a>
+  <div class="topbar-actions">
+    <button class="icon-btn" onclick="openSettings()" title="الإعدادات">⚙️</button>
+    <a class="icon-btn" href="../index.html" title="العودة للمتجر">🏠</a>
+  </div>
+</nav>
+
+<!-- ── COVER ── -->
+<div class="profile-cover">
+  <div class="cover-art"></div>
+  <div class="cover-pattern"></div>
+  <button class="cover-edit-btn" onclick="toast('تغيير غلاف الصفحة قريباً ✨')">✏ تغيير الغلاف</button>
+</div>
+
+<!-- ── PROFILE HEADER ── -->
+<div class="profile-header">
+  <div class="avatar-row">
+    <div class="avatar-outer" onclick="changeAvatar()" title="تغيير الصورة">
+      <div class="avatar-inner" id="avatarInner">
+        <span id="avatarLetter">A</span>
+      </div>
+    </div>
+    <div class="header-btns">
+      <button class="btn-edit-profile" onclick="toast('تعديل الملف الشخصي قريباً ✨')" id="btnEditProfile">✏ تعديل الملف</button>
+      <button class="btn-settings-profile" onclick="openSettings()" title="الإعدادات">⚙</button>
+    </div>
+  </div>
+
+  <div class="user-info">
+    <div class="user-name" id="profileName">Ahmed Ben Ali</div>
+    <div class="user-handle" id="profileHandle">@ahmed · عضو منذ 2024</div>
+    <div class="user-bio" id="profileBio">🎨 مصمم جرافيك | أحب الطباعة الإبداعية<br>📍 الجزائر — A3M Print Studio</div>
+    <div class="rank-badge" id="rankBadge">🪨 Iron · 0 XP</div>
+  </div>
+
+  <!-- XP Bar -->
+  <div class="xp-container">
+    <div class="xp-top">
+      <span class="xp-rank-lbl" id="xpRankBadge">🪨 Iron</span>
+      <span class="xp-pts-lbl" id="xpPts">0 / 100 XP</span>
+    </div>
+    <div class="xp-bar-bg">
+      <div class="xp-bar-fill" id="xpBarFill" style="width:0%"></div>
+    </div>
+    <div class="xp-milestones">
+      <span title="Iron">🪨</span><span title="Bronze">🥉</span><span title="Gold">🥇</span><span title="Diamond">💎</span><span title="Premium">⭐</span>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-item" onclick="switchTab('designs')">
+      <div class="stat-num" id="statDesigns">0</div>
+      <div class="stat-lbl" id="lbl-designs">تصاميم</div>
+    </div>
+    <div class="stat-item" onclick="switchTab('orders')">
+      <div class="stat-num" id="statOrders">0</div>
+      <div class="stat-lbl" id="lbl-orders">طلبات</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" id="statFollowers">0</div>
+      <div class="stat-lbl" id="lbl-followers">متابعون</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" id="statFollowing">0</div>
+      <div class="stat-lbl" id="lbl-following">متابَعون</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── TABS ── -->
+<div class="profile-tabs">
+  <div class="profile-tab active" onclick="switchTab('designs')" data-tab="designs">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    <span class="tab-lbl" id="tabLbl0">تصاميمي</span>
+  </div>
+  <div class="profile-tab" onclick="switchTab('orders')" data-tab="orders">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+    <span class="tab-lbl" id="tabLbl1">طلباتي</span>
+  </div>
+  <div class="profile-tab" onclick="switchTab('badges')" data-tab="badges">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+    <span class="tab-lbl" id="tabLbl2">الشارات</span>
+  </div>
+  <div class="profile-tab" onclick="switchTab('account')" data-tab="account">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+    <span class="tab-lbl" id="tabLbl3">الحساب</span>
+  </div>
+</div>
+
+<!-- ══════════════════════
+     PANES
+══════════════════════ -->
+
+<!-- Designs -->
+<div class="pane active" id="pane-designs">
+  <div class="designs-grid" id="designsGrid">
+    <div class="design-card-new" onclick="window.location.href='../index.html'">
+      <div class="plus">+</div>
+      <span id="newDesignLbl">تصميم جديد</span>
+    </div>
+  </div>
+  <div class="empty-state" id="designsEmpty" style="margin-top:1rem">
+    <div class="empty-icon">🎨</div>
+    <p class="empty-txt" id="noDesignsTxt">لا توجد تصاميم محفوظة بعد.<br>ابدأ تصميمك الأول من الاستوديو!</p>
+    <a class="btn-primary" href="../index.html" id="startDesignBtn">✨ ابدأ التصميم</a>
+  </div>
+</div>
+
+<!-- Orders -->
+<div class="pane" id="pane-orders">
+  <div class="orders-list" id="ordersList"></div>
+  <div class="empty-state" id="ordersEmpty">
+    <div class="empty-icon">📦</div>
+    <p class="empty-txt" id="noOrdersTxt">لا توجد طلبات بعد.<br>اطلب منتجك المخصص الآن!</p>
+    <a class="btn-primary" href="../index.html" id="shopNowBtn">🛍 تسوق الآن</a>
+  </div>
+</div>
+
+<!-- Badges -->
+<div class="pane" id="pane-badges">
+  <div class="badges-grid">
+    <div class="badge earned"><span class="badge-icon">🆕</span><div class="badge-name" id="badge0">عضو جديد</div></div>
+    <div class="badge badge-locked"><span class="badge-icon">🛒</span><div class="badge-name" id="badge1">أول طلب</div></div>
+    <div class="badge badge-locked"><span class="badge-icon">🎨</span><div class="badge-name" id="badge2">مصمم</div></div>
+    <div class="badge badge-locked"><span class="badge-icon">🔥</span><div class="badge-name" id="badge3">10 طلبات</div></div>
+    <div class="badge badge-locked"><span class="badge-icon">💎</span><div class="badge-name" id="badge4">Diamond</div></div>
+    <div class="badge badge-locked"><span class="badge-icon">⭐</span><div class="badge-name" id="badge5">Premium</div></div>
+    <div class="badge badge-locked"><span class="badge-icon">👥</span><div class="badge-name" id="badge6">100 متابع</div></div>
+    <div class="badge badge-locked"><span class="badge-icon">🏆</span><div class="badge-name" id="badge7">بطل A3M</div></div>
+  </div>
+</div>
+
+<!-- Account -->
+<div class="pane" id="pane-account">
+  <div class="settings-section">
+    <div class="settings-section-title" id="accSectionTitle">معلومات الحساب</div>
+    <div class="setting-row">
+      <div class="setting-info">
+        <div class="setting-lbl" id="accNameLbl">الاسم الكامل</div>
+        <div class="setting-sub" id="accNameVal">Ahmed Ben Ali</div>
+      </div>
+      <button class="btn-primary" style="font-size:11px;padding:5px 14px" onclick="toast('قريباً ✨')" id="editBtn">تعديل</button>
+    </div>
+    <div class="setting-row">
+      <div class="setting-info">
+        <div class="setting-lbl" id="accEmailLbl">البريد الإلكتروني</div>
+        <div class="setting-sub" id="accEmailVal">ahmed@example.com</div>
+      </div>
+      <button class="btn-primary" style="font-size:11px;padding:5px 14px" onclick="toast('قريباً ✨')" id="editBtn2">تعديل</button>
+    </div>
+    <div class="setting-row">
+      <div class="setting-info">
+        <div class="setting-lbl" id="accPassLbl">كلمة المرور</div>
+        <div class="setting-sub" id="accPassSub">لم تتغير</div>
+      </div>
+      <button class="btn-primary" style="font-size:11px;padding:5px 14px" onclick="toast('قريباً ✨')" id="changeBtn">تغيير</button>
+    </div>
+  </div>
+  <div class="settings-section">
+    <div class="settings-section-title" id="prefSectionTitle">التفضيلات</div>
+    <div class="setting-row">
+      <div class="setting-info">
+        <div class="setting-lbl" id="notifLbl">الإشعارات</div>
+        <div class="setting-sub" id="notifSub">تحديثات الطلبات والعروض</div>
+      </div>
+      <label class="toggle-wrap">
+        <input type="checkbox" class="toggle-input" id="notifToggle" checked onchange="savePref('notif',this.checked)"/>
+        <div class="toggle-track"></div>
+      </label>
+    </div>
+    <div class="setting-row">
+      <div class="setting-info">
+        <div class="setting-lbl" id="openSettingsBtnLbl">الإعدادات العامة</div>
+        <div class="setting-sub" id="openSettingsBtnSub">اللغة، الثيم، العملة</div>
+      </div>
+      <button class="btn-primary" style="font-size:11px;padding:5px 14px" onclick="openSettings()">فتح ⚙</button>
+    </div>
+  </div>
+  <button class="btn-logout" onclick="doLogout()" id="logoutBtn">🚪 تسجيل الخروج</button>
+</div>
+
+<!-- ══════════════════════
+     SETTINGS PANEL
+══════════════════════ -->
+<div class="settings-overlay" id="settingsOverlay" onclick="closeSettings()"></div>
+<div class="settings-panel" id="settingsPanel">
+  <div class="settings-header">
+    <div class="settings-header-title">⚙️ <span id="settingsPanelTitle">الإعدادات</span></div>
+    <button class="settings-close" onclick="closeSettings()">✕</button>
+  </div>
+
+  <div class="settings-scroll">
+
+    <!-- Theme Color -->
+    <div class="settings-section">
+      <div class="settings-section-title" id="themeColorTitle">لون الثيم</div>
+      <div class="theme-colors" id="themeColors">
+        <div class="theme-color-dot active" style="background:linear-gradient(135deg,#2563eb,#7c3aed)" data-theme-color="blue" onclick="selectThemeColor('blue')" title="أزرق"></div>
+        <div class="theme-color-dot" style="background:linear-gradient(135deg,#e63946,#c9a84c)" data-theme-color="red" onclick="selectThemeColor('red')" title="أحمر"></div>
+        <div class="theme-color-dot" style="background:linear-gradient(135deg,#7c3aed,#a855f7)" data-theme-color="purple" onclick="selectThemeColor('purple')" title="بنفسجي"></div>
+        <div class="theme-color-dot" style="background:linear-gradient(135deg,#c9a84c,#f59e0b)" data-theme-color="gold" onclick="selectThemeColor('gold')" title="ذهبي"></div>
+        <div class="theme-color-dot" style="background:linear-gradient(135deg,#22c55e,#16a34a)" data-theme-color="green" onclick="selectThemeColor('green')" title="أخضر"></div>
+        <div class="theme-color-dot" style="background:linear-gradient(135deg,#0ea5e9,#06b6d4)" data-theme-color="cyan" onclick="selectThemeColor('cyan')" title="سماوي"></div>
+      </div>
+    </div>
+
+    <!-- Dark/Light Mode -->
+    <div class="settings-section">
+      <div class="settings-section-title" id="themeModeTitle">وضع العرض</div>
+      <div class="seg-ctrl">
+        <button class="seg-btn active" id="modeDarkBtn" onclick="selectThemeMode('dark')">🌙 <span id="darkModeText">داكن</span></button>
+        <button class="seg-btn" id="modeLightBtn" onclick="selectThemeMode('light')">☀️ <span id="lightModeText">فاتح</span></button>
+      </div>
+    </div>
+
+    <!-- Language -->
+    <div class="settings-section">
+      <div class="settings-section-title" id="langSectionTitle">اللغة</div>
+      <div class="lang-options">
+        <div class="lang-opt" data-lang="ar" onclick="selectLang('ar')">
+          <span class="flag">🇩🇿</span><span class="lname">العربية</span><span class="check">✓</span>
+        </div>
+        <div class="lang-opt" data-lang="en" onclick="selectLang('en')">
+          <span class="flag">🇬🇧</span><span class="lname">English</span><span class="check">✓</span>
+        </div>
+        <div class="lang-opt" data-lang="fr" onclick="selectLang('fr')">
+          <span class="flag">🇫🇷</span><span class="lname">Français</span><span class="check">✓</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Currency -->
+    <div class="settings-section">
+      <div class="settings-section-title" id="currencySectionTitle">العملة</div>
+      <div class="currency-grid">
+        <div class="currency-opt active" data-currency="DZD" onclick="selectCurrency('DZD')">
+          <div class="c-symbol">دج</div><div class="c-name">دينار جزائري</div>
+        </div>
+        <div class="currency-opt" data-currency="USD" onclick="selectCurrency('USD')">
+          <div class="c-symbol">$</div><div class="c-name">دولار أمريكي</div>
+        </div>
+        <div class="currency-opt" data-currency="EUR" onclick="selectCurrency('EUR')">
+          <div class="c-symbol">€</div><div class="c-name">يورو</div>
+        </div>
+        <div class="currency-opt" data-currency="GBP" onclick="selectCurrency('GBP')">
+          <div class="c-symbol">£</div><div class="c-name">جنيه إسترليني</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /settings-scroll -->
+
+  <div class="settings-footer">
+    <button class="btn-save-settings" id="saveSettingsBtn" onclick="saveAllSettings()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+      <span id="saveBtnText">حفظ الإعدادات</span>
+    </button>
+    <div class="logout-row">
+      <button class="btn-logout" onclick="doLogout()" id="logoutBtn2">🚪 <span id="logoutText">تسجيل الخروج</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════
+     PUBLISH MODAL
+══════════════════════ -->
+<div class="publish-modal" id="publishModal">
+  <div class="publish-box">
+    <div class="publish-header">
+      <div class="publish-title" id="publishTitle">🚀 نشر التصميم في الكوميونيتي</div>
+      <button class="publish-close" onclick="closePublishModal()">✕</button>
+    </div>
+    <div class="publish-body">
+      <div class="publish-preview" id="publishPreview">🎨</div>
+      <div class="publish-field">
+        <label id="pubCaptionLbl">وصف التصميم</label>
+        <textarea class="publish-input" id="pubCaption" rows="3" placeholder="اكتب وصفاً لتصميمك..."></textarea>
+      </div>
+      <div class="publish-field">
+        <label id="pubTagsLbl">التاغات</label>
+        <div class="publish-tags" id="publishTags">
+          <div class="publish-tag" onclick="toggleTag(this)">🎨 تصميم</div>
+          <div class="publish-tag" onclick="toggleTag(this)">👕 تيشرت</div>
+          <div class="publish-tag" onclick="toggleTag(this)">☕ كوب</div>
+          <div class="publish-tag" onclick="toggleTag(this)">🧢 قبعة</div>
+          <div class="publish-tag" onclick="toggleTag(this)">✨ إبداع</div>
+          <div class="publish-tag" onclick="toggleTag(this)">🇩🇿 الجزائر</div>
+          <div class="publish-tag" onclick="toggleTag(this)">💎 فاخر</div>
+          <div class="publish-tag" onclick="toggleTag(this)">🔥 ترند</div>
+        </div>
+      </div>
+    </div>
+    <div class="publish-footer">
+      <button class="btn-cancel-publish" onclick="closePublishModal()" id="cancelPubBtn">إلغاء</button>
+      <button class="btn-publish" onclick="confirmPublish()" id="confirmPubBtn">🚀 نشر الآن</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toastEl"></div>
+
+<script src="../js/a3m-settings.js"></script>
+<script>
+// ════════════════════════════════
+//  TRANSLATIONS
+// ════════════════════════════════
+const PROF_T = {
+  ar:{
+    tabs:['تصاميمي','طلباتي','الشارات','الحساب'],
+    newDesign:'تصميم جديد', noDesigns:'لا توجد تصاميم محفوظة بعد.\nابدأ تصميمك الأول من الاستوديو!',
+    startDesign:'✨ ابدأ التصميم', noOrders:'لا توجد طلبات بعد.\nاطلب منتجك المخصص الآن!',
+    shopNow:'🛍 تسوق الآن', editProfile:'✏ تعديل الملف', settings:'الإعدادات',
+    accSection:'معلومات الحساب', fullName:'الاسم الكامل', email:'البريد الإلكتروني',
+    password:'كلمة المرور', neverChanged:'لم تتغير', notifications:'الإشعارات',
+    notifSub:'تحديثات الطلبات والعروض', generalSettings:'الإعدادات العامة',
+    openSettings:'فتح ⚙', editBtn:'تعديل', changeBtn:'تغيير', prefSection:'التفضيلات',
+    logout:'🚪 تسجيل الخروج', saveSettings:'حفظ الإعدادات', saved:'✅ تم الحفظ!',
+    themeColor:'لون الثيم', themeMode:'وضع العرض', darkMode:'داكن', lightMode:'فاتح',
+    language:'اللغة', currency:'العملة',
+    lblDesigns:'تصاميم', lblOrders:'طلبات', lblFollowers:'متابعون', lblFollowing:'متابَعون',
+    publishTitle:'🚀 نشر في الكوميونيتي', caption:'وصف التصميم', tags:'التاغات',
+    cancel:'إلغاء', publishNow:'🚀 نشر الآن', publishSuccess:'🎉 تم نشر تصميمك في الكوميونيتي!',
+    memberSince:'عضو منذ', back:'← العودة', settingsSaved:'✅ تم حفظ الإعدادات وطُبِّقت على جميع الصفحات',
+    badges:['عضو جديد','أول طلب','مصمم','10 طلبات','Diamond','Premium','100 متابع','بطل A3M'],
+    changeCoverSoon:'تغيير الغلاف قريباً ✨',
+  },
+  en:{
+    tabs:['My Designs','My Orders','Badges','Account'],
+    newDesign:'New Design', noDesigns:'No saved designs yet.\nStart your first design in the studio!',
+    startDesign:'✨ Start Designing', noOrders:'No orders yet.\nPlace your custom order now!',
+    shopNow:'🛍 Shop Now', editProfile:'✏ Edit Profile', settings:'Settings',
+    accSection:'Account Info', fullName:'Full Name', email:'Email',
+    password:'Password', neverChanged:'Never changed', notifications:'Notifications',
+    notifSub:'Order updates & promotions', generalSettings:'General Settings',
+    openSettings:'Open ⚙', editBtn:'Edit', changeBtn:'Change', prefSection:'Preferences',
+    logout:'🚪 Log Out', saveSettings:'Save Settings', saved:'✅ Saved!',
+    themeColor:'Theme Color', themeMode:'Display Mode', darkMode:'Dark', lightMode:'Light',
+    language:'Language', currency:'Currency',
+    lblDesigns:'Designs', lblOrders:'Orders', lblFollowers:'Followers', lblFollowing:'Following',
+    publishTitle:'🚀 Publish to Community', caption:'Design Caption', tags:'Tags',
+    cancel:'Cancel', publishNow:'🚀 Publish Now', publishSuccess:'🎉 Your design was published to the community!',
+    memberSince:'Member since', back:'← Back', settingsSaved:'✅ Settings saved and applied to all pages',
+    badges:['New Member','First Order','Designer','10 Orders','Diamond','Premium','100 Followers','A3M Champion'],
+    changeCoverSoon:'Cover change coming soon ✨',
+  },
+  fr:{
+    tabs:['Mes Designs','Mes Commandes','Badges','Compte'],
+    newDesign:'Nouveau Design', noDesigns:'Aucun design sauvegardé.\nCommencez votre premier design!',
+    startDesign:'✨ Commencer', noOrders:'Aucune commande encore.\nPassez votre commande maintenant!',
+    shopNow:'🛍 Boutique', editProfile:'✏ Modifier Profil', settings:'Paramètres',
+    accSection:'Informations du Compte', fullName:'Nom Complet', email:'Email',
+    password:'Mot de Passe', neverChanged:'Jamais modifié', notifications:'Notifications',
+    notifSub:'Mises à jour et promotions', generalSettings:'Paramètres Généraux',
+    openSettings:'Ouvrir ⚙', editBtn:'Modifier', changeBtn:'Changer', prefSection:'Préférences',
+    logout:'🚪 Déconnexion', saveSettings:'Enregistrer', saved:'✅ Enregistré!',
+    themeColor:'Couleur du Thème', themeMode:'Mode d\'Affichage', darkMode:'Sombre', lightMode:'Clair',
+    language:'Langue', currency:'Devise',
+    lblDesigns:'Designs', lblOrders:'Commandes', lblFollowers:'Abonnés', lblFollowing:'Abonnements',
+    publishTitle:'🚀 Publier dans la Communauté', caption:'Description du Design', tags:'Tags',
+    cancel:'Annuler', publishNow:'🚀 Publier Maintenant', publishSuccess:'🎉 Votre design a été publié dans la communauté!',
+    memberSince:'Membre depuis', back:'← Retour', settingsSaved:'✅ Paramètres sauvegardés pour toutes les pages',
+    badges:['Nouveau Membre','Première Commande','Designer','10 Commandes','Diamond','Premium','100 Abonnés','Champion A3M'],
+    changeCoverSoon:'Changement de couverture bientôt ✨',
+  },
+};
+
+// ════════════════════════════════
+//  STATE
+// ════════════════════════════════
+var _lang = 'ar';
+var _themeColor = 'blue';
+var _themeMode = 'dark';
+var _currency = 'DZD';
+
+// ════════════════════════════════
+//  INIT
+// ════════════════════════════════
+window.addEventListener('load', function(){
+  // Load settings
+  var s = loadSettings();
+  _lang = s.lang; _currency = s.currency;
+  var t = s.theme.split('-');
+  _themeColor = t[0] || 'blue';
+  _themeMode  = t[1] || 'dark';
+
+  applyThemeUI(_themeColor, _themeMode);
+  applyLangUI(_lang);
+  applyCurrencyUI(_currency);
+  loadUserData();
+  loadDesigns();
+  loadOrders();
+  initSettingsPanel();
+});
+
+function loadSettings(){
+  try {
+    var saved = localStorage.getItem('a3m_settings');
+    if(saved) return Object.assign({lang:'ar',theme:'blue-dark',currency:'DZD'}, JSON.parse(saved));
+  }catch(e){}
+  return {
+    lang: localStorage.getItem('a3m_lang')||'ar',
+    theme: localStorage.getItem('a3m_theme')||'blue-dark',
+    currency: 'DZD',
+  };
+}
+function persistSettings(){
+  var s = {lang:_lang, theme:_themeColor+'-'+_themeMode, currency:_currency};
+  localStorage.setItem('a3m_settings', JSON.stringify(s));
+  localStorage.setItem('a3m_lang', _lang);
+  localStorage.setItem('a3m_theme', s.theme);
+}
+
+// ════════════════════════════════
+//  USER DATA
+// ════════════════════════════════
+function loadUserData(){
+  try {
+    var user = JSON.parse(localStorage.getItem('a3m_user')||'{}');
+    var name = user.name || 'Ahmed Ben Ali';
+    var username = user.username || 'ahmed';
+    var email = user.email || 'ahmed@example.com';
+    var xp = parseInt(localStorage.getItem('a3m_xp')||'0');
+
+    document.getElementById('profileName').textContent = name;
+    document.getElementById('avatarLetter').textContent = name[0].toUpperCase();
+    var t = PROF_T[_lang] || PROF_T.ar;
+    document.getElementById('profileHandle').textContent =
+      '@' + username.replace('@','') + ' · ' + t.memberSince + ' 2024';
+
+    // XP
+    var ranks=[{n:'🪨 Iron',max:100},{n:'🥉 Bronze',max:300},{n:'🥇 Gold',max:700},{n:'💎 Diamond',max:1500},{n:'⭐ Premium',max:9999}];
+    var rank=ranks[0],prev=0;
+    for(var r of ranks){ if(xp<r.max){rank=r;break;} prev=r.max; }
+    document.getElementById('xpRankBadge').textContent = rank.n;
+    document.getElementById('xpPts').textContent = xp + ' / ' + rank.max + ' XP';
+    document.getElementById('rankBadge').textContent = rank.n + ' · ' + xp + ' XP';
+    document.getElementById('xpBarFill').style.width = Math.min(100,(xp-prev)/(rank.max-prev)*100) + '%';
+
+    // Account pane
+    document.getElementById('accNameVal').textContent = name;
+    document.getElementById('accEmailVal').textContent = email;
+  }catch(e){}
+}
+
+// ════════════════════════════════
+//  DESIGNS
+// ════════════════════════════════
+function loadDesigns(){
+  try {
+    var designs = JSON.parse(localStorage.getItem('a3m_community_designs')||'[]')
+                    .filter(function(d){ return d.own; });
+    var grid = document.getElementById('designsGrid');
+    var emptyEl = document.getElementById('designsEmpty');
+    // Always keep the "new" card
+    grid.innerHTML = '<div class="design-card-new" onclick="window.location.href=\'../index.html\'"><div class="plus">+</div><span id="newDesignLbl">'+((PROF_T[_lang]||PROF_T.ar).newDesign)+'</span></div>';
+
+    if(designs.length){
+      emptyEl.style.display='none';
+      designs.forEach(function(d,i){
+        var card = document.createElement('div');
+        card.className='design-card';
+        card.innerHTML='<div class="design-thumb-canvas">'+d.emoji+'</div><div class="design-overlay"><div class="design-overlay-stat">❤ '+d.likes+'</div><div class="design-overlay-stat" onclick="openPublishModal('+i+')">📤</div></div>';
+        grid.appendChild(card);
+      });
+      document.getElementById('statDesigns').textContent = designs.length;
+    }else{
+      emptyEl.style.display='block';
+    }
+  }catch(e){}
+}
+
+// ════════════════════════════════
+//  ORDERS
+// ════════════════════════════════
+function loadOrders(){
+  try {
+    var orders = JSON.parse(localStorage.getItem('a3m_orders')||'[]');
+    var list = document.getElementById('ordersList');
+    var emptyEl = document.getElementById('ordersEmpty');
+    if(orders.length){
+      emptyEl.style.display='none';
+      list.innerHTML = '';
+      orders.forEach(function(o){
+        var card = document.createElement('div');
+        card.className = 'order-card';
+        card.innerHTML = '<div><div class="order-id">#'+o.id+'</div><div class="order-date">'+o.date+'</div></div><div class="order-status status-'+(o.done?'done':'pending')+'">'+(o.done?'✅ مكتمل':'⏳ قيد المعالجة')+'</div>';
+        list.appendChild(card);
+      });
+      document.getElementById('statOrders').textContent = orders.length;
+    }else{
+      emptyEl.style.display='block';
+      list.innerHTML='';
+    }
+  }catch(e){}
+}
+
+// ════════════════════════════════
+//  TABS
+// ════════════════════════════════
+function switchTab(name){
+  document.querySelectorAll('.profile-tab').forEach(function(t){
+    t.classList.toggle('active', t.dataset.tab===name);
+  });
+  document.querySelectorAll('.pane').forEach(function(p){ p.classList.remove('active'); });
+  var pane = document.getElementById('pane-'+name);
+  if(pane) pane.classList.add('active');
+}
+
+// ════════════════════════════════
+//  SETTINGS PANEL
+// ════════════════════════════════
+function initSettingsPanel(){
+  applyThemeUI(_themeColor, _themeMode);
+  applyCurrencyUI(_currency);
+  applyLangUI(_lang);
+}
+function openSettings(){
+  document.getElementById('settingsPanel').classList.add('open');
+  document.getElementById('settingsOverlay').classList.add('open');
+}
+function closeSettings(){
+  document.getElementById('settingsPanel').classList.remove('open');
+  document.getElementById('settingsOverlay').classList.remove('open');
+}
+function selectThemeColor(color){
+  _themeColor = color;
+  document.querySelectorAll('.theme-color-dot').forEach(function(d){
+    d.classList.toggle('active', d.dataset.themeColor===color);
+  });
+}
+function selectThemeMode(mode){
+  _themeMode = mode;
+  document.querySelectorAll('.seg-btn').forEach(function(b){
+    b.classList.toggle('active', b.id === 'mode'+mode.charAt(0).toUpperCase()+mode.slice(1)+'Btn');
+  });
+}
+function selectLang(lang){
+  _lang = lang;
+  document.querySelectorAll('.lang-opt').forEach(function(o){
+    o.classList.toggle('active', o.dataset.lang===lang);
+  });
+}
+function selectCurrency(c){
+  _currency = c;
+  document.querySelectorAll('.currency-opt').forEach(function(o){
+    o.classList.toggle('active', o.dataset.currency===c);
+  });
+}
+function applyThemeUI(color, mode){
+  document.querySelectorAll('.theme-color-dot').forEach(function(d){
+    d.classList.toggle('active', d.dataset.themeColor===color);
+  });
+  document.getElementById('modeDarkBtn').classList.toggle('active', mode==='dark');
+  document.getElementById('modeLightBtn').classList.toggle('active', mode==='light');
+  document.body.className = color+'-'+mode;
+}
+function applyCurrencyUI(c){
+  document.querySelectorAll('.currency-opt').forEach(function(o){
+    o.classList.toggle('active', o.dataset.currency===c);
+  });
+}
+function applyLangUI(lang){
+  document.querySelectorAll('.lang-opt').forEach(function(o){
+    o.classList.toggle('active', o.dataset.lang===lang);
+  });
+  // Update all translated text
+  var t = PROF_T[lang] || PROF_T.ar;
+  var isRtl = lang==='ar';
+  document.documentElement.lang = lang;
+  document.documentElement.dir  = isRtl ? 'rtl' : 'ltr';
+
+  // Tabs
+  var tabLbls = ['tabLbl0','tabLbl1','tabLbl2','tabLbl3'];
+  tabLbls.forEach(function(id,i){ var el=document.getElementById(id); if(el) el.textContent=t.tabs[i]; });
+
+  // Button labels
+  safe('newDesignLbl', t.newDesign);
+  safe('startDesignBtn', t.startDesign);
+  safe('shopNowBtn', t.shopNow);
+  safe('btnEditProfile', t.editProfile);
+  safe('settingsPanelTitle', t.settings);
+  safe('accSectionTitle', t.accSection);
+  safe('accNameLbl', t.fullName);
+  safe('accEmailLbl', t.email);
+  safe('accPassLbl', t.password);
+  safe('accPassSub', t.neverChanged);
+  safe('notifLbl', t.notifications);
+  safe('notifSub', t.notifSub);
+  safe('openSettingsBtnLbl', t.generalSettings);
+  safe('editBtn', t.editBtn); safe('editBtn2', t.editBtn);
+  safe('changeBtn', t.changeBtn);
+  safe('prefSectionTitle', t.prefSection);
+  safe('logoutBtn', t.logout); safe('logoutBtn2', t.logout);
+  safe('saveSettingsBtn', t.saveSettings); safe('saveBtnText', t.saveSettings);
+  safe('themeColorTitle', t.themeColor);
+  safe('themeModeTitle', t.themeMode);
+  safe('darkModeText', t.darkMode);
+  safe('lightModeText', t.lightMode);
+  safe('langSectionTitle', t.language);
+  safe('currencySectionTitle', t.currency);
+  safe('lbl-designs', t.lblDesigns);
+  safe('lbl-orders', t.lblOrders);
+  safe('lbl-followers', t.lblFollowers);
+  safe('lbl-following', t.lblFollowing);
+  safe('publishTitle', t.publishTitle);
+  safe('pubCaptionLbl', t.caption);
+  safe('pubTagsLbl', t.tags);
+  safe('cancelPubBtn', t.cancel);
+  safe('confirmPubBtn', t.publishNow);
+  safe('logoutText', t.logout.replace('🚪 ',''));
+
+  // Badges
+  var badgeEls = document.querySelectorAll('[id^="badge"]');
+  badgeEls.forEach(function(el,i){ if(t.badges[i]) el.textContent=t.badges[i]; });
+
+  // Reload user data for member since text
+  loadUserData();
+}
+
+function safe(id, val){
+  var el = document.getElementById(id);
+  if(el && val != null) el.textContent = val;
+}
+
+function saveAllSettings(){
+  persistSettings();
+  document.body.className = _themeColor+'-'+_themeMode;
+  applyLangUI(_lang);
+
+  // Animate save button
+  var btn = document.getElementById('saveSettingsBtn');
+  btn.classList.add('saved');
+  var t = PROF_T[_lang] || PROF_T.ar;
+  btn.textContent = t.saved;
+  setTimeout(function(){
+    btn.classList.remove('saved');
+    btn.textContent = t.saveSettings;
+  }, 2000);
+
+  toast((PROF_T[_lang]||PROF_T.ar).settingsSaved, 'success');
+}
+
+function savePref(key, val){
+  try{
+    var prefs = JSON.parse(localStorage.getItem('a3m_prefs')||'{}');
+    prefs[key] = val;
+    localStorage.setItem('a3m_prefs', JSON.stringify(prefs));
+  }catch(e){}
+}
+
+// ════════════════════════════════
+//  PUBLISH MODAL
+// ════════════════════════════════
+var _publishDesignData = null;
+function openPublishModal(designIdx){
+  _publishDesignData = designIdx;
+  document.getElementById('publishModal').classList.add('open');
+  // Reset tags
+  document.querySelectorAll('.publish-tag').forEach(function(t){ t.classList.remove('selected'); });
+  document.getElementById('pubCaption').value = '';
+}
+// Called from designer via postMessage or direct call
+window.openPublishFromDesigner = function(canvasDataURL){
+  _publishDesignData = canvasDataURL;
+  var prev = document.getElementById('publishPreview');
+  if(canvasDataURL && canvasDataURL.startsWith('data:')){
+    prev.innerHTML = '<img src="'+canvasDataURL+'" style="width:100%;height:100%;object-fit:contain;border-radius:10px"/>';
+  }
+  document.querySelectorAll('.publish-tag').forEach(function(t){ t.classList.remove('selected'); });
+  document.getElementById('pubCaption').value = '';
+  document.getElementById('publishModal').classList.add('open');
+};
+function closePublishModal(){
+  document.getElementById('publishModal').classList.remove('open');
+}
+function toggleTag(el){
+  el.classList.toggle('selected');
+}
+function confirmPublish(){
+  var caption = document.getElementById('pubCaption').value.trim();
+  var tags = [];
+  document.querySelectorAll('.publish-tag.selected').forEach(function(t){ tags.push(t.textContent.trim()); });
+  // Save to community designs
+  try {
+    var designs = JSON.parse(localStorage.getItem('a3m_community_designs')||'[]');
+    var user = JSON.parse(localStorage.getItem('a3m_user')||'{}');
+    designs.unshift({
+      id: Date.now(),
+      caption: caption,
+      tags: tags,
+      author: user.name || 'مجهول',
+      username: user.username || 'user',
+      emoji: '🎨',
+      likes: 0,
+      own: true,
+      date: new Date().toLocaleDateString(_lang==='ar'?'ar-DZ':'en-US'),
+      image: _publishDesignData && typeof _publishDesignData==='string' ? _publishDesignData : null,
+    });
+    localStorage.setItem('a3m_community_designs', JSON.stringify(designs));
+    // Give XP
+    var xp = parseInt(localStorage.getItem('a3m_xp')||'0') + 20;
+    localStorage.setItem('a3m_xp', xp);
+  }catch(e){}
+  closePublishModal();
+  toast((PROF_T[_lang]||PROF_T.ar).publishSuccess, 'success');
+  loadDesigns();
+  loadUserData();
+}
+
+// ════════════════════════════════
+//  MISC
+// ════════════════════════════════
+function changeAvatar(){
+  toast('تغيير الصورة الشخصية قريباً ✨');
+}
+function doLogout(){
+  localStorage.removeItem('a3m_user');
+  localStorage.removeItem('a3m_xp');
+  window.location.href = '../index.html';
+}
+function toast(msg, type){
+  var el = document.getElementById('toastEl');
+  el.textContent = msg;
+  el.className = 'toast show' + (type==='success'?' success':'');
+  clearTimeout(el._t);
+  el._t = setTimeout(function(){ el.classList.remove('show'); }, 3200);
+}
+
+// Listen for messages from designer (publish button)
+window.addEventListener('message', function(e){
+  if(e.data && e.data.type==='a3m:publish'){
+    window.openPublishFromDesigner(e.data.canvas);
+  }
+});
+</script>
+</body>
+</html>

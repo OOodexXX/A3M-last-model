@@ -1,0 +1,584 @@
+<!-- ═══════════════════════════════════════════════════════════
+     DESIGNER MODAL ENHANCED — A3M Print v3
+     ضع هذا الكود بدلاً من div#designerModal الموجود في index.html
+═══════════════════════════════════════════════════════════ -->
+
+<!-- ===== CANVAS DESIGNER ===== -->
+<div class="designer-modal" id="designerModal">
+
+  <!-- ── Topbar ── -->
+  <div class="designer-topbar">
+    <div class="designer-topbar-left">
+      <span class="designer-topbar-logo" onclick="closeDesigner()" title="رجوع" style="cursor:pointer">
+        A<span class="r">3</span><span class="g">M</span>
+      </span>
+      <span class="designer-topbar-title" id="topbarTitle">Design Studio</span>
+    </div>
+
+    <div class="designer-topbar-right">
+      <!-- Live price -->
+      <div id="ds-price-box" title="السعر التقديري">
+        <span style="font-size:9px;color:#374151;font-family:'Cairo',sans-serif">السعر</span>
+        <span id="ds-price-val">500 دج</span>
+        <span style="font-size:8px;color:#1f2937;font-family:'Cairo',sans-serif">تقديري</span>
+      </div>
+
+      <!-- Product selector -->
+      <select class="d-select" id="canvasProduct" onchange="changeProduct()" style="width:auto;padding:5px 8px;max-width:110px">
+        <option value="tshirt">👕 تيشرت</option>
+        <option value="mug">☕ كوب</option>
+        <option value="hat">🧢 قبعة</option>
+        <option value="bag">🎒 حقيبة</option>
+        <option value="paper">📄 ورقة</option>
+        <option value="hoodie">🧥 هودي</option>
+        <option value="phone">📱 جراب</option>
+        <option value="note">📓 دفتر</option>
+      </select>
+
+      <!-- Undo / Redo -->
+      <button class="d-btn d-btn-outline" id="dsUndoBtn" onclick="undoAction()" title="Ctrl+Z">↩</button>
+      <button class="d-btn d-btn-outline" id="dsRedoBtn" onclick="redoAction()" title="Ctrl+Y">↪</button>
+      <button class="d-btn d-btn-outline" onclick="clearCanvas()" title="مسح الكل">🗑</button>
+
+      <!-- 3D Preview -->
+      <button class="d-btn ds-3d-btn" onclick="open3DViewer()" title="معاينة 3D">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+          <line x1="12" y1="22.08" x2="12" y2="12"/>
+        </svg>
+        3D
+      </button>
+
+      <button class="d-btn d-btn-gold"   onclick="downloadDesign()">⬇ تحميل</button>
+      <button class="d-btn d-btn-accent" onclick="saveToCart()">🛒 سلة</button>
+      <button class="d-btn d-btn-outline" onclick="openOrderFromDesign()">📋 اطلب</button>
+      <button class="d-btn d-btn-outline" onclick="closeDesigner()" title="رجوع">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M19 12H5M12 5l-7 7 7 7"/>
+        </svg>
+        رجوع
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Mini template strip ── -->
+  <div class="ds-tmpl-mini-strip" id="dsTmplMini" style="overflow-x:auto;max-height:60px"></div>
+
+  <!-- ── Workspace ── -->
+  <div class="designer-workspace">
+
+    <!-- ── Left toolbox ── -->
+    <div class="d-tools">
+
+      <!-- Separator label -->
+      <div style="font-size:7px;font-weight:800;color:#252540;letter-spacing:1px;text-transform:uppercase;margin:.25rem 0">أدوات</div>
+
+      <button class="d-tool-btn active" id="tool-select" onclick="setTool('select')" title="تحديد (V)">
+        <span class="icon">↖</span><span class="lbl">Select</span>
+      </button>
+      <button class="d-tool-btn" id="tool-text" onclick="setTool('text')" title="نص (T)">
+        <span class="icon">T</span><span class="lbl">Text</span>
+      </button>
+      <button class="d-tool-btn" id="tool-rect" onclick="setTool('rect')" title="مستطيل (R)">
+        <span class="icon">▭</span><span class="lbl">Rect</span>
+      </button>
+      <button class="d-tool-btn" id="tool-circle" onclick="setTool('circle')" title="دائرة (C)">
+        <span class="icon">○</span><span class="lbl">Circle</span>
+      </button>
+      <button class="d-tool-btn" id="tool-triangle" onclick="setTool('triangle')" title="مثلث">
+        <span class="icon">△</span><span class="lbl">Tri</span>
+      </button>
+      <button class="d-tool-btn" id="tool-star" onclick="setTool('star')" title="نجمة">
+        <span class="icon">★</span><span class="lbl">Star</span>
+      </button>
+      <button class="d-tool-btn" id="tool-line" onclick="setTool('line')" title="خط">
+        <span class="icon">—</span><span class="lbl">Line</span>
+      </button>
+
+      <!-- Separator -->
+      <div style="width:36px;height:1px;background:rgba(255,255,255,.06);margin:.3rem 0"></div>
+      <div style="font-size:7px;font-weight:800;color:#252540;letter-spacing:1px;text-transform:uppercase;margin:.1rem 0">عرض</div>
+
+      <button class="d-tool-btn" id="dsGridBtn" onclick="toggleGrid()" title="شبكة">
+        <span class="icon">#</span><span class="lbl">Grid</span>
+      </button>
+      <button class="d-tool-btn" id="dsSnapBtn" onclick="toggleSnap()" title="التصاق">
+        <span class="icon">⊞</span><span class="lbl">Snap</span>
+      </button>
+    </div>
+
+    <!-- ── Canvas area ── -->
+    <div class="d-canvas-wrap" id="dsCanvasWrap">
+      <!-- Canvas -->
+      <canvas id="designCanvas" width="500" height="500"></canvas>
+
+      <!-- Zoom controls -->
+      <div class="ds-zoom-controls">
+        <button class="ds-zoom-btn" onclick="dsZoom(-0.1)" title="تصغير">−</button>
+        <span id="dsZoomVal">100%</span>
+        <button class="ds-zoom-btn" onclick="dsZoom(0.1)" title="تكبير">+</button>
+        <button class="ds-zoom-btn" onclick="dsFitCanvas()" title="ملاءمة" style="font-size:10px">⊡</button>
+      </div>
+
+      <!-- Canvas-overlay tools -->
+      <div class="ds-canvas-tools">
+        <button class="ds-canvas-tool-btn" onclick="duplicateSelected()" title="نسخ">⊕</button>
+        <button class="ds-canvas-tool-btn" onclick="deleteSelected()" title="حذف" style="color:#ef4444">✕</button>
+        <button class="ds-canvas-tool-btn" id="dsLockBtn" onclick="lockSelected()" title="قفل">🔒</button>
+        <button class="ds-canvas-tool-btn" onclick="bringToFront()" title="للأمام الكامل">⬆</button>
+        <button class="ds-canvas-tool-btn" onclick="sendToBack()" title="للخلف الكامل">⬇</button>
+      </div>
+
+      <!-- Status bar -->
+      <div class="ds-status-bar">
+        <div class="ds-status-item">
+          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/></svg>
+          طبقات: <span class="val" id="dsLayerCount">0</span>
+        </div>
+        <div class="ds-status-item">
+          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          أداة: <span class="val" id="dsActiveTool">select</span>
+        </div>
+        <div class="ds-status-item">
+          XY: <span class="val" id="dsCoords">—, —</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Right panel ── -->
+    <div class="d-panel">
+
+      <!-- Text section -->
+      <div class="d-panel-section">
+        <div class="d-panel-title">نص</div>
+        <div class="d-row">
+          <input class="d-input" id="txtContent" placeholder="اكتب هنا..." oninput="syncSelected()" style="font-size:13px"/>
+        </div>
+        <div class="d-row">
+          <span class="d-label">حجم</span>
+          <input class="d-input" id="txtSize" type="number" value="40" min="6" max="300" style="width:60px" oninput="document.getElementById('txtSzVal').textContent=this.value;syncSelected()"/>
+          <span id="txtSzVal" style="font-size:10px;color:#374151;min-width:24px;font-family:'JetBrains Mono',monospace">40</span>
+        </div>
+        <div class="d-row">
+          <span class="d-label">خط</span>
+          <select class="d-select" id="txtFont" onchange="syncSelected()">
+            <option value="Cairo">Cairo</option>
+            <option value="Permanent Marker">Permanent Marker</option>
+            <option value="Bebas Neue">Bebas Neue</option>
+            <option value="Pacifico">Pacifico</option>
+            <option value="Dancing Script">Dancing Script</option>
+            <option value="Orbitron">Orbitron</option>
+            <option value="Impact">Impact</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Arial">Arial</option>
+            <option value="Courier New">Courier New</option>
+          </select>
+        </div>
+        <div class="d-row">
+          <span class="d-label">لون</span>
+          <input class="d-color" id="txtColor" type="color" value="#ffffff" oninput="syncSelected()"/>
+
+          <!-- Text align -->
+          <button class="d-small-btn" onclick="setTxtAlign('right')" title="يمين">←</button>
+          <button class="d-small-btn" onclick="setTxtAlign('center')" title="وسط">≡</button>
+          <button class="d-small-btn" onclick="setTxtAlign('left')" title="يسار">→</button>
+        </div>
+
+        <!-- Text styles B/I/U -->
+        <div class="d-row">
+          <button class="ds-style-btn" id="tbBold"      onclick="dsToggleTxtStyle('bold')"      title="Bold"><b>B</b></button>
+          <button class="ds-style-btn" id="tbItalic"    onclick="dsToggleTxtStyle('italic')"    title="Italic"><i>I</i></button>
+          <button class="ds-style-btn" id="tbUnderline" onclick="dsToggleTxtStyle('underline')" title="Underline"><u>U</u></button>
+          <span class="d-label" style="margin-right:.2rem">تباعد</span>
+          <input class="d-input" id="letterSpacing" type="number" value="0" min="-5" max="30" style="width:48px" oninput="dsSetLetterSpacing(this.value)"/>
+        </div>
+
+        <!-- Quick colors palette -->
+        <div class="d-row" style="gap:.3rem;flex-wrap:wrap;margin-top:.2rem">
+          <span class="d-label">سريع</span>
+          <div style="display:flex;gap:.25rem;flex-wrap:wrap">
+            <div onclick="document.getElementById('txtColor').value='#ffffff';syncSelected()" style="width:18px;height:18px;border-radius:4px;background:#ffffff;cursor:pointer;border:1px solid rgba(255,255,255,.1);transition:.12s" title="#ffffff"></div>
+            <div onclick="document.getElementById('txtColor').value='#000000';syncSelected()" style="width:18px;height:18px;border-radius:4px;background:#000000;cursor:pointer;border:1px solid rgba(255,255,255,.1);transition:.12s" title="#000000"></div>
+            <div onclick="document.getElementById('txtColor').value='#c9a84c';syncSelected()" style="width:18px;height:18px;border-radius:4px;background:#c9a84c;cursor:pointer;border:1px solid rgba(255,255,255,.1);transition:.12s" title="#c9a84c"></div>
+            <div onclick="document.getElementById('txtColor').value='#7c3aed';syncSelected()" style="width:18px;height:18px;border-radius:4px;background:#7c3aed;cursor:pointer;border:1px solid rgba(255,255,255,.1);transition:.12s" title="#7c3aed"></div>
+            <div onclick="document.getElementById('txtColor').value='#2563eb';syncSelected()" style="width:18px;height:18px;border-radius:4px;background:#2563eb;cursor:pointer;border:1px solid rgba(255,255,255,.1);transition:.12s" title="#2563eb"></div>
+            <div onclick="document.getElementById('txtColor').value='#ef4444';syncSelected()" style="width:18px;height:18px;border-radius:4px;background:#ef4444;cursor:pointer;border:1px solid rgba(255,255,255,.1);transition:.12s" title="#ef4444"></div>
+            <div onclick="document.getElementById('txtColor').value='#22c55e';syncSelected()" style="width:18px;height:18px;border-radius:4px;background:#22c55e;cursor:pointer;border:1px solid rgba(255,255,255,.1);transition:.12s" title="#22c55e"></div>
+            <div onclick="document.getElementById('txtColor').value='#f59e0b';syncSelected()" style="width:18px;height:18px;border-radius:4px;background:#f59e0b;cursor:pointer;border:1px solid rgba(255,255,255,.1);transition:.12s" title="#f59e0b"></div>
+            <div onclick="document.getElementById('txtColor').value='#ec4899';syncSelected()" style="width:18px;height:18px;border-radius:4px;background:#ec4899;cursor:pointer;border:1px solid rgba(255,255,255,.1);transition:.12s" title="#ec4899"></div>
+            <div onclick="document.getElementById('txtColor').value='#06b6d4';syncSelected()" style="width:18px;height:18px;border-radius:4px;background:#06b6d4;cursor:pointer;border:1px solid rgba(255,255,255,.1);transition:.12s" title="#06b6d4"></div>
+          </div>
+        </div>
+
+        <button class="d-btn d-btn-accent" style="width:100%;margin-top:.45rem;justify-content:center" onclick="addText()">＋ إضافة نص</button>
+      </div>
+
+      <!-- Shapes section -->
+      <div class="d-panel-section">
+        <div class="d-panel-title">أشكال</div>
+        <div class="d-row">
+          <span class="d-label">تعبئة</span>
+          <input class="d-color" id="shapeFill"   type="color" value="#7c3aed" oninput="syncSelected()"/>
+          <span class="d-label">حدود</span>
+          <input class="d-color" id="shapeStroke" type="color" value="#c9a84c" oninput="syncSelected()"/>
+        </div>
+        <div class="d-row">
+          <span class="d-label">سُمك</span>
+          <input class="d-input" id="strokeW" type="number" value="2" min="0" max="30" style="width:50px" oninput="syncSelected()"/>
+          <span class="d-label">شفافية</span>
+          <input class="d-input" id="shapeOpacity" type="number" value="100" min="0" max="100" style="width:50px" oninput="document.getElementById('opVal').textContent=this.value;syncSelected()"/>
+          <span id="opVal" style="font-size:10px;color:#374151;min-width:24px;font-family:'JetBrains Mono',monospace">100</span>
+        </div>
+        <div class="d-row">
+          <span class="d-label">زوايا</span>
+          <input class="d-input" id="cornerRadius" type="number" value="0" min="0" max="100" style="width:55px" oninput="syncSelected()" placeholder="0"/>
+        </div>
+        <div class="d-row" style="flex-wrap:wrap">
+          <button class="d-small-btn" onclick="addShape('rect')">▭ مستطيل</button>
+          <button class="d-small-btn" onclick="addShape('circle')">● دائرة</button>
+          <button class="d-small-btn" onclick="addShape('triangle')">▲ مثلث</button>
+          <button class="d-small-btn" onclick="addShape('star')">★ نجمة</button>
+          <button class="d-small-btn" onclick="addShape('line')">— خط</button>
+        </div>
+      </div>
+
+      <!-- Transform section -->
+      <div class="d-panel-section">
+        <div class="d-panel-title">تحويل</div>
+        <div class="d-row">
+          <span class="d-label">X</span>
+          <input class="d-input" id="objX" type="number" value="250" style="width:58px" onchange="applyTransform()"/>
+          <span class="d-label">Y</span>
+          <input class="d-input" id="objY" type="number" value="250" style="width:58px" onchange="applyTransform()"/>
+        </div>
+        <div class="d-row">
+          <span class="d-label">عرض</span>
+          <input class="d-input" id="objW" type="number" value="150" style="width:58px" onchange="applyTransform()"/>
+          <span class="d-label">ارتفاع</span>
+          <input class="d-input" id="objH" type="number" value="80"  style="width:58px" onchange="applyTransform()"/>
+        </div>
+        <div class="d-row">
+          <span class="d-label">دوران</span>
+          <input class="d-input" id="objRot" type="number" value="0" min="-180" max="180" style="width:58px" onchange="applyTransform()"/>
+          <span id="rotVal" style="font-size:10px;color:#374151;min-width:30px;font-family:'JetBrains Mono',monospace">0°</span>
+          <button class="d-small-btn" onclick="applyTransform()" style="flex:0;padding:.28rem .5rem">↻</button>
+        </div>
+
+        <!-- Flip -->
+        <div class="d-row">
+          <button class="d-small-btn" onclick="flipH()">↔ أفقي</button>
+          <button class="d-small-btn" onclick="flipV()">↕ رأسي</button>
+        </div>
+
+        <!-- Alignment -->
+        <div class="d-panel-title" style="margin-top:.5rem">محاذاة</div>
+        <div class="ds-align-row">
+          <button class="ds-align-btn" onclick="alignLayers('left')"    title="يسار">⊢</button>
+          <button class="ds-align-btn" onclick="alignLayers('hcenter')" title="وسط أفقي">⊛</button>
+          <button class="ds-align-btn" onclick="alignLayers('right')"   title="يمين">⊣</button>
+          <button class="ds-align-btn" onclick="alignLayers('top')"     title="أعلى">⊤</button>
+          <button class="ds-align-btn" onclick="alignLayers('vcenter')" title="وسط رأسي">⊕</button>
+          <button class="ds-align-btn" onclick="alignLayers('bottom')"  title="أسفل">⊥</button>
+        </div>
+
+        <!-- Order & Lock -->
+        <div class="d-row" style="margin-top:.3rem">
+          <button class="d-small-btn" onclick="bringForward()">⬆ أمام</button>
+          <button class="d-small-btn" onclick="sendBackward()">⬇ خلف</button>
+        </div>
+        <div class="d-row">
+          <button class="d-small-btn" onclick="duplicateSelected()">⊕ نسخ</button>
+          <button class="d-small-btn" id="dsLockBtn2" onclick="lockSelected()">🔒 قفل</button>
+          <button class="d-small-btn red" onclick="deleteSelected()">✕ حذف</button>
+        </div>
+      </div>
+
+      <!-- Background section -->
+      <div class="d-panel-section">
+        <div class="d-panel-title">الخلفية</div>
+        <div class="d-row">
+          <span class="d-label">لون</span>
+          <input class="d-color" id="bgColor" type="color" value="#ffffff"/>
+          <!-- Quick backgrounds -->
+          <div style="display:flex;gap:.25rem;flex-wrap:wrap">
+            <div onclick="setBg('#ffffff');document.getElementById('bgColor').value='#ffffff'" style="width:18px;height:18px;border-radius:4px;background:#fff;cursor:pointer;border:1px solid rgba(255,255,255,.2)" title="أبيض"></div>
+            <div onclick="setBg('#000000');document.getElementById('bgColor').value='#000000'" style="width:18px;height:18px;border-radius:4px;background:#000;cursor:pointer;border:1px solid rgba(255,255,255,.1)" title="أسود"></div>
+            <div onclick="setBg('#0b0f19');document.getElementById('bgColor').value='#0b0f19'" style="width:18px;height:18px;border-radius:4px;background:#0b0f19;cursor:pointer;border:1px solid rgba(255,255,255,.08)" title="داكن"></div>
+            <div onclick="setBg('transparent');document.getElementById('bgColor').value='#ffffff'" style="width:18px;height:18px;border-radius:4px;background:repeating-conic-gradient(#ccc 0% 25%, #fff 0% 50%) 0 0 / 8px 8px;cursor:pointer;border:1px solid rgba(255,255,255,.1)" title="شفاف"></div>
+            <div onclick="setBg('#c9a84c');document.getElementById('bgColor').value='#c9a84c'" style="width:18px;height:18px;border-radius:4px;background:#c9a84c;cursor:pointer;border:1px solid rgba(255,255,255,.1)" title="ذهبي"></div>
+            <div onclick="setBg('#7c3aed');document.getElementById('bgColor').value='#7c3aed'" style="width:18px;height:18px;border-radius:4px;background:#7c3aed;cursor:pointer;border:1px solid rgba(255,255,255,.1)" title="بنفسجي"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Image upload section -->
+      <div class="d-panel-section">
+        <div class="d-panel-title">صورة</div>
+        <div class="upload-zone" onclick="document.getElementById('imgUpload').click()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:.3rem;color:#6b7280"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+          <p style="margin:0;font-size:11px">اضغط لرفع صورة</p>
+          <p style="margin:0;font-size:9px;color:#374151">PNG, JPG, SVG</p>
+          <input type="file" id="imgUpload" accept="image/*" style="display:none" onchange="uploadImage(event)"/>
+        </div>
+      </div>
+
+      <!-- Templates section -->
+      <div class="d-panel-section">
+        <div class="d-panel-title">القوالب</div>
+        <div class="templates-grid" id="templatesGrid"></div>
+      </div>
+
+      <!-- Layers section -->
+      <div class="d-panel-section" style="border-bottom:none;flex:1">
+        <div class="d-panel-title" style="justify-content:space-between">
+          <span>الطبقات (<span id="dsLayerCount2">0</span>)</span>
+          <button onclick="clearCanvas()" style="background:none;border:none;cursor:pointer;font-size:9px;color:#374151;font-family:'Cairo',sans-serif">مسح الكل</button>
+        </div>
+        <div id="layersList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     3D PREVIEW MODAL — ENHANCED
+══════════════════════════════════════════════ -->
+<div class="preview3d-modal" id="preview3dModal">
+  <div class="p3d-shell">
+
+    <!-- Header -->
+    <div class="p3d-header">
+      <div class="p3d-title">
+        <span class="p3d-logo">A<span>3M</span></span>
+        <span>معاينة ثلاثية الأبعاد</span>
+        <span class="p3d-badge">3D PRO</span>
+      </div>
+
+      <div class="p3d-actions">
+        <!-- Product tabs -->
+        <div class="p3d-prod-tabs">
+          <button class="p3d-prod-tab" data-prod="tshirt" onclick="loadProduct3D('tshirt')" title="تيشرت">👕</button>
+          <button class="p3d-prod-tab" data-prod="mug"    onclick="loadProduct3D('mug')"    title="كوب">☕</button>
+          <button class="p3d-prod-tab" data-prod="hat"    onclick="loadProduct3D('hat')"    title="قبعة">🧢</button>
+          <button class="p3d-prod-tab" data-prod="bag"    onclick="loadProduct3D('bag')"    title="حقيبة">🎒</button>
+          <button class="p3d-prod-tab" data-prod="paper"  onclick="loadProduct3D('paper')"  title="ورقة">📄</button>
+          <button class="p3d-prod-tab" data-prod="hoodie" onclick="loadProduct3D('hoodie')" title="هودي">🧥</button>
+          <button class="p3d-prod-tab" data-prod="phone"  onclick="loadProduct3D('phone')"  title="جراب">📱</button>
+          <button class="p3d-prod-tab" data-prod="note"   onclick="loadProduct3D('note')"   title="دفتر">📓</button>
+        </div>
+
+        <div class="p3d-divider"></div>
+
+        <!-- Color picker -->
+        <div class="p3d-color-wrap" title="لون المنتج">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" opacity=".5"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2z"/></svg>
+          <input type="color" id="p3dColorPicker" value="#f0f0f0" title="لون المنتج"/>
+          <span style="font-size:10px">لون</span>
+        </div>
+
+        <div class="p3d-divider"></div>
+
+        <!-- Controls -->
+        <button class="p3d-ctrl-btn active" id="p3dAutoRotBtn" onclick="toggleAutoRotate3D()" title="دوران تلقائي">
+          ↻ دوران
+        </button>
+        <button class="p3d-ctrl-btn" id="p3dInertiaBtn" onclick="toggleInertia3D()" title="القصور الذاتي">
+          ≈ inertia
+        </button>
+        <button class="p3d-ctrl-btn" onclick="resetView3D()" title="إعادة تعيين الزاوية">
+          ⊙ رسيت
+        </button>
+        <button class="p3d-ctrl-btn" onclick="screenshot3D()" title="لقطة شاشة">
+          📸 لقطة
+        </button>
+
+        <div class="p3d-divider"></div>
+
+        <!-- Upload custom model -->
+        <button class="p3d-ctrl-btn p3d-upload-btn" onclick="document.getElementById('preview3dFileInput').click()" title="رفع موديل OBJ">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+          OBJ
+        </button>
+        <input type="file" id="preview3dFileInput" accept=".obj,.stl" style="display:none"/>
+
+        <div class="p3d-divider"></div>
+
+        <!-- Close -->
+        <button class="p3d-ctrl-btn p3d-close-btn" onclick="close3DViewer()">✕</button>
+      </div>
+    </div>
+
+    <!-- Progress -->
+    <div class="p3d-progress-wrap">
+      <div class="p3d-progress-bar" id="preview3dProgress"></div>
+    </div>
+
+    <!-- Canvas viewport -->
+    <div class="p3d-canvas-wrap" id="preview3dCanvas"></div>
+
+    <!-- Footer -->
+    <div class="p3d-footer">
+      <div style="display:flex;align-items:center;gap:.8rem">
+        <span id="preview3dStatus"></span>
+        <div class="p3d-info-row">
+          <span>360°</span>
+          <span style="color:#1e2038">•</span>
+          <span>Live Sync</span>
+          <span style="color:#1e2038">•</span>
+          <span>A3M Studio</span>
+        </div>
+      </div>
+      <div class="p3d-hint-row">
+        <span class="p3d-hint-chip">🖱 سحب: دوران</span>
+        <span class="p3d-hint-chip">⚙ عجلة: تكبير</span>
+        <span class="p3d-hint-chip">🖱 يمين: تحريك</span>
+        <span class="p3d-hint-chip">📱 ٢ أصابع: تكبير</span>
+        <span class="p3d-hint-chip">🖼 Drag & Drop: OBJ</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     ENHANCED DESIGNER SCRIPTS (inline helpers)
+══════════════════════════════════════════════ -->
+<script>
+(function(){
+  // Zoom
+  let _zoom = 1;
+  window.dsZoom = function(delta) {
+    _zoom = Math.max(0.25, Math.min(4, _zoom + delta));
+    const w = document.getElementById('dsCanvasWrap');
+    if (w) w.style.transform = `scale(${_zoom})`;
+    const v = document.getElementById('dsZoomVal');
+    if (v) v.textContent = Math.round(_zoom * 100) + '%';
+  };
+  window.dsFitCanvas = function() {
+    const wrap = document.getElementById('dsCanvasWrap');
+    if (!wrap) return;
+    const canvas = document.getElementById('designCanvas');
+    if (!canvas) return;
+    const pw = wrap.clientWidth, ph = wrap.clientHeight;
+    const cw = canvas.width, ch = canvas.height;
+    const ratio = Math.min((pw - 80) / cw, (ph - 80) / ch, 1);
+    _zoom = ratio;
+    wrap.style.transform = `scale(${ratio})`;
+    const v = document.getElementById('dsZoomVal');
+    if (v) v.textContent = Math.round(ratio * 100) + '%';
+  };
+
+  // Letter spacing
+  window.dsSetLetterSpacing = function(val) {
+    if (typeof layers === 'undefined' || !selectedId) return;
+    const l = layers.find(x => x.id === selectedId);
+    if (!l || l.type !== 'text') return;
+    l.letterSpacing = parseFloat(val) || 0;
+    if (typeof drawAll === 'function') drawAll();
+  };
+
+  // Text style toggles
+  window.dsToggleTxtStyle = function(style) {
+    if (typeof layers === 'undefined' || !selectedId) return;
+    const l = layers.find(x => x.id === selectedId);
+    if (!l || l.type !== 'text') return;
+    if (typeof saveHist === 'function') saveHist();
+    l[style] = !l[style];
+    if (typeof drawAll === 'function') drawAll();
+    const ids = { bold: 'tbBold', italic: 'tbItalic', underline: 'tbUnderline' };
+    const btn = document.getElementById(ids[style]);
+    if (btn) btn.classList.toggle('active-btn', l[style]);
+  };
+
+  // setBg bridge
+  window.dsSetBg = function(c) {
+    if (typeof setBg === 'function') setBg(c);
+    else { if (typeof bgColorVal !== 'undefined') window.bgColorVal = c; if (typeof drawAll === 'function') drawAll(); }
+  };
+
+  // Download / save bridges
+  window.dsDownload  = function() { if (typeof downloadDesign === 'function') downloadDesign(); };
+  window.dsSaveCart  = function() { if (typeof saveToCart === 'function') saveToCart(); };
+  window.dsUndo      = function() { if (typeof undoAction === 'function') undoAction(); };
+  window.dsRedo      = function() { if (typeof redoAction === 'function') redoAction(); };
+  window.dsClearCanvas = function() { if (typeof clearCanvas === 'function') { if (typeof saveHist === 'function') saveHist(); clearCanvas(); } };
+  window.dsBringForward  = function() { if (typeof bringForward === 'function') bringForward(); };
+  window.dsSendBackward  = function() { if (typeof sendBackward === 'function') sendBackward(); };
+  window.dsFlipH = function() { if (typeof flipH === 'function') flipH(); };
+  window.dsFlipV = function() { if (typeof flipV === 'function') flipV(); };
+  window.dsUploadImage = function(e) { if (typeof uploadImage === 'function') uploadImage(e); };
+
+  // Sync layer count to secondary badge
+  function syncLayerBadge() {
+    try {
+      const cnt = (typeof layers !== 'undefined') ? layers.length : 0;
+      ['dsLayerCount', 'dsLayerCount2', 'dsLayerCountStatus'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = cnt;
+      });
+    } catch(e) {}
+  }
+  // Patch notifyChange
+  const _origNC = window.notifyChange;
+  window.notifyChange = function() {
+    if (_origNC) _origNC.apply(this, arguments);
+    syncLayerBadge();
+  };
+
+  // ── Keyboard shortcuts ──
+  document.addEventListener('keydown', e => {
+    const dm = document.getElementById('designerModal');
+    if (!dm || !dm.classList.contains('open')) return;
+    const tag = e.target.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
+    if (e.key === 'v' || e.key === 'V') setTool('select');
+    if (e.key === 't' || e.key === 'T') setTool('text');
+    if (e.key === 'r' || e.key === 'R') setTool('rect');
+    if (e.key === 'c' || e.key === 'C') setTool('circle');
+    if (e.key === 's' || e.key === 'S') setTool('star');
+    if (e.key === 'l' || e.key === 'L') setTool('line');
+    if (e.key === 'Delete' || e.key === 'Backspace') { if (typeof deleteSelected === 'function') deleteSelected(); }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); if (typeof undoAction === 'function') undoAction(); }
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.shiftKey && e.key === 'z'))) { e.preventDefault(); if (typeof redoAction === 'function') redoAction(); }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'd') { e.preventDefault(); if (typeof duplicateSelected === 'function') duplicateSelected(); }
+    if (e.key === '+' || e.key === '=') dsZoom(0.15);
+    if (e.key === '-') dsZoom(-0.15);
+    if (e.key === '0') { _zoom = 1; const w = document.getElementById('dsCanvasWrap'); if (w) w.style.transform = 'scale(1)'; document.getElementById('dsZoomVal').textContent = '100%'; }
+    if (e.key === 'g' || e.key === 'G') { if (typeof toggleGrid === 'function') toggleGrid(); }
+    if (e.key === 'Escape') { if (typeof closeDesigner === 'function') closeDesigner(); }
+
+    // Arrow keys to nudge selected layer
+    if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)) {
+      if (typeof layers !== 'undefined' && typeof selectedId !== 'undefined' && selectedId) {
+        const l = layers.find(x => x.id === selectedId);
+        if (l) {
+          const d = e.shiftKey ? 10 : 1;
+          if (e.key === 'ArrowLeft')  l.x -= d;
+          if (e.key === 'ArrowRight') l.x += d;
+          if (e.key === 'ArrowUp')    l.y -= d;
+          if (e.key === 'ArrowDown')  l.y += d;
+          if (typeof drawAll === 'function') drawAll();
+          e.preventDefault();
+        }
+      }
+    }
+  });
+
+  // Build quick color swatches programmatically (fix template literal issue in static HTML)
+  document.addEventListener('DOMContentLoaded', function() {
+    const row = document.querySelector('.d-panel-section .d-row:last-child [style*="display:flex"]');
+    // nothing needed — they're rendered inline
+    // fit canvas on open
+    const observer = new MutationObserver(function(muts) {
+      muts.forEach(m => {
+        if (m.target.id === 'designerModal' && m.target.classList.contains('open')) {
+          setTimeout(dsFitCanvas, 150);
+        }
+      });
+    });
+    const dm = document.getElementById('designerModal');
+    if (dm) observer.observe(dm, { attributes: true, attributeFilter: ['class'] });
+  });
+})();
+</script>

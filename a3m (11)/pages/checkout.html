@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>إتمام الطلب — A3M Print</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Cairo:wght@400;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../css/style.css"/>
+  <style>
+    /* ── Checkout page specific ── */
+    .checkout-page { min-height: 100vh; background: var(--bg); }
+
+    .checkout-nav {
+      padding: 0 1.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px; background: var(--bg2);
+      border-bottom: 2px solid var(--accent);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .checkout-nav-logo {
+      font-family: 'Permanent Marker', cursive;
+      font-size: 1.7rem; color: var(--txt);
+      text-decoration: none; cursor: pointer;
+    }
+    .checkout-back {
+      background: none; border: 1.5px solid var(--border2);
+      border-radius: 8px; padding: 7px 14px;
+      font-size: 13px; font-weight: 700; color: var(--txt2);
+      cursor: pointer; transition: .2s;
+    }
+    .checkout-back:hover { border-color: var(--accent); color: var(--accent); }
+
+    .checkout-wrap {
+      max-width: 920px; margin: 2rem auto;
+      padding: 0 1.2rem;
+      display: grid; grid-template-columns: 1fr 400px; gap: 1.5rem;
+    }
+    @media(max-width: 780px) { .checkout-wrap { grid-template-columns: 1fr; } }
+
+    .checkout-card {
+      background: var(--bg2); border-radius: 16px;
+      border: 1px solid var(--border); padding: 1.5rem;
+      margin-bottom: 1.2rem;
+    }
+    .checkout-card h3 {
+      font-family: 'Permanent Marker', cursive; font-size: 1.15rem;
+      color: var(--txt); margin-bottom: 1rem;
+      display: flex; align-items: center; gap: .5rem;
+    }
+
+    /* Steps indicator */
+    .checkout-steps {
+      display: flex; align-items: center; gap: .5rem;
+      margin-bottom: 1.5rem; flex-wrap: wrap;
+    }
+    .step {
+      display: flex; align-items: center; gap: .4rem;
+      font-size: 12px; font-weight: 700;
+      color: var(--txt4);
+    }
+    .step.active { color: var(--accent); }
+    .step.done { color: var(--gold); }
+    .step-num {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: var(--bg3); border: 2px solid var(--border2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px;
+    }
+    .step.active .step-num { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .step.done  .step-num { background: var(--gold);   border-color: var(--gold);   color: #111; }
+    .step-line { flex: 1; height: 2px; background: var(--border); min-width: 20px; }
+    .step-line.done { background: var(--gold); }
+
+    /* Order summary */
+    .checkout-item {
+      display: flex; justify-content: space-between;
+      padding: .55rem 0; border-bottom: 1px solid var(--border);
+      font-size: 13px; color: var(--txt2);
+      align-items: center; gap: .5rem;
+    }
+    .checkout-item:last-child { border-bottom: none; }
+    .checkout-item-emoji { font-size: 1.4rem; flex-shrink: 0; }
+    .checkout-item-name { flex: 1; font-weight: 600; color: var(--txt); }
+    .checkout-item-qty { font-size: 11px; color: var(--txt3); }
+    .checkout-item-price { font-weight: 700; color: var(--accent); white-space: nowrap; }
+
+    .checkout-totals { margin-top: .75rem; padding-top: .75rem; border-top: 1px solid var(--border); }
+    .checkout-totals div { display: flex; justify-content: space-between; font-size: 13px; padding: .3rem 0; color: var(--txt2); }
+    .checkout-final { font-weight: 700; font-size: 16px; color: var(--txt) !important; margin-top: .5rem; padding-top: .5rem; border-top: 2px solid var(--border2); }
+    .checkout-final span:last-child { color: var(--accent) !important; }
+
+    .discount-row { display: flex; gap: .5rem; margin-top: .8rem; }
+
+    /* Form inputs */
+    #checkout-feedback {
+      display: none; padding: .65rem 1rem; border-radius: 8px;
+      font-size: 13px; font-weight: 600; margin-bottom: .75rem;
+      background: var(--bg3); border: 1px solid var(--border);
+    }
+
+    /* Place order btn */
+    #placeOrderBtn {
+      width: 100%; background: var(--accent); color: #fff !important;
+      border: none; padding: 14px; border-radius: 10px;
+      font-weight: 700; font-size: 15px; margin-top: .5rem;
+      transition: .25s; box-shadow: 0 4px 15px var(--abg);
+    }
+    #placeOrderBtn:hover { background: var(--accent2); transform: translateY(-1px); box-shadow: 0 8px 25px var(--abg); }
+    #placeOrderBtn:disabled { opacity: .6; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    /* Trust badges */
+    .trust-badges { display: flex; gap: .6rem; flex-wrap: wrap; margin-top: .8rem; }
+    .trust-badge {
+      display: flex; align-items: center; gap: .3rem;
+      font-size: 11px; color: var(--txt3);
+      background: var(--bg3); border: 1px solid var(--border);
+      padding: 4px 10px; border-radius: 20px;
+    }
+
+    /* Order summary card (right column) */
+    .summary-sticky { position: sticky; top: 80px; }
+
+    /* Delivery info */
+    .delivery-badge {
+      display: flex; align-items: center; gap: .5rem;
+      background: rgba(34,197,94,.1); border: 1px solid rgba(34,197,94,.3);
+      border-radius: 8px; padding: .6rem .9rem;
+      font-size: 12px; color: #16a34a; font-weight: 600;
+      margin-top: .6rem;
+    }
+  
+  /* Globe lang switcher */
+  .lang-globe-wrap{position:relative;display:inline-block;}
+  .lang-globe-btn{display:flex;align-items:center;gap:.45rem;background:var(--card,rgba(20,29,46,.9));border:1px solid var(--border2,rgba(255,255,255,.15));color:var(--txt2,#94a3b8);padding:7px 14px;border-radius:30px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:.2s;white-space:nowrap;}
+  .lang-globe-btn:hover{border-color:var(--accent,#2563eb);color:var(--txt,#f1f5f9);}
+  .lang-globe-dd{position:absolute;top:calc(100% + 8px);right:0;background:var(--bg2,#111827);border:1px solid var(--border2,rgba(255,255,255,.15));border-radius:14px;padding:.5rem;min-width:150px;box-shadow:0 16px 40px rgba(0,0,0,.5);display:none;z-index:999;}
+  [dir="rtl"] .lang-globe-dd{right:auto;left:0;}
+  .lang-globe-dd.open{display:block;}
+  .lang-globe-opt{display:flex;align-items:center;gap:.6rem;padding:.6rem .9rem;border-radius:9px;cursor:pointer;font-size:13px;font-weight:600;transition:.15s;color:var(--txt2,#94a3b8);}
+  .lang-globe-opt:hover{background:rgba(255,255,255,.06);color:var(--txt,#f1f5f9);}
+  .lang-globe-opt.active{color:var(--gold,#c9a84c);}
+  .lang-globe-opt .flag{font-size:1.1rem;}
+</style>
+</head>
+<body class="blue-dark">
+<div class="checkout-page">
+
+  <!-- Nav -->
+  <nav class="checkout-nav">
+    <a class="checkout-nav-logo" onclick="history.back()">A<span class="r">3</span><span class="g">M</span></a>
+    <!-- Language switcher -->
+    <div style="display:flex;align-items:center;gap:.5rem">
+      <div style="display:flex;border-radius:8px;overflow:hidden;border:1px solid var(--border2)">
+        <button onclick="setCheckoutLang('ar')" id="co-ar" style="background:var(--accent);color:#fff;border:none;padding:5px 10px;cursor:pointer;font-size:11px;font-weight:700;">🇩🇿 AR</button>
+        <button onclick="setCheckoutLang('en')" id="co-en" style="background:none;border:none;padding:5px 10px;cursor:pointer;font-size:11px;font-weight:700;color:var(--txt2);">🇬🇧 EN</button>
+        <button onclick="setCheckoutLang('fr')" id="co-fr" style="background:none;border:none;padding:5px 10px;cursor:pointer;font-size:11px;font-weight:700;color:var(--txt2);">🇫🇷 FR</button>
+      </div>
+      <button class="checkout-back" onclick="history.back()" id="co-back">← العودة</button>
+    </div>
+  </nav>
+
+  <div style="padding:1.5rem 1.2rem 0;max-width:920px;margin:0 auto">
+    <h1 style="font-family:'Permanent Marker',cursive;font-size:1.6rem;color:var(--txt);margin-bottom:1.2rem">
+      إتمام الطلب
+    </h1>
+
+    <!-- Steps -->
+    <div class="checkout-steps">
+      <div class="step done">
+        <div class="step-num">✓</div>
+        <span>السلة</span>
+      </div>
+      <div class="step-line done"></div>
+      <div class="step active">
+        <div class="step-num">2</div>
+        <span>بياناتك</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <span>التأكيد</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="checkout-wrap">
+
+    <!-- LEFT: Customer form -->
+    <div>
+      <!-- Customer info -->
+      <div class="checkout-card">
+        <h3>👤 بياناتك</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label"><span data-i18n="chName">الاسم الكامل *</span></label>
+            <input class="form-input" id="c_name" placeholder="أحمد بن علي" autocomplete="name"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">رقم <span data-i18n="chPhone">الهاتف *</span></label>
+            <input class="form-input" id="c_phone" placeholder="0555 123 456" type="tel" autocomplete="tel"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">العنوان *</label>
+            <input class="form-input" id="c_address" placeholder="رقم، شارع، حي"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">الولاية</label>
+            <select class="form-input" id="c_wilaya">
+              <option value="">اختر الولاية...</option>
+              <option>الجزائر</option><option>وهران</option><option>قسنطينة</option>
+              <option>عنابة</option><option>بجاية</option><option>تيزي وزو</option>
+              <option>بومرداس</option><option>تيبازة</option><option>البليدة</option>
+              <option>المدية</option><option>سطيف</option><option>باتنة</option>
+              <option>أخرى</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">ملاحظات (اختياري)</label>
+          <textarea class="form-input" id="c_notes" rows="3"
+            placeholder="تفاصيل إضافية عن الطلب أو التصميم..."
+            style="resize:vertical"></textarea>
+        </div>
+        <div class="delivery-badge">
+          🚚 التوصيل خلال 3-7 أيام عمل في جميع الولايات
+        </div>
+      </div>
+
+      <!-- Payment method (decorative) -->
+      <div class="checkout-card">
+        <h3>💳 طريقة الدفع</h3>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+          <div style="flex:1;min-width:120px;border:2px solid var(--accent);border-radius:10px;padding:.8rem;display:flex;align-items:center;gap:.5rem;cursor:pointer;background:var(--abg)">
+            <span style="font-size:1.3rem">💵</span>
+            <div>
+              <div style="font-size:12px;font-weight:700;color:var(--txt)">الدفع عند الاستلام</div>
+              <div style="font-size:10px;color:var(--txt3)">COD متاح في كل الولايات</div>
+            </div>
+          </div>
+          <div style="flex:1;min-width:120px;border:1px solid var(--border2);border-radius:10px;padding:.8rem;display:flex;align-items:center;gap:.5rem;cursor:pointer;opacity:.5">
+            <span style="font-size:1.3rem">🏦</span>
+            <div>
+              <div style="font-size:12px;font-weight:700;color:var(--txt)">تحويل بنكي</div>
+              <div style="font-size:10px;color:var(--txt3)">قريباً</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="checkout-feedback"></div>
+      <button id="placeOrderBtn" onclick="placeOrder()">✦ تأكيد الطلب</button>
+
+      <!-- Trust badges -->
+      <div class="trust-badges">
+        <div class="trust-badge">🔒 دفع آمن</div>
+        <div class="trust-badge">✅ جودة مضمونة</div>
+        <div class="trust-badge">🔄 استرداد سهل</div>
+        <div class="trust-badge">📞 دعم 24/7</div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Order summary -->
+    <div class="summary-sticky">
+      <div class="checkout-card">
+        <h3>🛒 ملخص الطلب</h3>
+        <div id="checkoutItems">
+          <p style="color:var(--txt3);font-size:13px">جاري التحميل...</p>
+        </div>
+
+        <!-- Discount code -->
+        <div class="discount-row">
+          <input class="discount-input" id="discountInput" placeholder="ENTER CODE" maxlength="20"
+            style="text-transform:uppercase"/>
+          <button class="discount-apply-btn" onclick="applyCheckoutDiscount()">تطبيق</button>
+        </div>
+        <div id="discountMsg" style="margin-top:.4rem;font-size:12px"></div>
+      </div>
+
+      <!-- Info box -->
+      <div style="background:var(--bg2);border-radius:12px;border:1px solid var(--border);padding:1rem;font-size:12px;color:var(--txt3);line-height:1.8">
+        <div style="font-weight:700;color:var(--txt);margin-bottom:.4rem">📋 معلومات مهمة</div>
+        • سيتواصل معك فريقنا لتأكيد التصميم<br>
+        • خصم 20% للطلبات فوق 5000 دج<br>
+        • أوقات العمل: الأحد – الجمعة، 8ص – 6م
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="../js/checkout-main.js"></script>
+
+<script>
+  // Checkout discount handler
+  const CHECKOUT_CODES = {"A3M10":10,"A3M20":20,"STUDENT":15,"WELCOME":25,"VIP50":50};
+  let checkoutDiscount = 0;
+
+  function applyCheckoutDiscount() {
+    const code = document.getElementById("discountInput").value.trim().toUpperCase();
+    const msg  = document.getElementById("discountMsg");
+    if (CHECKOUT_CODES[code]) {
+      checkoutDiscount = CHECKOUT_CODES[code];
+      msg.innerHTML = `<span style="color:#16a34a;font-weight:700">✦ ${checkoutDiscount}% خصم مطبّق!</span>`;
+      rerenderSummary();
+    } else {
+      checkoutDiscount = 0;
+      msg.innerHTML = `<span style="color:#e01010;font-weight:700">✕ كود غير صالح</span>`;
+      rerenderSummary();
+    }
+  }
+  window.applyCheckoutDiscount = applyCheckoutDiscount;
+  window.checkoutDiscount = 0;
+
+  // Override renderCheckoutSummary to include checkoutDiscount
+  function rerenderSummary() {
+    const CART_KEY = "a3m_cart";
+    const cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+    const container = document.getElementById("checkoutItems");
+    if (!container) return;
+    if (!cart.length) { container.innerHTML = "<p style='color:var(--txt3)'>السلة فارغة</p>"; return; }
+    const sub  = cart.reduce((s,i) => s + i.price * i.qty, 0);
+    const bulk = sub >= 5000 ? sub * 0.20 : 0;
+    const aft  = sub - bulk;
+    const code = Math.round(aft * (checkoutDiscount / 100));
+    const tot  = aft - code;
+    container.innerHTML = cart.map(i => `
+      <div class="checkout-item">
+        <span class="checkout-item-emoji">${i.emoji||''}</span>
+        <div style="flex:1">
+          <div class="checkout-item-name">${i.name}</div>
+          <div class="checkout-item-qty">× ${i.qty}</div>
+        </div>
+        <span class="checkout-item-price">${(i.price*i.qty).toLocaleString()} دج</span>
+      </div>`).join('') + `
+      <div class="checkout-totals">
+        ${bulk > 0 ? `<div><span>خصم الجملة (20%)</span><span style="color:#16a34a">- ${bulk.toLocaleString()} دج</span></div>` : ''}
+        ${code > 0 ? `<div><span>خصم الكود (${checkoutDiscount}%)</span><span style="color:#16a34a">- ${code.toLocaleString()} دج</span></div>` : ''}
+        <div class="checkout-final"><span>المجموع الكلي</span><span>${tot.toLocaleString()} دج</span></div>
+      </div>`;
+    // sync discount to checkout.js
+    window.checkoutDiscount = checkoutDiscount;
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    rerenderSummary();
+    // Patch placeOrder to use our checkoutDiscount
+    const origPlace = window.placeOrder;
+    window._checkoutDiscountLocal = () => checkoutDiscount;
+  });
+</script>
+
+<script>
+// Checkout multilang — شامل لكل عناصر الصفحة
+const CO_LANGS = {
+  ar: {
+    dir: 'rtl', font: "'Cairo',sans-serif",
+    back: '← العودة للمتجر',
+    title: 'إتمام الطلب',
+    stepCart: 'السلة', stepInfo: 'بياناتك', stepConfirm: 'التأكيد',
+    cardInfo: '👤 بياناتك',
+    name: '<span data-i18n="chName">الاسم الكامل *</span>',
+    phone: 'رقم <span data-i18n="chPhone">الهاتف *</span>',
+    address: 'العنوان *',
+    wilaya: 'الولاية',
+    notes: 'ملاحظات (اختياري)',
+    notesPlaceholder: 'تفاصيل إضافية عن الطلب أو التصميم...',
+    delivery: '🚚 التوصيل خلال 3-7 أيام عمل في جميع الولايات',
+    cardPayment: '💳 طريقة الدفع',
+    codTitle: 'الدفع عند الاستلام',
+    codSub: 'COD متاح في كل الولايات',
+    bankTitle: 'تحويل بنكي',
+    bankSub: 'قريباً',
+    placeOrder: '✦ تأكيد الطلب',
+    trustBadges: ['🔒 دفع آمن', '✅ جودة مضمونة', '🔄 استرداد سهل', '📞 دعم 24/7'],
+    summary: '🛒 ملخص الطلب',
+    infoBoxTitle: '📋 معلومات مهمة',
+    infoBoxLines: ['سيتواصل معك فريقنا لتأكيد التصميم', 'خصم 20% للطلبات فوق 5000 دج', 'أوقات العمل: الأحد – الجمعة، 8ص – 6م'],
+    discountPlaceholder: 'ENTER CODE',
+    discountApply: 'تطبيق',
+    wilayaDefault: 'اختر الولاية...',
+    loading: 'جاري التحميل...',
+  },
+  en: {
+    dir: 'ltr', font: "'Inter',sans-serif",
+    back: '← Back to Store',
+    title: 'Checkout',
+    stepCart: 'Cart', stepInfo: 'Your Info', stepConfirm: 'Confirm',
+    cardInfo: '👤 Your Information',
+    name: 'Full Name *',
+    phone: 'Phone Number *',
+    address: 'Address *',
+    wilaya: 'State / Wilaya',
+    notes: 'Notes (optional)',
+    notesPlaceholder: 'Additional details about your order or design...',
+    delivery: '🚚 Delivery in 3–7 business days to all wilayas',
+    cardPayment: '💳 Payment Method',
+    codTitle: 'Cash on Delivery',
+    codSub: 'COD available in all wilayas',
+    bankTitle: 'Bank Transfer',
+    bankSub: 'Coming soon',
+    placeOrder: '✦ Place Order',
+    trustBadges: ['🔒 Secure Payment', '✅ Quality Guaranteed', '🔄 Easy Returns', '📞 24/7 Support'],
+    summary: '🛒 Order Summary',
+    infoBoxTitle: '📋 Important Info',
+    infoBoxLines: ['Our team will contact you to confirm your design', '20% discount on orders above 5000 DZD', 'Working hours: Sun – Fri, 8AM – 6PM'],
+    discountPlaceholder: 'ENTER CODE',
+    discountApply: 'Apply',
+    wilayaDefault: 'Choose wilaya...',
+    loading: 'Loading...',
+  },
+  fr: {
+    dir: 'ltr', font: "'Inter',sans-serif",
+    back: '← Retour au magasin',
+    title: 'Finaliser la commande',
+    stepCart: 'Panier', stepInfo: 'Vos infos', stepConfirm: 'Confirmation',
+    cardInfo: '👤 Vos Informations',
+    name: 'Nom complet *',
+    phone: 'Téléphone *',
+    address: 'Adresse *',
+    wilaya: 'Wilaya',
+    notes: 'Remarques (optionnel)',
+    notesPlaceholder: 'Détails supplémentaires sur votre commande...',
+    delivery: '🚚 Livraison en 3–7 jours ouvrables dans toutes les wilayas',
+    cardPayment: '💳 Mode de Paiement',
+    codTitle: 'Paiement à la livraison',
+    codSub: 'COD disponible partout',
+    bankTitle: 'Virement bancaire',
+    bankSub: 'Bientôt disponible',
+    placeOrder: '✦ Confirmer la commande',
+    trustBadges: ['🔒 Paiement sécurisé', '✅ Qualité garantie', '🔄 Retours faciles', '📞 Support 24/7'],
+    summary: '🛒 Résumé de commande',
+    infoBoxTitle: '📋 Informations importantes',
+    infoBoxLines: ["Notre équipe vous contactera pour confirmer votre design", "20% de réduction sur les commandes de plus de 5000 DZD", "Heures d'ouverture: Dim – Ven, 8h – 18h"],
+    discountPlaceholder: 'ENTRER LE CODE',
+    discountApply: 'Appliquer',
+    wilayaDefault: 'Choisir la wilaya...',
+    loading: 'Chargement...',
+  }
+};
+
+function setCheckoutLang(lang) {
+  const t = CO_LANGS[lang];
+  if (!t) return;
+  document.body.setAttribute('dir', t.dir);
+  document.body.style.fontFamily = t.font;
+  localStorage.setItem('a3m_lang', lang);
+
+  // ── أزرار اللغة ──
+  ['ar','en','fr'].forEach(l => {
+    const btn = document.getElementById('co-' + l);
+    if (!btn) return;
+    btn.style.background = l === lang ? 'var(--accent)' : 'none';
+    btn.style.color      = l === lang ? '#fff' : 'var(--txt2)';
+  });
+
+  // ── زر الرجوع ──
+  const backBtn = document.getElementById('co-back');
+  if (backBtn) backBtn.textContent = t.back;
+
+  // ── العنوان الرئيسي ──
+  const h1 = document.querySelector('.checkout-page h1');
+  if (h1) h1.firstChild && (h1.firstChild.textContent ? (h1.firstChild.textContent = t.title + ' ') : null);
+
+  // ── خطوات الشراء ──
+  const steps = document.querySelectorAll('.step span');
+  if (steps[0]) steps[0].textContent = t.stepCart;
+  if (steps[1]) steps[1].textContent = t.stepInfo;
+  if (steps[2]) steps[2].textContent = t.stepConfirm;
+
+  // ── بطاقة المعلومات ──
+  const infoH3 = document.querySelector('.checkout-card h3');
+  if (infoH3) infoH3.textContent = t.cardInfo;
+
+  // ── تسميات الحقول ──
+  const labels = document.querySelectorAll('.form-label');
+  const keys = ['name','phone','address','wilaya','notes'];
+  let ki = 0;
+  labels.forEach(lb => {
+    if (ki < keys.length && t[keys[ki]]) { lb.textContent = t[keys[ki]]; ki++; }
+  });
+
+  // ── placeholders ──
+  const notesEl = document.getElementById('c_notes');
+  if (notesEl) notesEl.placeholder = t.notesPlaceholder;
+  const discInput = document.getElementById('discountInput');
+  if (discInput) discInput.placeholder = t.discountPlaceholder;
+
+  // ── خيار الولاية الافتراضي ──
+  const wilayaDefault = document.querySelector('#c_wilaya option:first-child');
+  if (wilayaDefault) wilayaDefault.textContent = t.wilayaDefault;
+
+  // ── نص التوصيل ──
+  const deliveryBadge = document.querySelector('.delivery-badge');
+  if (deliveryBadge) deliveryBadge.textContent = t.delivery;
+
+  // ── بطاقة الدفع ──
+  const allH3 = document.querySelectorAll('.checkout-card h3');
+  if (allH3[1]) allH3[1].textContent = t.cardPayment;
+
+  // ── خيارات الدفع ──
+  const payTitles = document.querySelectorAll('.checkout-card .checkout-card + .checkout-card [style*="font-size:12px"][style*="font-weight:700"]');
+  // — طريقة بديلة أكثر موثوقية —
+  document.querySelectorAll('.checkout-card').forEach(card => {
+    if (card.querySelector('h3')?.textContent?.includes('دفع') ||
+        card.querySelector('h3')?.textContent?.includes('Payment') ||
+        card.querySelector('h3')?.textContent?.includes('Paiement')) {
+      const divs = card.querySelectorAll('[style*="font-size:12px"][style*="font-weight"]');
+      divs.forEach((d, i) => {
+        if (i === 0) d.textContent = t.codTitle;
+        if (i === 1) d.textContent = t.bankTitle;
+      });
+      const subs = card.querySelectorAll('[style*="font-size:10px"]');
+      subs.forEach((s, i) => {
+        if (i === 0) s.textContent = t.codSub;
+        if (i === 1) s.textContent = t.bankSub;
+      });
+    }
+  });
+
+  // ── زر إتمام الطلب ──
+  const placeBtn = document.getElementById('placeOrderBtn');
+  if (placeBtn) placeBtn.textContent = t.placeOrder;
+
+  // ── Trust badges ──
+  const trustBadges = document.querySelectorAll('.trust-badge');
+  trustBadges.forEach((b, i) => { if (t.trustBadges[i]) b.textContent = t.trustBadges[i]; });
+
+  // ── ملخص الطلب ──
+  const allH3s = document.querySelectorAll('.checkout-card h3');
+  allH3s.forEach(h => {
+    const txt = h.textContent;
+    if (/(ملخص|Summary|Résumé)/.test(txt)) h.textContent = t.summary;
+  });
+
+  // ── زر تطبيق الخصم ──
+  const discApply = document.querySelector('.discount-apply-btn');
+  if (discApply) discApply.textContent = t.discountApply;
+
+  // ── صندوق المعلومات المهمة ──
+  const infoBoxes = document.querySelectorAll('[style*="line-height:1.8"]');
+  infoBoxes.forEach(box => {
+    const titleEl = box.querySelector('[style*="font-weight:700"]');
+    if (titleEl) titleEl.textContent = t.infoBoxTitle;
+    // إعادة بناء النص
+    const lines = t.infoBoxLines;
+    box.innerHTML = `<div style="font-weight:700;color:var(--txt);margin-bottom:.4rem">${t.infoBoxTitle}</div>• ${lines.join('<br>• ')}`;
+  });
+}
+
+// تفعيل اللغة من localStorage عند التحميل
+document.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('a3m_lang') || 'ar';
+  setCheckoutLang(saved);
+});
+</script>
+
+<script>
+(function(){
+  var A3M_I18N = {
+    ar: {
+      back:"← العودة للمتجر",
+      pTab0:"🎨 تصاميمي", pTab1:"📦 طلباتي", pTab2:"🏆 الشارات", pTab3:"⚙️ الإعدادات",
+      pNoDesigns:"لا توجد تصاميم محفوظة بعد.", pStartDesign:"ابدأ التصميم →",
+      pNoOrders:"لا توجد طلبات بعد. أنشئ أول طلب!", pShopNow:"تسوّق الآن →",
+      pLogout:"🚪 تسجيل الخروج",
+      pAccSection:"الحساب", pPrefSection:"التفضيلات",
+      pDisplayName:"الاسم المعروض", pEmailLbl:"البريد الإلكتروني", pPasswordLbl:"كلمة المرور",
+      pLastChanged:"آخر تغيير: أبداً", pEdit:"تعديل", pChange:"تغيير",
+      pEmailNotif:"إشعارات البريد", pEmailNotifSub:"تحديثات الطلبات والعروض",
+      pDarkMode:"الوضع الداكن", pDarkModeSub:"استخدام الثيم الداكن",
+      pLangLbl:"اللغة", pLangSub:"الحالية: العربية",
+      pStatD:"تصاميم", pStatO:"طلبات", pStatF:"متابعون", pStatFl:"متابَعون",
+      newBadge:"عضو جديد", firstOrder:"أول طلب", designerBadge:"مصمم",
+      tenOrders:"10 طلبات", diamondBadge:"ألماس", premiumBadge:"بريميوم",
+      chBack:"← العودة", chTitle:"إتمام الطلب",
+      chStep1:"التوصيل", chStep2:"الدفع", chStep3:"التأكيد",
+      chSummary:"ملخص الطلب", chTotal:"المجموع", chShipping:"التوصيل",
+      chFree:"مجاني", chName:"<span data-i18n="chName">الاسم الكامل *</span>", chPhone:"<span data-i18n="chPhone">الهاتف *</span>",
+      chCity:"المدينة / الولاية", chAddress:"العنوان التفصيلي",
+      chNotes:"ملاحظات التصميم", chSubmit:"✦ تأكيد الطلب",
+      chCash:"💵 الدفع عند الاستلام",
+      ptBack:"← العودة للمتجر", ptTitle:"أنواع الطباعة",
+      ptHeroSub:"تقنيات طباعة احترافية لكل احتياج وكل نوع منتج",
+      ptOrder:"اطلب الآن →",
+      ptFilterAll:"الكل", ptFilterFabric:"قماش", ptFilterPaper:"ورق", ptFilterPromo:"ترويجي",
+      sucTitle:"تم استلام طلبك! ✦",
+      sucMsg:"شكراً على ثقتك بـ <strong>A3M Print</strong> ✦<br>سيتواصل معك فريقنا خلال <strong>24 ساعة</strong><br>لتأكيد التفاصيل وتحديد موعد التسليم.",
+      sucWA:"💬 تواصل عبر WhatsApp", sucHome:"← العودة للمتجر", sucMore:"🛍️ تسوّق أكثر",
+      sucOrderLabel:"رقم الطلب",
+      sucStep1:"تأكيد الطلب", sucStep2:"مراجعة التصميم", sucStep3:"الطباعة", sucStep4:"التوصيل",
+    },
+    en: {
+      back:"← Back to Store",
+      pTab0:"🎨 My Designs", pTab1:"📦 My Orders", pTab2:"🏆 Badges", pTab3:"⚙️ Settings",
+      pNoDesigns:"No saved designs yet.", pStartDesign:"Start Designing →",
+      pNoOrders:"No orders yet. Place your first order!", pShopNow:"Shop Now →",
+      pLogout:"🚪 Log Out",
+      pAccSection:"Account", pPrefSection:"Preferences",
+      pDisplayName:"Display Name", pEmailLbl:"Email", pPasswordLbl:"Password",
+      pLastChanged:"Last changed: never", pEdit:"Edit", pChange:"Change",
+      pEmailNotif:"Email Notifications", pEmailNotifSub:"Order updates and promotions",
+      pDarkMode:"Dark Mode", pDarkModeSub:"Use dark theme",
+      pLangLbl:"Language", pLangSub:"Current: English",
+      pStatD:"Designs", pStatO:"Orders", pStatF:"Followers", pStatFl:"Following",
+      newBadge:"New Member", firstOrder:"First Order", designerBadge:"Designer",
+      tenOrders:"10 Orders", diamondBadge:"Diamond", premiumBadge:"Premium",
+      chBack:"← Back", chTitle:"Checkout",
+      chStep1:"Delivery", chStep2:"Payment", chStep3:"Confirm",
+      chSummary:"Order Summary", chTotal:"Total", chShipping:"Shipping",
+      chFree:"Free", chName:"Full Name *", chPhone:"Phone *",
+      chCity:"City / Province", chAddress:"Detailed Address",
+      chNotes:"Design Notes", chSubmit:"✦ Confirm Order",
+      chCash:"💵 Cash on Delivery",
+      ptBack:"← Back to Store", ptTitle:"Print Types",
+      ptHeroSub:"Professional printing techniques for every need and product type",
+      ptOrder:"Order Now →",
+      ptFilterAll:"All", ptFilterFabric:"Fabric", ptFilterPaper:"Paper", ptFilterPromo:"Promo",
+      sucTitle:"Order Received! ✦",
+      sucMsg:"Thank you for trusting <strong>A3M Print</strong> ✦<br>Our team will contact you within <strong>24 hours</strong><br>to confirm details and set a delivery date.",
+      sucWA:"💬 Contact via WhatsApp", sucHome:"← Back to Store", sucMore:"🛍️ Shop More",
+      sucOrderLabel:"Order Number",
+      sucStep1:"Order Confirmed", sucStep2:"Design Review", sucStep3:"Printing", sucStep4:"Delivery",
+    },
+    fr: {
+      back:"← Retour à la boutique",
+      pTab0:"🎨 Mes Créations", pTab1:"📦 Mes Commandes", pTab2:"🏆 Badges", pTab3:"⚙️ Paramètres",
+      pNoDesigns:"Aucun design sauvegardé.", pStartDesign:"Commencer →",
+      pNoOrders:"Aucune commande. Passez votre première!", pShopNow:"Acheter →",
+      pLogout:"🚪 Déconnexion",
+      pAccSection:"Compte", pPrefSection:"Préférences",
+      pDisplayName:"Nom affiché", pEmailLbl:"Email", pPasswordLbl:"Mot de passe",
+      pLastChanged:"Dernier changement: jamais", pEdit:"Modifier", pChange:"Changer",
+      pEmailNotif:"Notifications Email", pEmailNotifSub:"Mises à jour des commandes",
+      pDarkMode:"Mode Sombre", pDarkModeSub:"Utiliser le thème sombre",
+      pLangLbl:"Langue", pLangSub:"Actuelle: Français",
+      pStatD:"Designs", pStatO:"Commandes", pStatF:"Abonnés", pStatFl:"Abonnements",
+      newBadge:"Nouveau Membre", firstOrder:"1ère Commande", designerBadge:"Designer",
+      tenOrders:"10 Commandes", diamondBadge:"Diamant", premiumBadge:"Premium",
+      chBack:"← Retour", chTitle:"Finaliser la commande",
+      chStep1:"Livraison", chStep2:"Paiement", chStep3:"Confirmation",
+      chSummary:"Récapitulatif", chTotal:"Total", chShipping:"Livraison",
+      chFree:"Gratuit", chName:"Nom complet *", chPhone:"Téléphone *",
+      chCity:"Ville / Wilaya", chAddress:"Adresse détaillée",
+      chNotes:"Notes de design", chSubmit:"✦ Confirmer la commande",
+      chCash:"💵 Paiement à la livraison",
+      ptBack:"← Retour à la boutique", ptTitle:"Types d'impression",
+      ptHeroSub:"Techniques d'impression professionnelles pour tous vos besoins",
+      ptOrder:"Commander →",
+      ptFilterAll:"Tout", ptFilterFabric:"Tissu", ptFilterPaper:"Papier", ptFilterPromo:"Promo",
+      sucTitle:"Commande reçue! ✦",
+      sucMsg:"Merci de faire confiance à <strong>A3M Print</strong> ✦<br>Notre équipe vous contactera dans <strong>24 heures</strong><br>pour confirmer les détails et la date de livraison.",
+      sucWA:"💬 Contacter via WhatsApp", sucHome:"← Retour à la boutique", sucMore:"🛍️ Continuer les achats",
+      sucOrderLabel:"Numéro de commande",
+      sucStep1:"Commande confirmée", sucStep2:"Révision design", sucStep3:"Impression", sucStep4:"Livraison",
+    },
+  };
+  window.A3M_I18N = A3M_I18N;
+
+  function applyI18n(lang) {
+    var t = A3M_I18N[lang] || A3M_I18N.en;
+    function safe(id, v){ if(!v) return; var e=document.getElementById(id); if(e) e.textContent=v; }
+    function safeHtml(id, v){ if(!v) return; var e=document.getElementById(id); if(e) e.innerHTML=v; }
+    function safeAll(sel, v){ if(!v) return; document.querySelectorAll(sel).forEach(function(e){ e.textContent=v; }); }
+    // Common back buttons
+    document.querySelectorAll(".back-btn, .checkout-back, .nav-back").forEach(function(el){
+      if(el.textContent.trim().match(/^←|^→/)) el.textContent = t.back||t.chBack||"← Back";
+    });
+    // data-i18n elements
+    document.querySelectorAll("[data-i18n]").forEach(function(el){
+      var k = el.getAttribute("data-i18n");
+      if(t[k] !== undefined) el.textContent = t[k];
+    });
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang==="ar" ? "rtl" : "ltr";
+    document.dispatchEvent(new CustomEvent("a3m:lang", {detail:{lang:lang,t:t}}));
+  }
+  window.applyI18n = applyI18n;
+
+
+  });
+})();
+</script>
+<script>
+  document.addEventListener("a3m:lang", function(e){
+    var t = e.detail.t, lang = e.detail.lang;
+    var safe = function(id,v){ var el=document.getElementById(id); if(el&&v) el.textContent=v; };
+    safe("chTitleEl", t.chTitle); safe("chBackEl", t.chBack);
+    document.querySelectorAll(".step span:last-child").forEach(function(el,i){
+      var keys=["chStep1","chStep2","chStep3"]; if(t[keys[i]]) el.textContent=t[keys[i]];
+    });
+    // Field labels
+    var labels = document.querySelectorAll(".checkout-label");
+    var keys = ["chName","chPhone","chCity","chAddress","chNotes"];
+    labels.forEach(function(el,i){ if(t[keys[i]]) el.textContent=t[keys[i]]; });
+    var sb = document.querySelector(".submit-btn, .checkout-submit");
+    if(sb && t.chSubmit) sb.textContent = t.chSubmit;
+    document.documentElement.dir = lang==="ar"?"rtl":"ltr";
+  });
+</script>
+<script>
+  // ── Globe lang switcher ──
+  var GLOBE_LABELS = {ar:'العربية', en:'English', fr:'Français'};
+  function setGlobeLang(lang) {
+    localStorage.setItem('a3m_lang', lang);
+    document.getElementById('globeDd').classList.remove('open');
+    document.getElementById('globeLangLabel').textContent = GLOBE_LABELS[lang];
+    document.querySelectorAll('.lang-globe-opt').forEach(function(o){
+      o.classList.toggle('active', o.dataset.lang === lang);
+    });
+    if (typeof applyI18n === 'function') applyI18n(lang);
+  }
+  document.addEventListener('click', function(e) {
+    var w = document.getElementById('globeWrap');
+    if (w && !w.contains(e.target)) {
+      var d = document.getElementById('globeDd');
+      if (d) d.classList.remove('open');
+    }
+  });
+  // Init globe label
+  (function(){
+    var lang = localStorage.getItem('a3m_lang') || 'ar';
+    var lbl = document.getElementById('globeLangLabel');
+    if (lbl) lbl.textContent = GLOBE_LABELS[lang] || 'العربية';
+    document.querySelectorAll('.lang-globe-opt').forEach(function(o){
+      o.classList.toggle('active', o.dataset.lang === lang);
+    });
+  })();
+</script>
+<script src="../js/a3m-settings.js"></script>
+</body>
+</html>
